@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Categorizables extends Model
+class Categorizable extends Model
 {
-    //
+    protected $fillable = ['category_id', 'categorizable_id', 'categorizable_type'];
 }
