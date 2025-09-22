@@ -1,8 +1,12 @@
 import React from 'react'
+import SideBar from '../component/molekul/SideBar'
 
 const Index = () => {
   return (
-    <div className='flex items-center justify-center h-screen w-screen text-white'>Tes Index</div>
+    <div className="flex overflow-x-hidden">
+      {/* Sidebar */}
+      <SideBar />
+    </div>
   )
 }
 
