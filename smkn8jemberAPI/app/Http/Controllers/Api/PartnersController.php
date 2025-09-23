@@ -4,52 +4,46 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use PhpParser\Builder\Param;
+use Illuminate\Support\Facades\Storage;
 
 class PartnersController extends Controller
 {
+    use ApiResponse;
     public function index()
     {
         $partner = Partner::all();
-        return response()->json([
-            'data' => $partner
-        ], 200);
+        return $this->success($partner, 'Partners retrieved successfully');
     }
 
     public function create(Request $request)
     {
         $request->validate([
             'name' => 'required|string|unique:partners,name',
-            'iamge' => 'required|string|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'major_id' => 'required|exists:majors,id',
         ]);
 
+        $createData = $request->only(['name', 'major_id']);
+
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('partners', 'public');
+            $imagePath = $request->file('image')->store('partners', 'public');
+            $createData['image'] = $imagePath;
         }
 
-        $partner = Partner::create($request->all());
-        $partner->image = $path ?? null;
-        $partner->save();
+        $partner = Partner::create($createData);
 
-        return response()->json([
-            'message' => 'Partner created successfully',
-            'data' => $partner
-        ], 201);
+        return $this->created($partner, 'Partner created successfully');
     }
 
     public function show($id)
     {
         $partner = Partner::find($id);
         if (!$partner) {
-            return response()->json([
-                'message' => 'Partner Not Found'
-            ], 404);
+            return $this->notFound('Partner not found');
         }
-        return response()->json([
-            'data' => $partner
-        ], 201);
+        return $this->success($partner, 'Partner retrieved successfully');
     }
 
     public function update(Request $request, $id)
@@ -62,34 +56,36 @@ class PartnersController extends Controller
 
         $partner = Partner::find($id);
         if (!$partner) {
-            return response()->json([
-                'message' => 'Partner Not Found'
-            ], 404);
+            return $this->notFound('Partner not found');
         }
 
+        $updateData = $request->only(['name', 'major_id']); 
+
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('partners', 'public');
-            $partner->image = $path;
+            if ($partner->OriginalImagePath()) {
+                Storage::disk('public')->delete($partner->OriginalImagePath());
+            }
+            
+            $imagePath = $request->file('image')->store('partners', 'public');
+            $updateData['image'] = $imagePath;
         }
-        $partner->update($request->all());
-        return response()->json([
-            'message' => 'Partner Updated Successfully',
-            'data' => $partner
-        ], 201);
+        
+        $partner->update($updateData);
+        return $this->updated($partner, 'Partner updated successfully');
     }
 
     public function delete($id){
         $partner = Partner::find($id);
         if(!$partner){
-            return response()->json([
-                'message' => 'Partner Not Found'
-            ], 404);
+            return $this->notFound('Partner not found');
         }
+
+        if ($partner->image) {
+            Storage::disk('public')->delete($partner->image);
+        }
+        
         $partner->delete();
 
-        return response()->json([
-            'message' => 'Partner Deleted Successfully'
-        ], 201);
-
+        return $this->deleted('Partner deleted successfully');
     }
 }

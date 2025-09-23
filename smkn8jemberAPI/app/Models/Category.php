@@ -10,6 +10,7 @@ class Category extends Model
     use SoftDeletes;
 
     protected $fillable = ['type', 'name', 'color'];
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 
     public function articles()
     {
@@ -24,5 +25,31 @@ class Category extends Model
     public function galleries()
     {
         return $this->morphedByMany(Gallery::class, 'categorizable');
+    }
+
+    public function setColorAttribute($value)
+    {
+        if (!$value) {
+            $this->attributes['color'] = null;
+            return;
+        }
+
+        if (strpos($value, '#') !== 0) {
+            $value = '#' . $value;
+        }
+
+        $value = strtolower($value);
+
+        if (!preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})$/', $value)) {
+            throw new \InvalidArgumentException("Invalid hex color value: {$value}");
+        }
+
+        if (strlen($value) === 4) {
+            $value = '#' . $value[1] . $value[1]
+                . $value[2] . $value[2]
+                . $value[3] . $value[3];
+        }
+
+        $this->attributes['color'] = $value;
     }
 }

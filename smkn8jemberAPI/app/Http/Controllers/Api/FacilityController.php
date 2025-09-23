@@ -4,17 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Facility;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class FacilityController extends Controller
 {
+    use ApiResponse;
     public function index()
     {
         $facility = Facility::all();
-        return response()->json([
-            'data' => $facility
-        ], 200);
+        return $this->success($facility, 'Facilities retrieved successfully');
     }
 
     public function create(Request $request)
@@ -26,42 +26,34 @@ class FacilityController extends Controller
             'room_total' => 'required|integer',
         ]);
 
+        $createData = $request->only(['name', 'description', 'room_total']);
+
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('facilities', 'public');
+            $imagePath = $request->file('image')->store('facilities', 'public');
+            $createData['image'] = $imagePath;
         }
 
-        $facility = Facility::create($request->all());
-        $facility->image = $path ?? null;
-        $facility->save();
+        $facility = Facility::create($createData);
 
-        return response()->json([
-            'message' => 'Facility Created Successfully',
-            'data' => $facility
-        ], 201);
+        return $this->created($facility, 'Facility created successfully');
     }
 
     public function show($id)
     {
         $facility = Facility::find($id);
         if (!$facility) {
-            return response()->json([
-                'message' => 'Facility NOt Found'
-            ], 404);
+            return $this->notFound('Facility not found');
         }
 
-        return response()->json([
-            'data' => $facility
-        ], 200);
+        return $this->success($facility, 'Facility retrieved successfully');
     }
 
     public function update(Request $request, $id)
     {
-        $facility =  Facility::find($id);
+        $facility = Facility::find($id);
 
         if (!$facility) {
-            return response()->json([
-                'message' => ' Facility NOt Found'
-            ], 404);
+            return $this->notFound('Facility not found');
         }
 
         $request->validate([
@@ -71,26 +63,27 @@ class FacilityController extends Controller
             'room_total' => 'sometimes|integer'
         ]);
 
-        if (request()->hasFile('image')) {
-            $path = $request->file('image')->store('facilities', 'public');
-            $facility->image = $path;
+        $updateData = $request->only(['name', 'description', 'room_total']);
+        
+        if ($request->hasFile('image')) {
+            if ($facility->OriginalImagePath()) {
+                Storage::disk('public')->delete($facility->OriginalImagePath());
+            }
+            
+            $imagePath = $request->file('image')->store('facilities', 'public');
+            $updateData['image'] = $imagePath;
         }
 
-        $facility->update($request->all());
+        $facility->update($updateData);
 
-        return response()->json([
-            'message' => 'Facility Updated Successfully',
-            'data' => $facility
-        ], 200);
+        return $this->updated($facility, 'Facility updated successfully');
     }
 
     public function delete($id)
     {
         $facility = Facility::find($id);
         if (!$facility) {
-            return response()->json([
-                'message' => 'Facility Not Found'
-            ], 404);
+            return $this->notFound('Facility not found');
         }
 
         if($facility->image){
@@ -98,8 +91,6 @@ class FacilityController extends Controller
         }
 
         $facility->delete();
-        return response()->json([
-            'message' => 'Facility Deleted Successfully'
-        ], 200);
+        return $this->deleted('Facility deleted successfully');
     }
 }

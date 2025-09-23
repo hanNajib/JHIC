@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Expr\FuncCall;
 
 class AnnouncementsController extends Controller
 {
+    use ApiResponse;
+
     public function index()
     {
         $announcement = Announcement::all();
-        return response()->json([
-            'data' => $announcement
-        ]);
+        return $this->success($announcement, 'Announcements retrieved successfully');
     }
 
     public function create(Request $request)
@@ -24,33 +25,30 @@ class AnnouncementsController extends Controller
             'title' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'content' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
+        $createData = $request->only(['title', 'content', 'category_id']);
+
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('announcements', 'public');
+            $imagePath = $request->file('image')->store('announcements', 'public');
+            $createData['image'] = $imagePath;
         }
 
-        $announcement = Announcement::create($request->all());
-        $announcement->image = $path ?? null;
-        $announcement->save();
+        $announcement = Announcement::create($createData);
 
-        return response()->json([
-            'message' => 'Announcement created successfully',
-            'data' => $announcement
-        ], 201);
+        return $this->created($announcement, 'Announcement created successfully');
+
+        return $this->created($announcement, 'Announcement created successfully');
     }
 
     public function show($id)
     {
         $announcement = Announcement::find($id);
         if (!$announcement) {
-            return response()->json([
-                'message' => 'Announcement not found'
-            ], 404);
+            return $this->notFound('Announcement not found');
         }
-        return response()->json([
-            'data' => $announcement
-        ]);
+        return $this->success($announcement);
     }
 
     public function update(Request $request, $id)
@@ -59,25 +57,27 @@ class AnnouncementsController extends Controller
             'title' => 'sometimes|string',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'content' => 'sometimes|required|string',
+            'category_id' => 'sometimes|exists:categories,id',
         ]);
 
         $announcement = Announcement::find($id);
         if (!$announcement) {
-            return response()->json([
-                'message' => 'Announcement not found'
-            ], 404);
+            return $this->notFound('Announcement not found');
         }
+
+        $updateData = $request->only(['title', 'content', 'category_id']);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('announcements', 'public');
-            $announcement->image = $path;
+            if ($announcement->OriginalImagePath()) {
+                Storage::disk('public')->delete($announcement->OriginalImagePath());
+            }
+            
+            $imagePath = $request->file('image')->store('announcements', 'public');
+            $updateData['image'] = $imagePath;
         }
 
-        $announcement->update($request->all());
-        return response()->json([
-            'message' => 'Announcement updated successfully',
-            'data' => $announcement,
-        ], 200);
+        $announcement->update($updateData);
+        return $this->updated($announcement, 'Announcement updated successfully');
     }
 
     public function delete($id)
@@ -85,9 +85,7 @@ class AnnouncementsController extends Controller
         $announcement = Announcement::find($id);
 
         if (!$announcement) {
-            return response()->json([
-                'message' => 'Announcement not found'
-            ], 404);
+            return $this->notFound('Announcement not found');
         }
 
         if ($announcement->image) {
@@ -95,8 +93,6 @@ class AnnouncementsController extends Controller
         }
         $announcement->delete();
 
-        return response()->json([
-            'message' => 'announcement deleted successfully'
-        ], 200);
+        return $this->deleted('Announcement deleted successfully');
     }
 }

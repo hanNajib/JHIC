@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\Major;
 use Illuminate\Support\Facades\Storage;
 
 class MajorsController extends Controller
 {
+    use ApiResponse;
     public function index()
     {
         $major = Major::all();
-        return response()->json([
-            'data' => $major
-        ]);
+        return $this->success($major, 'Majors retrieved successfully');
     }
 
     public function create(Request $request)
@@ -23,31 +23,27 @@ class MajorsController extends Controller
             'name' => 'required|string|unique:majors,name',
             'description' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-
         ]);
 
+        $createData = $request->only(['name', 'description']);
+
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('majors', 'public');
+            $imagePath = $request->file('image')->store('majors', 'public');
+            $createData['image'] = $imagePath;
         }
 
-        $major = Major::create($request->all());
-        $major->image = $path ?? null;
-        $major->save();
+        $major = Major::create($createData);
 
-        return response()->json([
-            'message' => 'Major created successfully',
-            'data' => $major
-        ], 201);
+        return $this->created($major, 'Major created successfully');
     }
 
     public function show($id)
     {
         $major = Major::find($id);
         if (!$major) {
-            return response()->json([
-                'message' => 'Major not found'
-            ], 404);
+            return $this->notFound('Major not found');
         }
+        return $this->success($major, 'Major retrieved successfully');
     }
 
     public function update(Request $request, $id)
@@ -60,37 +56,36 @@ class MajorsController extends Controller
 
         $major = Major::find($id);
         if (!$major) {
-            return response()->json([
-                'message' => 'major not found'
-            ], 404);
+            return $this->notFound('Major not found');
         }
+        
+        $updateData = $request->only(['name', 'description']);
+        
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('majors', 'public');
-            $major->image = $path;
+            if ($major->OriginalImagePath()) {
+                Storage::disk('public')->delete($major->OriginalImagePath());
+            }
+            
+            $imagePath = $request->file('image')->store('majors', 'public');
+            $updateData['image'] = $imagePath;
         }
-        $major->update($request->all());
+        
+        $major->update($updateData);
 
-        return response()->json([
-            'message' => 'Major updated successfully',
-            'data' => $major
-        ]);
+        return $this->updated($major, 'Major updated successfully');
     }
 
     public function delete($id)
     {
         $major = Major::find($id);
         if (!$major) {
-            return response()->json([
-                'message' => 'Major not found'
-            ], 404);
+            return $this->notFound('Major not found');
         }
 
         if ($major->image) {
             Storage::disk('public')->delete($major->image);
         }
         $major->delete();
-        return response()->json([
-            'message' => 'Major deleted successfully'
-        ]);
+        return $this->deleted('Major deleted successfully');
     }
 }

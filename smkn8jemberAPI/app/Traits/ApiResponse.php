@@ -25,7 +25,6 @@ trait ApiResponse
         return response()->json($data, $status);
     }
 
-
     /**
      * Response untuk data sukses (single data / list tanpa pagination)
      */

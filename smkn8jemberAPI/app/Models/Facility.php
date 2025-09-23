@@ -10,5 +10,6 @@ class Facility extends Model
 {
     use SoftDeletes, HasImageUrl;
 
+    public $table = "facility";
     protected $fillable = ['name', 'description', 'image', 'room_total'];
 }

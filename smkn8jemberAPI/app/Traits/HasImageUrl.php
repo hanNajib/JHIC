@@ -6,12 +6,13 @@ use Illuminate\Support\Facades\Storage;
 
 trait HasImageUrl
 {
-    public function getImageUrlAttribute(): ?string
+    public function getImageAttribute($value): ?string
     {
-        if (!$this->image) {
-            return null;
-        }
+        return $value ? url(Storage::url($value)) : null;
+    }
 
-        return Storage::url($this->image);
+    public function OriginalImagePath(): ?string
+    {
+        return $this->attributes['image'] ?? null;
     }
 }
