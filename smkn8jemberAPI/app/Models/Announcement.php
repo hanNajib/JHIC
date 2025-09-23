@@ -10,10 +10,11 @@ class Announcement extends Model
 {
     use SoftDeletes, HasImageUrl;
 
-    protected $fillable = ['title', 'image', 'content'];
+    protected $fillable = ['title', 'image', 'content', 'category_id'];
+    protected $with = ['category'];
 
-    public function categories()
+    public function category()
     {
-        return $this->morphToMany(Category::class, 'categorizable');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }
