@@ -4,6 +4,28 @@ namespace App\Traits;
 
 trait ApiResponse
 {
+
+    /**
+     * Response dengan status message (bisa success atau error berdasarkan HTTP status code)
+     */
+    protected function statusMessage(string $message, $httpStatus = 200)
+    {
+        $status = ($httpStatus >= 200 && $httpStatus < 300) ? 'success' : 'error';
+        return response()->json([
+            'status'  => $status,
+            'message' => $message,
+        ], $httpStatus);
+    }
+
+    /**
+     * Response json
+     */
+    protected function json($data, int $status = 200)
+    {
+        return response()->json($data, $status);
+    }
+
+
     /**
      * Response untuk data sukses (single data / list tanpa pagination)
      */
