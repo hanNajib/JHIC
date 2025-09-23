@@ -53,9 +53,9 @@ class MajorsController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'sometimes|required|string|unique:majors,name,' . $id,
-            'description' => 'sometimes|required|string',
-            'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'name' => 'sometimes|string|unique:majors,name,' . $id,
+            'description' => 'sometimes|string',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $major = Major::find($id);
