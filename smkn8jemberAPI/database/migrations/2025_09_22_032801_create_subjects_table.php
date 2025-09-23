@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->string('mapel');
+            $table->string('name');
             $table->text('description')->nullable();
             $table->foreignId('major_id')->nullable()->constrained('majors')->cascadeOnDelete();
             $table->timestamps();
