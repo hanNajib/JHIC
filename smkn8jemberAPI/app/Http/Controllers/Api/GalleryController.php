@@ -25,7 +25,7 @@ class GalleryController extends Controller
         $createData = $request->only(['title', 'description']);
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('name')->store('gallery', 'public');
+            $imagePath = $request->file('image')->store('gallery', 'public');
             $createData['image'] = $imagePath;
         }
 
@@ -71,6 +71,6 @@ class GalleryController extends Controller
             return $this->notFound('Gallery not found');
         }
         $gallery->delete();
-        return $this->success(null, 'Gallery deleted successfully');
+        return $this->statusMessage( 'Gallery deleted successfully');
     }
 }

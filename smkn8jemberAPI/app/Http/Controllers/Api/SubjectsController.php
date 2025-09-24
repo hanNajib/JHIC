@@ -60,7 +60,7 @@ class SubjectsController extends Controller
             return $this->notFound('Subject not found');
         } else {
             $subjects->delete();
-            return $this->success(null, 'Subject deleted successfully');
+            return $this->statusMessage( 'Subject deleted successfully');
         }
     }
 }
