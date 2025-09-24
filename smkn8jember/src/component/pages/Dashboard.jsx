@@ -16,9 +16,9 @@ const Dashboard = () => {
       </div>
 
       {/* card */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-5">
         {/* Artikel */}
-        <div className="flex justify-between p-8 items-center w-56 rounded-lg bg-white text-gray-900 shadow-md">
+        <div className="flex justify-between p-8 items-center w-full rounded-lg bg-white text-gray-900 shadow-md">
           <div>
             <h4 className="font-bold text-base">Artikel Terbit</h4>
             <h3 className="font-bold text-3xl">255</h3>
@@ -28,7 +28,7 @@ const Dashboard = () => {
           </div>
         </div>
         {/* Artikel */}
-        <div className="flex justify-between p-8 items-center w-56 rounded-lg bg-white text-gray-900 shadow-md">
+        <div className="flex justify-between p-8 items-center w-full rounded-lg bg-white text-gray-900 shadow-md">
           <div>
             <h4 className="font-bold text-base">Artikel Terbit</h4>
             <h3 className="font-bold text-3xl">255</h3>
@@ -38,7 +38,7 @@ const Dashboard = () => {
           </div>
         </div>
         {/* Artikel */}
-        <div className="flex justify-between p-8 items-center w-56 rounded-lg bg-white text-gray-900 shadow-md">
+        <div className="flex justify-between p-8 items-center w-full rounded-lg bg-white text-gray-900 shadow-md">
           <div>
             <h4 className="font-bold text-base">Artikel Terbit</h4>
             <h3 className="font-bold text-3xl">255</h3>
@@ -48,13 +48,13 @@ const Dashboard = () => {
           </div>
         </div>
         {/* Artikel */}
-        <div className="flex justify-between p-8 items-center w-56 rounded-lg bg-white text-gray-900 shadow-md">
+        <div className="flex justify-between p-8 items-center w-full rounded-lg bg-white text-gray-900 shadow-md">
           <div>
-            <h4 className="font-bold text-base">Penulis</h4>
+            <h4 className="font-bold text-base">Artikel Terbit</h4>
             <h3 className="font-bold text-3xl">255</h3>
           </div>
           <div className="rounded-4xl p-3 bg-orange-500/25 text-orange-500 text-3xl">
-            <PiPencilLineDuotone />
+            <GrArticle />
           </div>
         </div>
       </div>
@@ -70,7 +70,9 @@ const Dashboard = () => {
                 <th className="px-4 py-2 text-center font-extrabold">No</th>
                 <th className="px-4 py-2 text-start font-extrabold">Gambar</th>
                 <th className="px-4 py-2 text-start font-extrabold">Judul</th>
-                <th className="px-4 py-2 w-24 text-start font-extrabold">Dilihat</th>
+                <th className="px-4 py-2 w-24 text-start font-extrabold">
+                  Dilihat
+                </th>
               </tr>
             </thead>
             <tbody>
