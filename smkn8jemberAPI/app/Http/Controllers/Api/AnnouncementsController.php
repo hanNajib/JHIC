@@ -36,6 +36,7 @@ class AnnouncementsController extends Controller
         }
 
         $announcement = Announcement::create($createData);
+
         return $this->created($announcement, 'Announcement created successfully');
     }
 
@@ -68,7 +69,7 @@ class AnnouncementsController extends Controller
             if ($announcement->OriginalImagePath()) {
                 Storage::disk('public')->delete($announcement->OriginalImagePath());
             }
-            
+
             $imagePath = $request->file('image')->store('announcements', 'public');
             $updateData['image'] = $imagePath;
         }

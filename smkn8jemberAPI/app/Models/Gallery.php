@@ -11,7 +11,7 @@ class Gallery extends Model
     use SoftDeletes, HasImageUrl;
 
     protected $fillable = ['title', 'description', 'image'];
-
+    protected $table = 'gallery';
     public function categories()
     {
         return $this->morphToMany(Category::class, 'categorizable');
