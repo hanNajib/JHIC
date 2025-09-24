@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\AnnouncementsController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ChanceCarrierController;
+use App\Http\Controllers\Api\ExtracurricularController;
 use App\Http\Controllers\Api\FacilityController;
 use App\Http\Controllers\Api\MajorsController;
 use App\Http\Controllers\Api\PartnersController;
@@ -14,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function() {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::get('me', [AuthController::class, 'me'])->middleware(['auth:sanctum']);
 });
 
 
@@ -52,3 +55,21 @@ Route::prefix('partners')->group(function() {
     Route::put('/{id}', [PartnersController::class, 'update'])->middleware('auth:sanctum');
     Route::delete('/{id}', [PartnersController::class, 'delete'])->middleware('auth:sanctum');
 });
+
+Route::prefix('extracurriculars')->group(function() {
+    Route::get('/', [ExtracurricularController::class, 'index']);
+    Route::get('/{id}', [ExtracurricularController::class, 'show']);
+    Route::post('/', [ExtracurricularController::class, 'create'])->middleware('auth:sanctum');
+    Route::put('/{id}', [ExtracurricularController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{id}', [ExtracurricularController::class, 'delete'])->middleware('auth:sanctum');
+});
+
+Route::prefix('chance-carriers')->group(function() {
+    Route::get('/', [ChanceCarrierController::class, 'index']);
+    Route::get('/{id}', [ChanceCarrierController::class, 'show']);
+    Route::post('/', [ChanceCarrierController::class, 'create'])->middleware('auth:sanctum');
+    Route::put('/{id}', [ChanceCarrierController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{id}', [ChanceCarrierController::class, 'delete'])->middleware('auth:sanctum');
+});
+
+// Route::prefix()

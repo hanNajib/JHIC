@@ -51,4 +51,8 @@ class AuthController extends Controller
             return $this->statusMessage('Logged out', 200);
         }
     }
+
+    public function me(Request $request) {
+        return $this->success($request->user(), 'User retrieved successfully');
+    }
 }
