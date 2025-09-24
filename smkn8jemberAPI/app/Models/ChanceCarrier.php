@@ -11,7 +11,8 @@ class ChanceCarrier extends Model
     use SoftDeletes, HasImageUrl;
 
     protected $fillable = ['name', 'description', 'image', 'major_id'];
-
+    protected $table = 'chance_carrier';
+    
     public function major()
     {
         return $this->belongsTo(Major::class);

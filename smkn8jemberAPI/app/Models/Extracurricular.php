@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Extracurricular extends Model
 {
     use SoftDeletes, HasImageUrl;
-
+    
+    protected $table = 'extracurricular';
     protected $fillable = ['name', 'mentor_name', 'description', 'image'];
 }
