@@ -18,9 +18,9 @@ const Gambar = () => {
   
 
   return (
-    <div className="flex flex-col justify-center gap-14 w-full h-fit bg-white rounded-lg p-5">
+    <div className="flex flex-col justify-center gap-5 lg:gap-14 w-full h-fit bg-white rounded-lg p-5">
       {/* Title */}
-      <div className="flex justify-between ">
+      <div className="flex justify-between flex-col lg:flex-row gap-2">
         <h1 className="font-bold text-gray-900 text-4xl">Gambar</h1>
 
         <div className="flex gap-2">

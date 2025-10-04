@@ -5,11 +5,10 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const EditGambar
- = () => {
+const EditGambar = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // ambil id dari URL
-  const [artikel, setArtikel] = useState(null);
+  const [artikel, setArtikel] = useState([]);
   const [kategori, setKategori] = useState("");
   const [konten, setKonten] = useState("");
   const [preview, setPreview] = useState(null);
@@ -56,19 +55,17 @@ const EditGambar
     }
   };
 
-  if (!artikel) return <p>Loading...</p>;
-
   return (
-    <div className="flex flex-col justify-center gap-14 w-full h-fit bg-white rounded-lg p-5">
+    <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
       {/* Title */}
       <div className="flex items-center gap-3">
         <a
           onClick={() => navigate(-1)}
-          className="cursor-pointer bg-orange-500 text-4xl text-center p-1 rounded-4xl text-white"
+          className="cursor-pointer bg-orange-500 text-3xl lg:text-4xl text-center p-1 rounded-4xl text-white"
         >
           <IoIosArrowBack />
         </a>
-        <h1 className="font-bold text-gray-800 text-4xl">Edit Pengumuman</h1>
+        <h1 className="font-bold text-gray-800 text-3xl lg:text-4xl">Edit Gambar</h1>
       </div>
 
       <div>
@@ -86,17 +83,20 @@ const EditGambar
               onChange={(e) =>
                 setArtikel({ ...artikel, judul: e.target.value })
               }
-              placeholder="Masukkan Judul Artikel"
-              className="w-full px-3 py-1 border border-gray-700 rounded-lg focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+              placeholder="Masukkan Judul Gambar"
+              className="w-full px-3 py-1 font-medium text-gray-600 border border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-600"
             />
           </div>
 
           {/* Input Radio Kategori */}
           <div className="flex flex-col">
-            <label className="font-semibold">Kategori</label>
-            <div className="flex flex-col">
+            <label className="font-semibold text-gray-800">Kategori</label>
+            <div className="flex flex-col gap-2">
               {kategoriList.map((item) => (
-                <label key={item} className="flex items-center gap-2 text-sm">
+                <label
+                  key={item}
+                  className="flex items-center gap-2 text-sm font-medium text-gray-600"
+                >
                   <input
                     type="radio"
                     value={item}
@@ -112,7 +112,9 @@ const EditGambar
 
           {/* Konten pakai TinyMCE */}
           <div>
-            <label className="block mb-1 font-semibold">Deskripsi</label>
+            <label className="block mb-1 font-semibold text-gray-800">
+              Deskripsi
+            </label>
             <Editor
               apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
               value={konten}
@@ -122,14 +124,18 @@ const EditGambar
                 menubar: false,
                 plugins: "lists link image table code",
                 toolbar:
-                  "undo redo | bold italic | bullist numlist | link image | code",
+                  "undo redo | bold italic underline | fontsizeselect forecolor backcolor | " +
+                  "alignleft aligncenter alignright justify | bullist numlist | link table | removeformat | code",
+                placeholder: "Masukkan Deskripsi Gambar",
               }}
             />
           </div>
 
           {/* Upload Gambar */}
           <div className="w-full">
-            <label className="block font-semibold mb-2">Masukkan Gambar</label>
+            <label className="block font-semibold mb-2 text-gray-800">
+              Masukkan Gambar
+            </label>
             <label
               htmlFor="upload"
               className="flex flex-col items-center justify-center w-full h-fit border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50"
@@ -175,5 +181,4 @@ const EditGambar
   );
 };
 
-export default EditGambar
-;
+export default EditGambar;

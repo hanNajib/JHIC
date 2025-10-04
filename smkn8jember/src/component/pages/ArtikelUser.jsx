@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
+import { RiVerifiedBadgeLine } from "react-icons/ri";
 
 const ArtikelUser = () => {
   const [artikel, setArtikel] = useState([]);
@@ -16,9 +17,9 @@ const ArtikelUser = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center gap-14 w-full h-fit bg-white rounded-lg p-5">
+    <div className="flex flex-col justify-center gap-5 lg:gap-14 w-full h-fit bg-white rounded-lg p-5">
       {/* Title */}
-      <div className="flex justify-between ">
+      <div className="flex justify-between flex-col gap-2 lg:flex-row">
         <h1 className="font-bold text-gray-900 text-4xl">Artikel User</h1>
 
         <div className="flex gap-2">
@@ -28,11 +29,11 @@ const ArtikelUser = () => {
           </div>
 
           <NavLink
-            to={`/artikel/tambah`} 
+            to={`/artikelUser/verifikasi`}
             className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300"
           >
-            <FaPlus />
-            <h6>Tambah</h6>
+            <RiVerifiedBadgeLine />
+            <h6>Verifikasi</h6>
           </NavLink>
         </div>
       </div>
@@ -46,7 +47,9 @@ const ArtikelUser = () => {
               <th className="py-2 px-4 border text-left text-white min-w-56">
                 Judul
               </th>
-              <th className="py-2 px-4 border text-left text-white">Kategori</th>
+              <th className="py-2 px-4 border text-left text-white">
+                Kategori
+              </th>
               <th className="py-2 px-4 border text-left text-white">Tanggal</th>
               <th className="py-2 px-4 border text-left text-white">Foto</th>
               <th className="py-2 px-4 border text-left text-white">Aksi</th>
@@ -58,18 +61,17 @@ const ArtikelUser = () => {
                 <td className="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
                 <td className="py-2  border-b border-gray-400 ">{a.judul}</td>
                 <td className="py-2 px-4 border-b border-gray-400">
-                  <div className="flex gap-2">
-                    {a.kategori.map((kate, index) => (
-                      <div
-                        key={index}
-                        className="bg-orange-500 px-2 rounded-2xl text-white"
-                      >
+                  <div className="grid grid-cols-2 gap-2 w-32">
+                    {a.kategori.map((kate) => (
+                      <div className="bg-orange-500 px-2.5 w-fit rounded-2xl text-sm text-white">
                         {kate}
                       </div>
                     ))}
                   </div>
                 </td>
-                <td className="py-2 px-4 border-b border-gray-400">{a.tanggal}</td>
+                <td className="py-2 px-4 border-b border-gray-400">
+                  {a.tanggal}
+                </td>
                 <td className="py-2 px-4 border-b border-gray-400">
                   <button className="py-1 px-3 rounded-2xl bg-gray-400">
                     {a.image}
@@ -78,7 +80,7 @@ const ArtikelUser = () => {
                 <td className="py-2 px-4 border-b border-gray-400 text-white ">
                   <div className="flex gap-2 justify-center ">
                     <NavLink
-                      to={`/artikelUser/edit/${a.id}`} 
+                      to={`/artikelUser/edit/${a.id}`}
                       className="text-center text-3xl bg-green-500 p-2 rounded-2xl shadow-lg"
                     >
                       <FaRegEdit className="text-lg" />

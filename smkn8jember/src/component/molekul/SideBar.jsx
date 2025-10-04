@@ -33,8 +33,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   return (
     <div
-      className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
-          ${isOpen ? "w-64 px-6" : "w-16 px-2"}`}
+      className={`
+    bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
+    ${isOpen ? "w-64 px-6" : "w-16 px-2"}
+    fixed md:static top-0 left-0 z-50
+  `}
     >
       <div>
         {/* Logo & Toggle */}
@@ -47,6 +50,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               </h1>
             )}
           </div>
+          {isOpen && (
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-lg hover:bg-gray-100, lg:hidden"
+            >
+              <FaBars className="text-gray-600" />
+            </button>
+          )}
         </div>
 
         {/* Menu */}
@@ -57,7 +68,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         >
           {/* Menu Dashboard ya kak */}
           <NavLink
-            to="/Dashboard"
+            to="/"
             end
             className={({ isActive }) =>
               `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
@@ -101,13 +112,25 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 <div className="absolute left-full top-0 ml-2 bg-white shadow-lg rounded-lg w-40 py-2 z-50">
                   <NavLink
                     to="/artikel"
-                    className="block px-4 py-2 hover:bg-gray-100 text-gray-600"
+                    className={({ isActive }) =>
+                      `block px-4 py-2 ${
+                        isActive
+                          ? "bg-amber-500 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      } `
+                    }
                   >
                     Artikel Admin
                   </NavLink>
                   <NavLink
                     to="/artikelUser"
-                    className="block px-4 py-2 hover:bg-gray-100 text-gray-600"
+                    className={({ isActive }) =>
+                      `block px-4 py-2 ${
+                        isActive
+                          ? "bg-amber-500 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      } `
+                    }
                   >
                     Artikel User
                   </NavLink>
@@ -215,34 +238,64 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               {openDropdown2 && !isOpen && (
                 <div className="absolute left-full top-0 ml-2 bg-white shadow-lg rounded-lg w-40 py-2 z-50">
                   <NavLink
-                    to="/Dt"
-                    className="block px-4 py-2 hover:bg-gray-100 text-gray-600"
+                    to="/dataguru"
+                    className={({ isActive }) =>
+                      `block px-4 py-2 ${
+                        isActive
+                          ? "bg-amber-500 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      } `
+                    }
                   >
                     Data Guru
                   </NavLink>
                   <NavLink
-                    to="/De"
-                    className="block px-4 py-2 hover:bg-gray-100 text-gray-600"
+                    to="/datakaryawan"
+                    className={({ isActive }) =>
+                      `block px-4 py-2 ${
+                        isActive
+                          ? "bg-amber-500 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      } `
+                    }
                   >
                     Data Karyawan
                   </NavLink>
                   <NavLink
-                    to="/De"
-                    className="block px-4 py-2 hover:bg-gray-100 text-gray-600"
+                    to="/siswa"
+                    className={({ isActive }) =>
+                      `block px-4 py-2 ${
+                        isActive
+                          ? "bg-amber-500 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      } `
+                    }
                   >
                     Data Siswa
                   </NavLink>
                   <NavLink
-                    to="/De"
-                    className="block px-4 py-2 hover:bg-gray-100 text-gray-600"
+                    to="/fasilitas"
+                    className={({ isActive }) =>
+                      `block px-4 py-2 ${
+                        isActive
+                          ? "bg-amber-500 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      } `
+                    }
                   >
                     Data Fasilitas
                   </NavLink>
                   <NavLink
-                    to="/De"
-                    className="block px-4 py-2 hover:bg-gray-100 text-gray-600"
+                    to="/ekstrakulikuler"
+                    className={({ isActive }) =>
+                      `block px-4 py-2 ${
+                        isActive
+                          ? "bg-amber-500 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      } `
+                    }
                   >
-                    Data Ekstrakulikuler
+                    Data Ekstra
                   </NavLink>
                 </div>
               )}
@@ -251,7 +304,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               {isOpen && openDropdown2 && (
                 <div className="ml-8 mt-1 flex flex-col gap-1">
                   <NavLink
-                    to="/Da"
+                    to="/dataguru"
                     className={({ isActive }) =>
                       `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
@@ -265,7 +318,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     {isOpen && <span>Data Guru</span>}
                   </NavLink>
                   <NavLink
-                    to="/D"
+                    to="/datakaryawan"
                     className={({ isActive }) =>
                       `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
@@ -279,7 +332,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     {isOpen && <span>Data Karyawan</span>}
                   </NavLink>
                   <NavLink
-                    to="/D"
+                    to="/siswa"
                     className={({ isActive }) =>
                       `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
@@ -293,7 +346,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     {isOpen && <span>Data Siswa</span>}
                   </NavLink>
                   <NavLink
-                    to="/D"
+                    to="/fasilitas"
                     className={({ isActive }) =>
                       `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
@@ -307,7 +360,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     {isOpen && <span>Data Fasilitas</span>}
                   </NavLink>
                   <NavLink
-                    to="/D"
+                    to="/ekstrakulikuler"
                     className={({ isActive }) =>
                       `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
@@ -326,7 +379,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
             {/* Menu Gambar */}
             <NavLink
-              to="/ok"
+              to="/mapel"
               className={({ isActive }) =>
                 `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
@@ -341,7 +394,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             </NavLink>
             {/* Menu Pengumuman */}
             <NavLink
-              to="/ok"
+              to="/userjurusan"
               className={({ isActive }) =>
                 `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
@@ -355,7 +408,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               {isOpen && <span>User Jurusan</span>}
             </NavLink>
             <NavLink
-              to="/ok"
+              to="/jurusan"
               className={({ isActive }) =>
                 `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
@@ -369,7 +422,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               {isOpen && <span>Jurusan</span>}
             </NavLink>
             <NavLink
-              to="/ok"
+              to="/strukturorganisasi"
               className={({ isActive }) =>
                 `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
@@ -385,7 +438,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </div>
 
           <NavLink
-            to="/Dashboard/ArtikelUser"
+            to="/websetting"
             className={({ isActive }) =>
               `flex items-center gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300 
                 ${
