@@ -5,9 +5,13 @@ import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
+import PopupGambar from "../atom/PopupGambar";
 
 const Guru = () => {
   const [artikel, setArtikel] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  console.log("Selected image:", selectedImage);
+
 
   useEffect(() => {
     fetch("/guru.json")
@@ -31,44 +35,47 @@ const Guru = () => {
       </div>
 
       {/* tabel */}
-      <div class="overflow-x-auto">
-        <table class="min-w-full bg-white ">
-          <thead class="bg-orange-500 border-2 border-gray-200">
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white ">
+          <thead className="bg-orange-500 border-2 border-gray-200">
             <tr>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 border text-left text-white min-w-full">
                 No
               </th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 border text-left text-white min-w-full">
                 Nama
               </th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 border text-left text-white min-w-full">
                 Jabatan
               </th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 border text-left text-white min-w-full">
                 Mapel
               </th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 border text-left text-white min-w-full">
                 Foto
               </th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 border text-left text-white min-w-full">
                 Aksi
               </th>
             </tr>
           </thead>
           <tbody>
             {artikel.map((a, _i) => (
-              <tr class="hover:bg-gray-50 text-[14px]">
-                <td class="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
-                <td class="py-2  border-b border-gray-400 ">{a.nama}</td>
-                <td class="py-2 px-4 border-b border-gray-400">{a.jabatan}</td>
-                <td class="py-2  border-b border-gray-400 ">{a.mapel}</td>
-                <td class="py-2 px-4 border-b border-gray-400">
-                  <button className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200">
+              <tr className="hover:bg-gray-50 text-[14px]">
+                <td className="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
+                <td className="py-2  border-b border-gray-400 ">{a.nama}</td>
+                <td className="py-2 px-4 border-b border-gray-400">{a.jabatan}</td>
+                <td className="py-2  border-b border-gray-400 ">{a.mapel}</td>
+                <td className="py-2 px-4 border-b border-gray-400">
+                  <button
+                    onClick={() => setSelectedImage(a.foto)} // buka modal
+                    className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                  >
                     <CiImageOn className="text-xl" />
                     {a.foto}
                   </button>
                 </td>
-                <td class="py-2 px-4 border-b border-gray-400 text-white ">
+                <td className="py-2 px-4 border-b border-gray-400 text-white ">
                   <div className="flex gap-2 justify-center ">
                     <a
                       href={`/dataguru/edit/${a.id}`}
@@ -89,6 +96,10 @@ const Guru = () => {
           </tbody>
         </table>
       </div>
+      <PopupGambar
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };

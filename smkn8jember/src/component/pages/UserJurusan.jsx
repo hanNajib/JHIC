@@ -5,9 +5,11 @@ import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
+import PopupGambar from "../atom/PopupGambar";
 
 const UserJurusan = () => {
   const [mapel, setMapel] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetch("/userjurusan.json")
@@ -35,14 +37,22 @@ const UserJurusan = () => {
         <table class="min-w-full bg-white ">
           <thead class="bg-orange-500 border-2 border-gray-200">
             <tr>
-              <th class="py-2 px-4 border text-left text-white min-w-full">No</th>
-              <th class="py-2 px-4 border text-left text-white min-w-">
-                Nama
+              <th class="py-2 px-4 border text-left text-white min-w-full">
+                No
               </th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">Email</th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">NoHp</th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">Foto</th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">Aksi</th>
+              <th class="py-2 px-4 border text-left text-white min-w-">Nama</th>
+              <th class="py-2 px-4 border text-left text-white min-w-full">
+                Email
+              </th>
+              <th class="py-2 px-4 border text-left text-white min-w-full">
+                NoHp
+              </th>
+              <th class="py-2 px-4 border text-left text-white min-w-full">
+                Foto
+              </th>
+              <th class="py-2 px-4 border text-left text-white min-w-full">
+                Aksi
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -53,7 +63,10 @@ const UserJurusan = () => {
                 <td class="py-2 px-4 border-b border-gray-400">{a.email}</td>
                 <td class="py-2  border-b border-gray-400 ">{a.noHp}</td>
                 <td className="py-2 px-4 border-b border-gray-400">
-                  <button className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200">
+                  <button
+                    onClick={() => setSelectedImage(a.foto)} // buka modal
+                    className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                  >
                     <CiImageOn className="text-xl" />
                     {a.foto}
                   </button>
@@ -79,6 +92,10 @@ const UserJurusan = () => {
           </tbody>
         </table>
       </div>
+      <PopupGambar
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };

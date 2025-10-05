@@ -13,8 +13,10 @@ const EditGuru = () => {
   const jabatanOptions = [
     "Kepala Sekolah",
     "Wakil Kepala Sekolah",
-    "Guru",
-    "TU",
+    "Komite",
+    "Kemasanan",
+    "Kesiswaan",
+    "Benddahara",
   ];
 
   // Fetch data guru dari JSON
@@ -84,13 +86,7 @@ const EditGuru = () => {
           label="Jabatan"
           name="jabatan"
           options={jabatanOptions}
-          value={
-            guru.jabatan
-              ? jabatanOptions.find(
-                  (opt) => opt.toLowerCase() === guru.jabatan.toLowerCase()
-                ) || ""
-              : ""
-          }
+          value={guru.jabatan}
           onChange={(e) => setGuru({ ...guru, jabatan: e.target.value })}
           showPlaceholder={false}
         />

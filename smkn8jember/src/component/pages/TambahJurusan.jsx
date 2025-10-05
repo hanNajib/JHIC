@@ -3,14 +3,12 @@ import { useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import Drop from "../atom/drop";
 
 const TambahJurusan = () => {
   const navigate = useNavigate();
 
   const [judul, setJudul] = useState("");
   const [konten, setKonten] = useState("");
-  const [jurusan, setJurusan] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,13 +18,6 @@ const TambahJurusan = () => {
       konten: konten,
     });
   };
-
-  const [kategori, setKategori] = useState([]);
-  useEffect(() => {
-    fetch("/drop.json")
-      .then((res) => res.json())
-      .then((data) => setKategori(data));
-  }, []);
 
   const [preview, setPreview] = useState(null);
 
@@ -55,15 +46,18 @@ const TambahJurusan = () => {
       <div>
         <form action="" className="flex flex-col gap-5">
           {/* jurusan */}
-          <Drop
-            label="jurusan"
-            name="jurusan"
-            options={kategori}
-            value={jurusan}
-            onChange={(e) => setJurusan(e.target.value)}
-            placeholder="Pilih Jurusan"
-            showPlaceholder={true}
-          />
+          <div className="flex flex-col">
+            <label htmlFor="nama" className="font-bold text-gray-800">
+              Nama Jurusan
+            </label>
+            <input
+              type="text"
+              name="nama"
+              id="nama"
+              placeholder="Masukkan Nama Jurusan"
+              className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
+            />
+          </div>
 
           {/* Konten pakai TinyMCE */}
           <div>

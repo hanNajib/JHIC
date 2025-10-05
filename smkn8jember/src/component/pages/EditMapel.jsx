@@ -1,37 +1,44 @@
 import { IoIosArrowBack } from "react-icons/io";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Drop from "../atom/drop";
 
 const EditMapel = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // ambil id dari URL
-  const [mapel, setMapel] = useState([]);
+  const [mapel, setMapel] = useState({}); // pakai object, bukan array
 
-  // Fetch data guru dari JSON
+  // Daftar pilihan jurusan (bisa juga ambil dari file JSON kalau mau dinamis)
+  const jurusanOptions = [
+    "Rekayasa Perangkat Lunak",
+    "Desain Grafis Komunikasi",
+    "Teknik Komputer dan Jaringan",
+  ];
+
+  // Ambil data mapel dari file JSON
   useEffect(() => {
     fetch("/mapel.json")
       .then((res) => res.json())
       .then((data) => {
         const found = data.find((a) => a.id === parseInt(id));
-        setMapel(found);
+        if (found) setMapel(found);
       });
   }, [id]);
 
-  // handle submit (sementara console log)
+  // Saat klik tombol simpan
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log({
-    //   nama: mapel.nama,
-    //   jabatan: mapel.jabatan,
-    //   mapel: mapel.mapel,
-    //   foto: preview || mapel.foto,
-    // });
+    console.log({
+      mapel: mapel.mapel,
+      jurusan: mapel.jurusan,
+      deskripsi: mapel.deskripsi,
+    });
     alert("Data siap dikirim ke backend (lihat console)");
   };
 
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title */}
+      {/* Judul halaman */}
       <div className="flex items-center w-screen gap-3">
         <button
           onClick={() => navigate(-1)}
@@ -39,11 +46,13 @@ const EditMapel = () => {
         >
           <IoIosArrowBack />
         </button>
-        <h1 className="font-bold text-gray-800 text-3xl lg:text-4xl">Edit Data Mapel</h1>
+        <h1 className="font-bold text-gray-800 text-3xl lg:text-4xl">
+          Edit Data Mapel
+        </h1>
       </div>
 
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-        {/* mapel */}
+        {/* Nama Mapel */}
         <div className="flex flex-col">
           <label htmlFor="mapel" className="font-bold text-gray-800">
             Mapel
@@ -58,22 +67,19 @@ const EditMapel = () => {
           />
         </div>
 
-        {/* jurusan */}
-        <div className="flex flex-col">
-          <label htmlFor="jurusan" className="font-bold text-gray-800">
-            Jurusan
-          </label>
-          <input
-            type="text"
-            id="jurusan"
-            value={mapel.jurusan || ""}
-            onChange={(e) => setMapel({ ...mapel, jurusan: e.target.value })}
-            placeholder="Masukkan Jurusan"
-            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-          />
-        </div>
+        {/* Dropdown Jurusan */}
+        <Drop
+          label="Jurusan"
+          name="jurusan"
+          options={jurusanOptions}        
+          value={mapel.jurusan || ""}      
+          onChange={(e) =>
+            setMapel({ ...mapel, jurusan: e.target.value })
+          }
+          showPlaceholder={false}
+        />
 
-        {/* deskripsi */}
+        {/* Deskripsi */}
         <div className="flex flex-col">
           <label htmlFor="deskripsi" className="font-bold text-gray-800">
             Deskripsi
@@ -88,7 +94,7 @@ const EditMapel = () => {
           />
         </div>
 
-        {/* Tombol */}
+        {/* Tombol Simpan dan Reset */}
         <div className="flex gap-3 justify-end">
           <button
             type="submit"

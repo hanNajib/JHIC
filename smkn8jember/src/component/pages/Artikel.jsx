@@ -5,9 +5,11 @@ import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
+import PopupGambar from "../atom/PopupGambar";
 
 const Artikel = () => {
   const [artikel, setArtikel] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetch("/data.json")
@@ -68,7 +70,10 @@ const Artikel = () => {
                 </td>
                 <td class="py-2 px-4 border-b border-gray-400">{a.tanggal}</td>
                 <td class="py-2 px-4 border-b border-gray-400">
-                  <button className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200">
+                  <button
+                    onClick={() => setSelectedImage(a.image)} // buka modal
+                    className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                  >
                     <CiImageOn className="text-xl" />
                     {a.image}
                   </button>
@@ -96,6 +101,7 @@ const Artikel = () => {
           </tbody>
         </table>
       </div>
+      <PopupGambar image={selectedImage} onClose={() => setSelectedImage(null)} />
     </div>
   );
 };

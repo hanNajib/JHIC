@@ -5,9 +5,11 @@ import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
+import PopupGambar from "../atom/PopupGambar";
 
 const Karyawan = () => {
   const [karyawan, setKaryawan] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetch("/guru.json")
@@ -39,10 +41,16 @@ const Karyawan = () => {
               <th className="py-2 px-4 border text-left text-white min-w-full">
                 Nama
               </th>
-              <th className="py-2 px-4 border text-left text-white min-w-full">Jabatan</th>
+              <th className="py-2 px-4 border text-left text-white min-w-full">
+                Jabatan
+              </th>
               {/* <th className="py-2 px-4 border text-left text-white">Mapel</th> */}
-              <th className="py-2 px-4 border text-left text-white min-w-full">Foto</th>
-              <th className="py-2 px-4 border text-left text-white min-w-full">Aksi</th>
+              <th className="py-2 px-4 border text-left text-white min-w-full">
+                Foto
+              </th>
+              <th className="py-2 px-4 border text-left text-white min-w-full">
+                Aksi
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -50,10 +58,15 @@ const Karyawan = () => {
               <tr className="hover:bg-gray-50 text-[14px]">
                 <td className="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
                 <td className="py-2  border-b border-gray-400 ">{a.nama}</td>
-                <td className="py-2 px-4 border-b border-gray-400">{a.jabatan}</td>
+                <td className="py-2 px-4 border-b border-gray-400">
+                  {a.jabatan}
+                </td>
                 {/* <td className="py-2  border-b border-gray-400 ">{a.mapel}</td> */}
                 <td className="py-2 px-4 border-b border-gray-400">
-                  <button className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200">
+                  <button
+                    onClick={() => setSelectedImage(a.foto)} // buka modal
+                    className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                  >
                     <CiImageOn className="text-xl" />
                     {a.foto}
                   </button>
@@ -79,6 +92,10 @@ const Karyawan = () => {
           </tbody>
         </table>
       </div>
+      <PopupGambar
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };

@@ -6,9 +6,12 @@ import { MdDeleteOutline } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import { RiVerifiedBadgeLine } from "react-icons/ri";
+import PopupGambar from "../atom/PopupGambar";
+import { CiImageOn } from "react-icons/ci";
 
 const ArtikelUser = () => {
   const [artikel, setArtikel] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetch("/data.json")
@@ -73,7 +76,11 @@ const ArtikelUser = () => {
                   {a.tanggal}
                 </td>
                 <td className="py-2 px-4 border-b border-gray-400">
-                  <button className="py-1 px-3 rounded-2xl bg-gray-400">
+                  <button
+                    onClick={() => setSelectedImage(a.image)} // buka modal
+                    className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                  >
+                    <CiImageOn className="text-xl" />
                     {a.image}
                   </button>
                 </td>
@@ -98,6 +105,10 @@ const ArtikelUser = () => {
           </tbody>
         </table>
       </div>
+      <PopupGambar
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };
