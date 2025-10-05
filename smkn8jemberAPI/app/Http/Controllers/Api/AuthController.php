@@ -14,6 +14,7 @@ class AuthController extends Controller
     use ApiResponse;
 
     public function login(LoginRequest $request) {
+        $spa = $request->boolean('spa', false);
         $credentials = $request->credentials();
 
         $user = User::whereLogin($request->credentials())->first();
@@ -22,7 +23,7 @@ class AuthController extends Controller
             return $this->statusMessage('Invalid credentials', 401);
         }
 
-        if($request->expectsJson()) {
+        if(!$spa) {
             $token = $user->createToken('auth_token')->plainTextToken;
             return $this->json([
                 'status' => 'success',

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('role', ['superadmin', 'admin', 'user']);
             $table->string('phone_number', 25)->nullable();
             $table->text('bio')->nullable();
+            $table->string('profile_image')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

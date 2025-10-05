@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Announcement\AnnouncementStoreRequest;
+use App\Http\Requests\Announcement\AnnouncementUpdateRequest;
 use App\Models\Announcement;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
@@ -13,22 +15,25 @@ class AnnouncementsController extends Controller
 {
     use ApiResponse;
 
-    public function index()
+    public function index(Request $request)
     {
-        $announcement = Announcement::all();
-        return $this->success($announcement, 'Announcements retrieved successfully');
+        $announcement = Announcement::applyFilters(
+            $request,
+            ['title', 'content'],
+            ['category_id']
+        );
+        return $this->cursorPaginated($announcement, 'Announcements retrieved successfully');
     }
 
-    public function create(Request $request)
+    public function create(AnnouncementStoreRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'content' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        $validated = $request->validated();
 
-        $createData = $request->only(['title', 'content', 'category_id']);
+        $createData = [
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'category_id' => $validated['category_id'],
+        ];
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('announcements', 'public');
@@ -36,7 +41,6 @@ class AnnouncementsController extends Controller
         }
 
         $announcement = Announcement::create($createData);
-
         return $this->created($announcement, 'Announcement created successfully');
     }
 
@@ -49,21 +53,14 @@ class AnnouncementsController extends Controller
         return $this->success($announcement);
     }
 
-    public function update(Request $request, $id)
+    public function update(AnnouncementUpdateRequest $request, $id)
     {
-        $request->validate([
-            'title' => 'sometimes|string',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'content' => 'sometimes|required|string',
-            'category_id' => 'sometimes|exists:categories,id',
-        ]);
+        $validated = $request->validated();
 
         $announcement = Announcement::find($id);
         if (!$announcement) {
             return $this->notFound('Announcement not found');
         }
-
-        $updateData = $request->only(['title', 'content', 'category_id']);
 
         if ($request->hasFile('image')) {
             if ($announcement->OriginalImagePath()) {

@@ -66,6 +66,23 @@ trait ApiResponse
             ],
         ]);
     }
+
+    protected function cursorPaginated($paginator, string $message = 'Success')
+    {
+        return response()->json([
+            'status'  => true,
+            'message' => $message,
+            'meta'    => [
+                'per_page'     => $paginator->perPage(),
+                'next_cursor'  => $paginator->nextCursor()?->encode(),
+                'prev_cursor'  => $paginator->previousCursor()?->encode(),
+                'has_more'     => $paginator->hasMorePages(),
+            ],
+            'data'    => $paginator->items(),
+        ]);
+    }
+
+
     /**
      * Response not found (404)
      */
