@@ -1,9 +1,23 @@
 @import 'tailwindcss';
 
 body {
-  background-color: #424242;
+  background-color: #F8F9FA;
+}
+
+* {
+  scrollbar-width: none; /* sembunyikan */
+  -ms-overflow-style: none; /* IE & Edge lama */
+}
+
+*::webkit-scrollbar {
+  display: none;
 }
 
 .font-poppins {
   font-family: 'Poppins';
+}
+
+.button-active {
+  color: white;
+  background: #ff6000;
 }
