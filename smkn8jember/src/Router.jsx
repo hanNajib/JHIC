@@ -1,11 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./page/admin/Dashboard";
-import HomePage from "./page/HomePage";
-import History from "./page/History";
-import ArtikelUser from "./page/admin/ArtikelUser";
-import ArtikelUserVerifikasi from "./page/admin/ArtikelUserVerifikasi";
-import TambahArtikel from "./page/admin/TambahArtikel";
+import Artikel from "./page/admin/Artikel";
 import EditArtikel from "./page/admin/EditArtikel";
+import TambahArtikel from "./page/admin/TambahArtikel";
+import ArtikelUser from "./page/admin/ArtikelUser";
 import Pengumuman from "./page/admin/Pengumuman";
 import PengumumanTambah from "./page/admin/TambahPengumuman";
 import EditPengumuman from "./page/admin/EditPengumuman";
@@ -40,8 +38,10 @@ import TambahJabatan from "./page/admin/TambahJabatan";
 import EditStrukturOrganisasi from "./page/admin/EditStrukturOrganisasi";
 import StrukturOrganisasiTrash from "./page/admin/StrukturOrganisasiTrash";
 import WebSetting from "./page/admin/WebSetting";
-import Artikel from "./page/admin/Artikel";
-import AdminLayout from "./components/layout/AdminLayout";
+import ArtikelUserVerifikasi from "./page/admin/ArtikelUserVerifikasi";
+import History from './page/History'
+import HomePage from './page/HomePage'
+import AdminLayout from './components/layout/AdminLayout'
 
 function Router() {
   return (
@@ -49,8 +49,9 @@ function Router() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/history" element={<History />} />
-
-        <Route element={<AdminLayout />}>
+        
+        {/* Admin Routes with AdminLayout */}
+        <Route path="/" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="artikel" element={<Artikel />} />
           <Route path="artikelUser" element={<ArtikelUser />} />
