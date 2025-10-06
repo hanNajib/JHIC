@@ -8,7 +8,7 @@ import { CiImageOn } from "react-icons/ci";
 import PopupGambar from "../atom/PopupGambar";
 
 const Guru = () => {
-  const [artikel, setArtikel] = useState([]);
+  const [guru, setGuru] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   console.log("Selected image:", selectedImage);
 
@@ -16,7 +16,7 @@ const Guru = () => {
   useEffect(() => {
     fetch("/guru.json")
       .then((res) => res.json())
-      .then((data) => setArtikel(data));
+      .then((data) => setGuru(data));
   }, []);
 
   return (
@@ -60,7 +60,7 @@ const Guru = () => {
             </tr>
           </thead>
           <tbody>
-            {artikel.map((a, _i) => (
+            {guru.map((a, _i) => (
               <tr className="hover:bg-gray-50 text-[14px]">
                 <td className="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
                 <td className="py-2  border-b border-gray-400 ">{a.nama}</td>

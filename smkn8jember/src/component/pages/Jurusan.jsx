@@ -25,7 +25,7 @@ const Jurusan = () => {
 
         <div className="flex gap-4">
           <a
-            href="/jurusantrash"
+            href="/jurusan/jurusantrash"
             className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300"
           >
             <FaPlus />

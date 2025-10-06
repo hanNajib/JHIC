@@ -8,20 +8,20 @@ import { useNavigate } from "react-router-dom";
 const EditGambar = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // ambil id dari URL
-  const [artikel, setArtikel] = useState([]);
+  const [gambar, setGambar] = useState([]);
   const [kategori, setKategori] = useState("");
   const [konten, setKonten] = useState("");
   const [preview, setPreview] = useState(null);
 
   const kategoriList = ["Event", "Prestasi", "Fasilitas", "Kegiatan"];
 
-  // fetch data artikel
+  // fetch data gambar
   useEffect(() => {
     fetch("/gambar.json")
       .then((res) => res.json())
       .then((data) => {
         const found = data.find((a) => a.id === parseInt(id));
-        setArtikel(found);
+        setGambar(found);
         if (found) {
           setKonten(found.deskripsi || "");
           setKategori(found.kategori || "");
@@ -34,7 +34,7 @@ const EditGambar = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log({
-      judul: artikel.judul,
+      judul: gambar.judul,
       konten: konten,
       kategori: kategori,
       gambar: preview,
@@ -79,9 +79,9 @@ const EditGambar = () => {
               type="text"
               name="judul"
               id="judul"
-              value={artikel.judul}
+              value={gambar.judul}
               onChange={(e) =>
-                setArtikel({ ...artikel, judul: e.target.value })
+                setGambar({ ...gambar, judul: e.target.value })
               }
               placeholder="Masukkan Judul Gambar"
               className="w-full px-3 py-1 font-medium text-gray-600 border border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-600"
@@ -147,7 +147,7 @@ const EditGambar = () => {
                   className="h-full object-contain rounded-lg"
                 />
               ) : (
-                <img src={artikel.image} alt="" />
+                <img src={gambar.image} alt="" />
               )}
               <input
                 id="upload"

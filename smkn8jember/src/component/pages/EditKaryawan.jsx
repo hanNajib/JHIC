@@ -12,7 +12,7 @@ const EditKaryawan = () => {
   // Daftar pilihan jabatan
   const jabatanOptions = ["TU", "Toolsman", "Satpam"];
 
-  // Fetch data guru dari JSON
+  // Fetch data karyawan dari JSON
   useEffect(() => {
     fetch("/guru.json")
       .then((res) => res.json())

@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 const TambahArtikel = () => {
   const navigate = useNavigate();
   const [kategori, setKategori] = useState([]);
-  console.log(kategori);
 
   const kategoriList = [
     "RPL",

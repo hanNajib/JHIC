@@ -8,13 +8,13 @@ import PopupGambar from "../atom/PopupGambar";
 import { CiImageOn } from "react-icons/ci";
 
 const Gambar = () => {
-  const [artikel, setArtikel] = useState([]);
+  const [gambar, setGambar] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetch("/gambar.json")
       .then((res) => res.json())
-      .then((data) => setArtikel(data));
+      .then((data) => setGambar(data));
   }, []);
 
   return (
@@ -55,7 +55,7 @@ const Gambar = () => {
             </tr>
           </thead>
           <tbody>
-            {artikel.map((a, _i) => (
+            {gambar.map((a, _i) => (
               <tr class="hover:bg-gray-50 text-[14px]">
                 <td class="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
                 <td class="py-2  border-b border-gray-400 ">{a.judul}</td>

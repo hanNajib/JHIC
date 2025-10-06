@@ -7,12 +7,12 @@ import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
 
 const StrukturOrganisasi = () => {
-  const [jurusan, setJurusan] = useState([]);
+  const [struktur, setStruktur] = useState([]);
 
   useEffect(() => {
     fetch("/guru.json")
       .then((res) => res.json())
-      .then((data) => setJurusan(data));
+      .then((data) => setStruktur(data));
   }, []);
 
   return (
@@ -25,7 +25,7 @@ const StrukturOrganisasi = () => {
 
         <div className="flex gap-4">
           <a
-            href="/strukturorganisasitrash"
+            href="/strukturorganisasi/strukturtrash"
             className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300"
           >
             <FaPlus />
@@ -55,7 +55,7 @@ const StrukturOrganisasi = () => {
             </tr>
           </thead>
           <tbody>
-            {jurusan.map((a, _i) => (
+            {struktur.map((a, _i) => (
               <tr className="hover:bg-gray-50 text-[14px]">
                 <td className="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
                 <td className="py-2  border-b border-gray-400 ">{a.jabatan}</td>

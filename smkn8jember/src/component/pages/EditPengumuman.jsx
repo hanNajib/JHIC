@@ -8,20 +8,20 @@ import { useNavigate } from "react-router-dom";
 const EditPengumuman = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // ambil id dari URL
-  const [artikel, setArtikel] = useState([]);
+  const [pengumuman, setPengumuman] = useState([]);
   const [kategori, setKategori] = useState("");
   const [konten, setKonten] = useState("");
   const [preview, setPreview] = useState(null);
 
   const kategoriList = ["Info", "Penting"];
 
-  // fetch data artikel
+  // fetch data pengumuman
   useEffect(() => {
     fetch("/pengumuman.json")
       .then((res) => res.json())
       .then((data) => {
         const found = data.find((a) => a.id === parseInt(id));
-        setArtikel(found);
+        setPengumuman(found);
         if (found) {
           setKonten(found.deskripsi || "");
           setKategori(found.kategori || "");
@@ -34,7 +34,7 @@ const EditPengumuman = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log({
-      judul: artikel.judul,
+      judul: pengumuman.judul,
       konten: konten,
       kategori: kategori,
       gambar: preview,
@@ -79,8 +79,8 @@ const EditPengumuman = () => {
             type="text"
             name="judul"
             id="judul"
-            value={artikel.judul}
-            onChange={(e) => setArtikel({ ...artikel, judul: e.target.value })}
+            value={pengumuman.judul}
+            onChange={(e) => setPengumuman({ ...pengumuman, judul: e.target.value })}
             placeholder="Masukkan Judul Pengumuman"
             className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
           />
@@ -144,7 +144,7 @@ const EditPengumuman = () => {
                 className="h-full object-contain rounded-lg"
               />
             ) : (
-              <img src={artikel.image} alt="" />
+              <img src={pengumuman.image} alt="" />
             )}
             <input
               id="upload"

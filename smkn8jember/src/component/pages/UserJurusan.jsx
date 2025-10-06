@@ -8,13 +8,13 @@ import { CiImageOn } from "react-icons/ci";
 import PopupGambar from "../atom/PopupGambar";
 
 const UserJurusan = () => {
-  const [mapel, setMapel] = useState([]);
+  const [user, setUser] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetch("/userjurusan.json")
       .then((res) => res.json())
-      .then((data) => setMapel(data));
+      .then((data) => setUser(data));
   }, []);
 
   return (
@@ -56,7 +56,7 @@ const UserJurusan = () => {
             </tr>
           </thead>
           <tbody>
-            {mapel.map((a, _i) => (
+            {user.map((a, _i) => (
               <tr class="hover:bg-gray-50 text-[14px]">
                 <td class="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
                 <td class="py-2  border-b border-gray-400 ">{a.nama}</td>
