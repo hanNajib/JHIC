@@ -5,10 +5,30 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-.font-poppins {
-  font-family: "Poppins", sans-serif;
-}
-
 .ScorllBar{
   scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #F8F9FA;
+}
+
+* {
+  scrollbar-width: none; /* sembunyikan */
+  -ms-overflow-style: none; /* IE & Edge lama */
+}
+
+*::webkit-scrollbar {
+  display: none;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.button-active {
+  color: white;
+  background: #ff6000;
 }

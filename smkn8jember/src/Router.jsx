@@ -40,57 +40,57 @@ import EditStrukturOrganisasi from "./component/pages/EditStrukturOrganisasi";
 import StrukturOrganisasiTrash from "./component/pages/StrukturOrganisasiTrash";
 import WebSetting from "./component/pages/WebSetting";
 import ArtikelUserVerifikasi from "./component/pages/ArtikelUserVerifikasi";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import History from './page/History'
+import HomePage from './page/HomePage'
 
 function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Parent: Index sebagai layout */}
-        <Route path="/" element={<Index />}>
-          {/* isi konten muncul di <Outlet /> */}
-          <Route index element={<Dashboard />} /> {/* default / */}
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="artikel" element={<Artikel />} />
-          <Route path="artikelUser" element={<ArtikelUser />} />
-          <Route path="artikelUser/verifikasi" element={<ArtikelUserVerifikasi />} />
-          <Route path="artikel/tambah/" element={<TambahArtikel />} />
-          <Route path="artikel/edit/:id" element={<EditArtikel />} />
-          <Route path="artikelUser/edit/:id" element={<EditArtikel />} />
-          <Route path="pengumuman" element={<Pengumuman />} />
-          <Route path="pengumuman/tambah" element={<PengumumanTambah />} />
-          <Route path="pengumuman/edit/:id" element={<EditPengumuman />} />
-          <Route path="gambar" element={<Gambar />} />
-          <Route path="gambar/edit/:id" element={<EditGambar />} />
-          <Route path="gambar/tambah" element={<TambahGambar />} />
-          <Route path="dataguru" element={<Guru />} />
-          <Route path="dataguru/tambah" element={<TambahGuru />} />
-          <Route path="dataguru/edit/:id" element={<EditGuru />} />
-          <Route path="datakaryawan" element={<Karyawan />} />
-          <Route path="datakaryawan/tambah" element={<TambahKaryawan />} />
-          <Route path="datakaryawan/edit/:id" element={<EditKaryawan />} />
-          <Route path="siswa" element={<Siswa />} />
-          <Route path="fasilitas" element={<Fasilitas />} />
-          <Route path="fasilitas/tambah" element={<TambahFasilitas />} />
-          <Route path="fasilitas/edit/:id" element={<EditFasilitas />} />
-          <Route path="ekstrakulikuler" element={<Ekstra />} />
-          <Route path="ekstrakulikuler/tambah" element={<TambahEkstra />} />
-          <Route path="ekstrakulikuler/edit/:id" element={<EditEkstra />} />
-          <Route path="mapel" element={<Mapel />} />
-          <Route path="mapel/tambah" element={<TambahMapel />} />
-          <Route path="mapel/edit/:id" element={<EditMapel />} />
-          <Route path="userjurusan" element={<UserJurusan />} />
-          <Route path="userjurusan/tambah" element={<TambahUserJurusan />} />
-          <Route path="userjurusan/edit/:id" element={<EditUserJurusan />} />
-          <Route path="jurusan" element={<Jurusan />} />
-          <Route path="jurusan/tambah" element={<TambahJurusan />} />
-          <Route path="jurusan/edit/:id" element={<EditJurusan />} />
-          <Route path="jurusantrash" element={<JurusanTrash />} />
-          <Route path="strukturorganisasi" element={<StrukturOrganisasi />} />
-          <Route path="strukturorganisasi/tambah" element={<TambahJabatan />} />
-          <Route path="strukturorganisasi/edit/:id" element={<EditStrukturOrganisasi />} />
-          <Route path="strukturorganisasitrash" element={<StrukturOrganisasiTrash />} />
-          <Route path="websetting" element={<WebSetting />} />
-        </Route>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/history" element={<History />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="artikel" element={<Artikel />} />
+        <Route path="artikelUser" element={<ArtikelUser />} />
+        <Route path="artikelUser/verifikasi" element={<ArtikelUserVerifikasi />} />
+        <Route path="artikel/tambah/" element={<TambahArtikel />} />
+        <Route path="artikel/edit/:id" element={<EditArtikel />} />
+        <Route path="artikelUser/edit/:id" element={<EditArtikel />} />
+        <Route path="pengumuman" element={<Pengumuman />} />
+        <Route path="pengumuman/tambah" element={<PengumumanTambah />} />
+        <Route path="pengumuman/edit/:id" element={<EditPengumuman />} />
+        <Route path="gambar" element={<Gambar />} />
+        <Route path="gambar/edit/:id" element={<EditGambar />} />
+        <Route path="gambar/tambah" element={<TambahGambar />} />
+        <Route path="dataguru" element={<Guru />} />
+        <Route path="dataguru/tambah" element={<TambahGuru />} />
+        <Route path="dataguru/edit/:id" element={<EditGuru />} />
+        <Route path="datakaryawan" element={<Karyawan />} />
+        <Route path="datakaryawan/tambah" element={<TambahKaryawan />} />
+        <Route path="datakaryawan/edit/:id" element={<EditKaryawan />} />
+        <Route path="siswa" element={<Siswa />} />
+        <Route path="fasilitas" element={<Fasilitas />} />
+        <Route path="fasilitas/tambah" element={<TambahFasilitas />} />
+        <Route path="fasilitas/edit/:id" element={<EditFasilitas />} />
+        <Route path="ekstrakulikuler" element={<Ekstra />} />
+        <Route path="ekstrakulikuler/tambah" element={<TambahEkstra />} />
+        <Route path="ekstrakulikuler/edit/:id" element={<EditEkstra />} />
+        <Route path="mapel" element={<Mapel />} />
+        <Route path="mapel/tambah" element={<TambahMapel />} />
+        <Route path="mapel/edit/:id" element={<EditMapel />} />
+        <Route path="userjurusan" element={<UserJurusan />} />
+        <Route path="userjurusan/tambah" element={<TambahUserJurusan />} />
+        <Route path="userjurusan/edit/:id" element={<EditUserJurusan />} />
+        <Route path="jurusan" element={<Jurusan />} />
+        <Route path="jurusan/tambah" element={<TambahJurusan />} />
+        <Route path="jurusan/edit/:id" element={<EditJurusan />} />
+        <Route path="jurusantrash" element={<JurusanTrash />} />
+        <Route path="strukturorganisasi" element={<StrukturOrganisasi />} />
+        <Route path="strukturorganisasi/tambah" element={<TambahJabatan />} />
+        <Route path="strukturorganisasi/edit/:id" element={<EditStrukturOrganisasi />} />
+        <Route path="strukturorganisasitrash" element={<StrukturOrganisasiTrash />} />
+        <Route path="websetting" element={<WebSetting />} />
       </Routes>
     </BrowserRouter>
   );
