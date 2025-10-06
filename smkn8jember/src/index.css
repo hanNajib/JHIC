@@ -32,3 +32,7 @@ body {
   color: white;
   background: #ff6000;
 }
+
+button {
+  cursor: pointer;
+}
