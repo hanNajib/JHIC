@@ -10,7 +10,7 @@ const Badge = ({
   const baseClasses = 'font-poppins font-medium text-center inline-flex items-center justify-center rounded-2xl';
   
   const variants = {
-    primary: 'text-[#ffffff] bg-[#ffa07b]',
+    primary: 'text-[#ffffff] bg-[#f78000]',
     secondary: 'text-[#fff] bg-[#ffa07b]',
     info: 'text-[#0800E1] bg-[#0700e136]',
     warning: 'text-[#E10000] bg-[#e1000043]',

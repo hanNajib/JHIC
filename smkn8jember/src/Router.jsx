@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import History from './page/History'
 import HomePage from './page/HomePage'
+import HeadMaster from './page/HeadMaster'
+import Gallery from './page/Gallery'
 
 function Router() {
 
@@ -9,6 +11,9 @@ function Router() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/history" element={<History />} />
+        <Route path="/headmaster" element={<HeadMaster />} />
+        <Route path="/Gallery" element={<Gallery />} />
+
       </Routes>
     </BrowserRouter>
   )
