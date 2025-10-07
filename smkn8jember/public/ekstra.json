@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "nama": "Pramuka Reguler",
+    "pembimbing": "Sumardiono",
+    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
+    "foto": "/image/logosmk.png"
+  },
+  {
+    "id": 2,
+    "nama": "Paskibraka",
+    "pembimbing": "Yanuar Rizal P.",
+    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
+    "foto": "/image/logosmk.png"
+  }
+]
