@@ -46,6 +46,7 @@ import HeadMaster from './page/HeadMaster'
 import Gallery from './page/Gallery'
 import Announcement from './page/Announcement'
 import Login from './page/Login'
+import MajorDetail from "./page/MajorDetail";
 
 function Router() {
   return (
@@ -103,6 +104,8 @@ function Router() {
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
+        <Route path="/major/detail" element={<MajorDetail />} />
+
         <Route path="/login" element={<Login/>} />
       </Routes>
     </BrowserRouter>

@@ -31,7 +31,7 @@ export const useSchoolPrograms = () => {
  * Hook for managing articles
  */
 export const useArticles = () => {
-  const visibleArticles = SAMPLE_ARTICLES.slice(0, 3);
+  const visibleArticles = SAMPLE_ARTICLES.slice(0, 5);
 
   return {
     articles: SAMPLE_ARTICLES,

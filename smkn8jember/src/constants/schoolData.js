@@ -93,7 +93,7 @@ export const SAMPLE_ARTICLES = [
     id: 1,
     title: 'Juara 1 Lomba Kompetensi Siswa Tingkat Kabupaten Jember',
     description: 'Siswa SMK Negeri 8 Jember kembali meraih juara dalam ajang perlombannahasidhasihciuasgigasi Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-    image: 'assets/images/tkr.jpg',
+    image: 'assets/images/rpl.jpg',
     tags: ['Prestasi', 'RPL'],
     date: '25 Februari 2025',
     views: 109
