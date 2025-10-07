@@ -18,7 +18,7 @@ const AboutSection = ({ className = '' }) => {
             <h1 className='font-poppins text-[#212529] font-bold text-3xl md:text-4xl lg:text-[3rem]'>Tentang <span className='text-[#ff6000]'>Kami</span></h1>
             <div className="w-1/2 h-1 bg-[#ff6000]"></div>
           </div>
-          <p className={`font-poppins text-[#272727] font-medium text-[14px] text-justify ${isExpanded ? 'line-clamp-0' : 'line-clamp-10'}`}>
+          <p className={`font-poppins text-[#272727] font-medium text-[14px] text-start ${isExpanded ? 'line-clamp-0' : 'line-clamp-10'}`}>
             SMK Negeri 8 Jember adalah institusi pendidikan kejuruan yang berkomitmen untuk menghasilkan lulusan yang kompeten, berkarakter, dan siap menghadapi tantangan dunia kerja. Dengan pengalaman lebih dari 25 tahun, kami terus berinovasi dalam memberikan pendidikan berkualitas tinggi yang mengintegrasikan teori dan praktik. SMK Negeri 8 Jember adalah institusi pendidikan kejuruan yang berkomitmen untuk menghasilkan lulusan yang kompeten, berkarakter, dan siap menghadapi tantangan dunia kerja. Dengan pengalaman lebih dari 25 tahun, kami terus berinovasi dalam memberikan pendidikan berkualitas tinggi yang mengintegrasikan teori dan praktik.
           </p>
           
