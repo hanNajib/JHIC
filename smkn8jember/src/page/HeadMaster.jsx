@@ -20,7 +20,7 @@ const HeadMaster = () => {
 
         <div className="relative z-10 max-w-3xl">
           <h1 className="font-poppins font-bold text-white text-4xl md:text-6xl mb-4">
-            KEPALA SEKOLAH
+            Kepala Sekolah
           </h1>
           <p className="font-poppins leading-snug hidden md:block text-white text-lg md:text-xl ">
             Profil lengkap kepala sekolah SMKN 8 Jember yang memimpin dengan
