@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "nama": "Lab Komputer",
+    "total": 2,
+    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
+    "foto": "/image/logosmk.png"
+  },
+  {
+    "id": 2,
+    "nama": "Lab TKJ",
+    "total": 2,
+    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
+    "foto": "/image/logosmk.png"
+  },
+  {
+    "id": 3,
+    "nama": "Studio DKV",
+    "total": 2,
+    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
+    "foto": "/image/logosmk.png"
+  }
+]

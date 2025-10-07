@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "jurusan": "Rekayasa Perangkat Lunak",
+    "deskripsi": "Algoritma adalah sebuah rancangan yang ter strutur",
+    "foto": "/image/logosmk.png"
+  },
+  {
+    "id": 2,
+    "jurusan": "Dexain Grafis Komunikasi",
+    "deskripsi": "Algoritma adalah sebuah rancangan yang ter strutur",
+    "foto": "/image/logosmk.png"
+  }
+]

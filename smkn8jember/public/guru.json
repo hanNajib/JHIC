@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "nama": "Budi Santoso Ari Kurniawan",
+    "jabatan": "Kepala Sekolah",
+    "mapel": "-",
+    "foto": "/image/logosmk.png"
+  },
+  {
+    "id": 2,
+    "nama": "Siti Aminah",
+    "jabatan": "Wakil Kepala Sekolah",
+    "mapel": "Bahasa Indonesia",
+    "foto": "siti_aminah.jpg"
+  },
+  {
+    "id": 3,
+    "nama": "Agus Pratama",
+    "jabatan": "Guru",
+    "mapel": "Matematika",
+    "foto": "agus_pratama.jpg"
+  },
+  {
+    "id": 4,
+    "nama": "Dewi Lestari",
+    "jabatan": "Guru",
+    "mapel": "Bahasa Inggris",
+    "foto": "dewi_lestari.jpg"
+  },
+  {
+    "id": 5,
+    "nama": "Hendra Wijaya",
+    "jabatan": "Guru",
+    "mapel": "Fisika",
+    "foto": "hendra_wijaya.jpg"
+  },
+  {
+    "id": 6,
+    "nama": "Nurul Hidayah",
+    "jabatan": "Guru",
+    "mapel": "Kimia",
+    "foto": "nurul_hidayah.jpg"
+  },
+  {
+    "id": 7,
+    "nama": "Rizki Kurniawan",
+    "jabatan": "Guru",
+    "mapel": "Biologi",
+    "foto": "rizki_kurniawan.jpg"
+  },
+  {
+    "id": 8,
+    "nama": "Sri Wahyuni",
+    "jabatan": "Guru",
+    "mapel": "Sejarah",
+    "foto": "sri_wahyuni.jpg"
+  },
+  {
+    "id": 9,
+    "nama": "Arif Setiawan",
+    "jabatan": "Guru",
+    "mapel": "Geografi",
+    "foto": "arif_setiawan.jpg"
+  },
+  {
+    "id": 10,
+    "nama": "Mega Putri",
+    "jabatan": "Guru",
+    "mapel": "Seni Budaya",
+    "foto": "mega_putri.jpg"
+  }
+]
