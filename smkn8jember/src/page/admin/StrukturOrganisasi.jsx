@@ -1,10 +1,7 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
-import { FiFilter } from "react-icons/fi";
-import { CiImageOn } from "react-icons/ci";
 
 const StrukturOrganisasi = () => {
   const [jurusan, setJurusan] = useState([]);

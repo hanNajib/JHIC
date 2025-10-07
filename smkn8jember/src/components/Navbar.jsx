@@ -7,6 +7,7 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
 
@@ -31,12 +32,12 @@ const Navbar = () => {
         <div className="bawah sticky top-0 z-40 flex bg-white items-center px-6 md:px-14 py-3 md:py-2 justify-between shadow-md gap-6 md-gap-0">
             <img src="assets/images/logo-smk.png" alt="" className="w-[40px] md:w-[50px]"/>
             <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
-                <a href="">Home</a>
-                <a href="">Profil</a>
-                <a href="">Jurusan</a>
-                <a href="">Blog</a>
-                <a href="">Galeri</a>
-                <a href="">Pengumuman</a>
+                <Link to={'/'} >Home</Link>
+                <Link to={'/profil'}>Profil</Link>
+                <Link>Jurusan</Link>
+                <Link>Artikel</Link>
+                <Link to={'/gallery'}>Galeri</Link>
+                <Link to={'/announcement'}>Pengumuman</Link>
             </div>
             
             <div className="flex relative w-full md:w-1/2 lg:w-72">
