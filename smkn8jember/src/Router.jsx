@@ -4,6 +4,7 @@ import HomePage from './page/HomePage'
 import HeadMaster from './page/HeadMaster'
 import Gallery from './page/Gallery'
 import Announcement from './page/Announcement'
+import Login from './page/Login'
 
 function Router() {
 
@@ -13,9 +14,9 @@ function Router() {
         <Route path="/" element={<HomePage />} />
         <Route path="/history" element={<History />} />
         <Route path="/headmaster" element={<HeadMaster />} />
-        <Route path="/Gallery" element={<Gallery />} />
         <Route path="/Announcement" element={<Announcement />} />
-
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/login" element={<Login/>} />
       </Routes>
     </BrowserRouter>
   )
