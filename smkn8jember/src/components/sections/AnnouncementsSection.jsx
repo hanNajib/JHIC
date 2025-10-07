@@ -14,8 +14,8 @@ const AnnouncementsSection = ({ className = '' }) => {
     >
       <div className="flex flex-col gap-5 w-full mx-20 bg-[#F8F9FA] rounded-xl shadow-md p-5 md:p-10 mt-5">
         <div className="flex items-center gap-3 md:pb-3">
-          <span className='p-3 md:p-4 bg-[#3C4A78] text-[#fff] text-2xl rounded-full'>
-            <Icon name="RiMegaphoneFill" size={24} />
+          <span className='p-3 md:p-4 bg-[#f78000] text-[#fff] text-2xl rounded-full'>
+            <Icon name="RiMegaphoneFill" size={24}  />
           </span>
           <h1 className='text-[#212529] text-xl md:text-3xl font-poppins font-bold'>
             Papan Pengumuman

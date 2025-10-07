@@ -19,7 +19,7 @@ const ProgramCard = ({ program, className = '' }) => {
       
       <div className="flex flex-col px-5 py-6 gap-2 relative">
         <div className="flex items-center gap-3">
-          <span className='p-2 bg-[#3C4A78] text-[#fff] text-2xl rounded-full'>
+          <span className='p-2 bg-[#f78000] text-[#fff] text-2xl rounded-full'>
             <Icon name={program.icon} size={24} />
           </span>
           <h1 className='text-[#242424] font-poppins font-semibold'>{program.title}</h1>
