@@ -42,15 +42,18 @@ import ArtikelUserVerifikasi from "./page/admin/ArtikelUserVerifikasi";
 import History from './page/History'
 import HomePage from './page/HomePage'
 import AdminLayout from './components/layout/AdminLayout'
+import HeadMaster from './page/HeadMaster'
+import Gallery from './page/Gallery'
+import Announcement from './page/Announcement'
+import Login from './page/Login'
 
 function Router() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/history" element={<History />} />
         
-        {/* Admin Routes with AdminLayout */}
+        {/* ADMIN ROUTES */}
         <Route path="/" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="artikel" element={<Artikel />} />
@@ -94,6 +97,13 @@ function Router() {
           <Route path="strukturorganisasitrash" element={<StrukturOrganisasiTrash />} />
           <Route path="websetting" element={<WebSetting />} />
         </Route>
+
+        {/* USER ROUTES */}
+        <Route path="/history" element={<History />} />
+        <Route path="/headmaster" element={<HeadMaster />} />
+        <Route path="/announcement" element={<Announcement />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/login" element={<Login/>} />
       </Routes>
     </BrowserRouter>
   );

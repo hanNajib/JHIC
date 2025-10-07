@@ -11,7 +11,7 @@ const HeroSection = ({ className = '' }) => {
       }} 
       className={`h-screen flex lg:items-center ${className}`}
     >
-      <div className="bg-gradient-to-r from-[#6520039a] to-transparent w-full h-screen absolute"></div>
+      <div className="bg-gradient-to-r from-[#39302c9a] to-transparent w-full h-screen absolute"></div>
       
       <div className="px-6 md:px-16 w-full lg:w-5/6 z-10 pt-20 md:pt-36 lg:pt-0">
         <h1 className='font-poppins text-[#F8F9FA] text-left md:text-center lg:text-left font-bold text-5xl md:text-6xl lg:text-7xl'>

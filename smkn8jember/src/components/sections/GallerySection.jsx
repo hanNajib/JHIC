@@ -17,7 +17,7 @@ const GallerySection = ({ className = '' }) => {
           <button
             key={category.id}
             onClick={() => setFilter(category.id)}
-            className={`flex justify-center items-center font-poppins font-bold rounded-3xl text-sm md:text-md py-1 px-6 border-2 border-[#ff6000] transition-colors ${
+            className={`flex  cursor-pointer justify-center items-center font-poppins font-bold rounded-3xl text-sm md:text-md py-1 px-6 border-2 border-[#ff6000] transition-colors ${
               activeFilter === category.id
                 ? 'text-white bg-[#ff6000]'
                 : 'text-[#ff6000] bg-transparent hover:bg-[#ff6000] hover:text-white'
@@ -39,7 +39,7 @@ const GallerySection = ({ className = '' }) => {
       </div>
 
       <div className="flex justify-center items-center w-full pt-5">
-        <Button>
+        <Button className=' cursor-pointer'>
           Lihat Semua Galeri
         </Button>
       </div>
