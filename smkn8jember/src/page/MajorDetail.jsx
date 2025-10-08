@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
@@ -11,6 +11,42 @@ import { AiOutlineMobile } from "react-icons/ai";
 import { useArticles } from "../hooks/useSchool";
 import { ArticleCard } from "../components/ui";
 const MajorDetail = () => {
+  const sliderRef = useRef(null);
+
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    let animationFrame;
+    let scrollPosition = 0;
+    const speed = 1.2; 
+
+    const animate = () => {
+      scrollPosition += speed;
+      if (scrollPosition >= slider.scrollWidth / 2) {
+        scrollPosition = 0; 
+      }
+      slider.scrollLeft = scrollPosition;
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, []);
+
+  const logoItems = [
+    { src: "/assets/images/smartlogy-logo.png", alt: "Smartlogy" },
+    { src: "/assets/images/hummatect.png", alt: "Hummatect" },
+    { src: "/assets/images/mascitra.png", alt: "Mascitra" },
+    { src: "/assets/images/ubig.png", alt: "UBIG" },
+    { src: "/assets/images/tamara.png", alt: "Tamara" },
+    { src: "/assets/images/pringapus.png", alt: "Pringapus" },
+    { src: "/assets/images/mitra1.png", alt: "Mitra 1" },
+    { src: "/assets/images/mitra2.png", alt: "Mitra 2" },
+    { src: "/assets/images/mitra3.png", alt: "Mitra 3" },
+    { src: "/assets/images/mitra4.png", alt: "Mitra 4" },
+  ];
   const [subjects, setSubjects] = useState([]);
   const { visibleArticles, isLoading } = useArticles();
   useEffect(() => {
@@ -146,10 +182,39 @@ const MajorDetail = () => {
           ))}
         </div>
       </section>
-      <h1 className="font-bold text-2xl justify-center items-center text-center mt-3">Bekerja sama dan dipercaya oleh</h1>
-      <section className="bg-[#F7BB7D] py-16 flex flex-col items-center justify-center px-6 m-8 rounded-lg">
-
+      <h1 className="font-bold text-2xl justify-center items-center text-center mt-3">
+        Bekerja sama dan dipercaya oleh
+      </h1>
+      <section className="bg-[#F7BB7D] py-16 px-6 m-8 rounded-lg overflow-hidden">
+        <div
+          ref={sliderRef}
+          className="flex items-center gap-16 whitespace-nowrap overflow-hidden scrollbar-hide"
+          style={{ scrollBehavior: "auto" }}
+        >
+          {[...Array(3)].map((_, groupIndex) => (
+            <React.Fragment key={groupIndex}>
+              {logoItems.map((logo, index) => (
+                <div
+                  key={`${groupIndex}-${index}`}
+                  className="flex-shrink-0 flex flex-col items-center gap-3 w-32 h-32"
+                >
+                  <div className="w-28 h-28 flex items-center justify-center bg-white rounded-xl shadow-sm">
+                    <img
+                      src={logo.src}
+                      alt={logo.alt}
+                      className="object-contain w-full h-full p-3 grayscale hover:grayscale-0 transition-all duration-300"
+                    />
+                  </div>
+                  <h2 className="font-poppins font-semibold text-center text-sm">
+                    {logo.alt}
+                  </h2>
+                </div>
+              ))}
+            </React.Fragment>
+          ))}
+        </div>
       </section>
+
       <Footer />
     </>
   );
