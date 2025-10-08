@@ -1,67 +1,100 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
-import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../components/ui/ImageModal";
+import PaginationAdmin from "../../components/ui/PaginationAdmin";
+import FilterAdmin from "../../components/ui/FilterAdmin";
 
 const UserJurusan = () => {
-  const [mapel, setMapel] = useState([]);
+  const [user, setUser] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // Pagination
+  const [halamanKe, setHalamanKe] = useState(1);
+  const [jumlahPage, setJumlahPage] = useState(5);
+
+  // Search & Filter
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("/userjurusan.json")
       .then((res) => res.json())
-      .then((data) => setMapel(data));
+      .then((data) => setUser(data));
   }, []);
 
-  return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-14 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title */}
-      <div className="flex justify-between flex-col lg:flex-row">
-        <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">User Jurusan</h1>
+  // Filter dan search
+  const filteredUser = user.filter((a) => {
+    const matchSearch = a.nama.toLowerCase().includes(search.toLowerCase());
+    return matchSearch;
+  });
 
-        <a
-          href="/userjurusan/tambah"
-          className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300 w-fit"
-        >
-          <FaPlus />
-          <h6>Tambah</h6>
-        </a>
-      </div>
+  // Hitung total halaman
+  const jumlahHalaman = Math.ceil(user.length / jumlahPage);
+
+  // Data untuk halaman aktif
+  const arrayTerakhir = halamanKe * jumlahPage;
+  const arrayAwal = arrayTerakhir - jumlahPage;
+  const dataHasil = filteredUser.slice(arrayAwal, arrayTerakhir);
+
+  // Ganti halaman
+  const handlePageChange = (page) => {
+    setHalamanKe(page);
+  };
+
+  const handleReset = () => {
+    setSearch("");
+    setFilterKategori("Semua");
+    setHalamanKe(1);
+  };
+
+  return (
+    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
+      {/* Title */}
+      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
+        User Jurusan
+      </h1>
+
+      {/*  FILTER SECTION  */}
+      <FilterAdmin
+        showKategori={false} //ini menandakan kategori disembunyikan
+        search={search}
+        setSearch={(value) => {
+          setSearch(value);
+          setHalamanKe(1);
+        }}
+        handleReset={handleReset}
+        linkTambah="/dataguru/tambah"
+        titleTambah="Tambah Guru"
+      />
 
       {/* tabel */}
-      <div class="overflow-x-auto">
-        <table class="min-w-full bg-white ">
-          <thead class="bg-orange-500 border-2 border-gray-200">
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white ">
+          <thead className="bg-orange-500 border-2 border-gray-200">
             <tr>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 border text-left text-white min-w-full">
                 No
               </th>
-              <th class="py-2 px-4 border text-left text-white min-w-">Nama</th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
-                Email
-              </th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
-                NoHp
-              </th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
-                Foto
-              </th>
-              <th class="py-2 px-4 border text-left text-white min-w-full">
-                Aksi
-              </th>
+              <th className="py-2 px-4 border text-left text-white">Nama</th>
+              <th className="py-2 px-4 border text-left text-white">Email</th>
+              <th className="py-2 px-4 border text-left text-white">No HP</th>
+              <th className="py-2 px-4 border text-left text-white">Foto</th>
+              <th className="py-2 px-4 border text-left text-white">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            {mapel.map((a, _i) => (
-              <tr class="hover:bg-gray-50 text-[14px]">
-                <td class="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
-                <td class="py-2  border-b border-gray-400 ">{a.nama}</td>
-                <td class="py-2 px-4 border-b border-gray-400">{a.email}</td>
-                <td class="py-2  border-b border-gray-400 ">{a.noHp}</td>
+            {dataHasil.map((a, _i) => (
+              <tr key={a.id} className="hover:bg-gray-50 text-[14px]">
+                <td className="py-2 px-4 border-b border-gray-400">
+                  {_i + 1 + arrayAwal}
+                </td>
+                <td className="py-2 border-b border-gray-400">{a.nama}</td>
+                <td className="py-2 px-4 border-b border-gray-400">
+                  {a.email}
+                </td>
+                <td className="py-2 border-b border-gray-400">{a.noHp}</td>
                 <td className="py-2 px-4 border-b border-gray-400">
                   <button
                     onClick={() => setSelectedImage(a.foto)} // buka modal
@@ -71,7 +104,7 @@ const UserJurusan = () => {
                     {a.foto}
                   </button>
                 </td>
-                <td class="py-2 px-4 border-b border-gray-400 text-white ">
+                <td className="py-2 px-4 border-b border-gray-400 text-white ">
                   <div className="flex gap-2 justify-center ">
                     <a
                       href={`/userjurusan/edit/${a.id}`}
@@ -92,6 +125,20 @@ const UserJurusan = () => {
           </tbody>
         </table>
       </div>
+
+      {/* pagination */}
+      <PaginationAdmin
+        currentPage={halamanKe}
+        totalPages={jumlahHalaman}
+        perPage={jumlahPage}
+        onPageChange={handlePageChange}
+        onPerPageChange={(value) => {
+          setJumlahPage(value);
+          setHalamanKe(1);
+        }}
+      />
+
+      {/* modal gambar */}
       <ImageModal
         image={selectedImage}
         onClose={() => setSelectedImage(null)}

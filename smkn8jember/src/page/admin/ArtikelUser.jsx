@@ -8,10 +8,20 @@ import { NavLink } from "react-router-dom";
 import { RiVerifiedBadgeLine } from "react-icons/ri";
 import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../components/ui/ImageModal";
+import PaginationAdmin from "../../components/ui/PaginationAdmin";
+import FilterAdmin from "../../components/ui/FilterAdmin";
 
 const ArtikelUser = () => {
   const [artikel, setArtikel] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // Pagiination
+  const [halamanKe, setHalamanKe] = useState(1);
+  const [jumlahPage, setJumlahPage] = useState(5);
+
+  // Search & Filter
+  const [search, setSearch] = useState("");
+  const [filterKategori, setFilterKategori] = useState("Semua");
 
   useEffect(() => {
     fetch("/data.json")
@@ -19,27 +29,54 @@ const ArtikelUser = () => {
       .then((data) => setArtikel(data));
   }, []);
 
+  // Filter dan search
+  const filteredArtikel = artikel.filter((a) => {
+    const matchSearch = a.judul.toLowerCase().includes(search.toLowerCase());
+    const matchKategori =
+      filterKategori === "Semua" || a.kategori.includes(filterKategori);
+    return matchSearch && matchKategori;
+  });
+
+  const jumlahHalaman = Math.ceil(filteredArtikel.length / jumlahPage);
+  const arrayTerakhir = halamanKe * jumlahPage;
+  const arrayAwal = arrayTerakhir - jumlahPage;
+  const dataHasil = filteredArtikel.slice(arrayAwal, arrayTerakhir);
+
+  // ganti halaman
+  const handlePageChange = (page) => {
+    setHalamanKe(page);
+  };
+
+  const handleReset = () => {
+    setSearch("");
+    setFilterKategori("Semua");
+    setHalamanKe(1);
+  };
+
   return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-14 w-full h-fit bg-white rounded-lg p-5">
+    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
       {/* Title */}
-      <div className="flex justify-between flex-col gap-2 lg:flex-row">
-        <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">Artikel User</h1>
+      {/* <div className="flex justify-between flex-col gap-2 lg:flex-row"> */}
+      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
+        Artikel User
+      </h1>
 
-        <div className="flex gap-2">
-          <div className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300">
-            <FiFilter />
-            <h6>Kategori</h6>
-          </div>
-
-          <NavLink
-            to={`/artikelUser/verifikasi`}
-            className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300"
-          >
-            <RiVerifiedBadgeLine />
-            <h6>Verifikasi</h6>
-          </NavLink>
-        </div>
-      </div>
+      <FilterAdmin
+        filterKategori={filterKategori}
+        setFilterKategori={(value) => {
+          setFilterKategori(value);
+          setHalamanKe(1);
+        }}
+        search={search}
+        setSearch={(value) => {
+          setSearch(value);
+          setHalamanKe(1);
+        }}
+        handleReset={handleReset}
+        linkTambah="/artikelUser/verifikasi"
+        titleTambah="Verifikasi"
+        kategoriList={["RPL", "Prestasi", "Karya", "Edukasi"]} //custom kategori
+      />
 
       {/* tabel */}
       <div className="overflow-x-auto">
@@ -59,9 +96,11 @@ const ArtikelUser = () => {
             </tr>
           </thead>
           <tbody>
-            {artikel.map((a, _i) => (
+            {dataHasil.map((a, _i) => (
               <tr className="hover:bg-gray-50 text-[14px]" key={a.id}>
-                <td className="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
+                <td className="py-2 px-4 border-b border-gray-400">
+                  {_i + 1 + arrayAwal}
+                </td>
                 <td className="py-2  border-b border-gray-400 ">{a.judul}</td>
                 <td className="py-2 px-4 border-b border-gray-400">
                   <div className="grid grid-cols-2 gap-2 w-32">
@@ -105,6 +144,18 @@ const ArtikelUser = () => {
           </tbody>
         </table>
       </div>
+
+      <PaginationAdmin
+        currentPage={halamanKe}
+        totalPages={jumlahHalaman}
+        perPage={jumlahPage}
+        onPageChange={handlePageChange}
+        onPerPageChange={(value) => {
+          setJumlahPage(value);
+          setHalamanKe(1);
+        }}
+      />
+
       <ImageModal
         image={selectedImage}
         onClose={() => setSelectedImage(null)}
