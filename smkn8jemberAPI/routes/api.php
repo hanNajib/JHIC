@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AnnouncementsController;
+use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChanceCarrierController;
 use App\Http\Controllers\Api\ExtracurricularController;
@@ -96,3 +97,14 @@ Route::prefix('schoolData')->group(function () {
     Route::get('/{id}', [SchoolDataController::class, 'show']);
     Route::put('/{id}', [SchoolDataController::class, 'update'])->middleware('auth:sanctum');
 });
+
+
+Route::prefix('articles')->group(function () {
+    Route::get('/', [ArticleController::class, 'index']);
+    Route::get('/{id}', [ArticleController::class, 'show']);
+    Route::get('/slug/{slug}', [ArticleController::class, 'showBySlug']);
+    Route::post('/', [ArticleController::class, 'store'])->middleware('auth:sanctum');
+    Route::put('/{id}', [ArticleController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{id}', [ArticleController::class, 'delete'])->middleware('auth:sanctum');
+});
+
