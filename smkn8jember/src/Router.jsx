@@ -48,6 +48,7 @@ import Announcement from './page/Announcement'
 import Login from './page/Login'
 import MajorDetail from "./page/MajorDetail";
 import DetailArtikel from "./page/DetailArtikel";
+import VisiMisi from "./page/VisiMisi";
 
 function Router() {
   return (
@@ -106,7 +107,7 @@ function Router() {
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/major/detail" element={<MajorDetail />} />
-
+        <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/login" element={<Login/>} />
         <Route path="/detail" element={<DetailArtikel/>} />
       </Routes>
