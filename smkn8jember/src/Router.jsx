@@ -46,6 +46,7 @@ import HeadMaster from './page/HeadMaster'
 import Gallery from './page/Gallery'
 import Announcement from './page/Announcement'
 import Login from './page/Login'
+import DetailArtikel from "./page/DetailArtikel";
 
 function Router() {
   return (
@@ -104,6 +105,7 @@ function Router() {
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/login" element={<Login/>} />
+        <Route path="/detail" element={<DetailArtikel/>} />
       </Routes>
     </BrowserRouter>
   );
