@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaYoutube } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { FaFacebook } from "react-icons/fa";
@@ -8,10 +8,34 @@ import { FaSearch } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { MdOutlineSearch } from "react-icons/md";
 
 const Navbar = () => {
 
     const [isOpen, setIsOpen] = useState(false);
+    const [isSearch, setIsSearch] = useState(false);
+
+    const handleToggleOpen = () => {
+  setIsOpen((prev) => {
+    if (!prev) setIsSearch(false); // kalau mau buka open, tutup search
+    return !prev;
+  });
+};
+
+const handleToggleSearch = () => {
+  setIsSearch((prev) => {
+    if (!prev) setIsOpen(false); // kalau mau buka search, tutup open
+    return !prev;
+  });
+};
+
+    // useEffect(() => {
+    //     if (isOpen) {
+    //         setIsSearch(false);
+    //     } else if (isSearch) {
+    //         setIsOpen(false);
+    //     }
+    // }, [isOpen, isSearch]);
 
     return (
         <>
@@ -30,27 +54,8 @@ const Navbar = () => {
         </div>
 
         <div className="bawah sticky top-0 z-40 flex bg-white items-center px-6 md:px-14 py-3 md:py-2 justify-between shadow-md gap-6 md-gap-0">
-            <img src="assets/images/logo-smk.png" alt="" className="w-[40px] md:w-[50px]"/>
-            <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
-                <Link to={'/'} >Home</Link>
-                <Link to={'/profil'}>Profil</Link>
-                <Link>Jurusan</Link>
-                <Link>Artikel</Link>
-                <Link to={'/gallery'}>Galeri</Link>
-                <Link to={'/announcement'}>Pengumuman</Link>
-            </div>
-            
-            <div className="flex relative w-full md:w-1/2 lg:w-72">
-                <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
-                <input
-                    type="search"
-                    placeholder="Search"
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-500"
-                />
-            </div>
-
             <div className="flex lg:hidden">
-                <button onClick={() => setIsOpen(!isOpen)}>
+                <button onClick={handleToggleOpen}>
                     {isOpen ? (
                         <FaTimes className="text-xl" />
                         ) : (
@@ -58,22 +63,57 @@ const Navbar = () => {
                         )}
                 </button>
             </div>
+            <div className="flex gap-3 items-center relative">
+                <img src="assets/images/logo-smk.png" alt="" className="w-[40px] md:w-[50px] relative"/>
+                <h1 className={`font-poppins font-bold text-[#424242] lg:hidden ${isSearch ? 'hidden md:flex' : 'flex'}`}>SMKN 8 Jember</h1>
+            </div>
+            <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
+                <Link to={'/'} className="active:font-bold hover:font-bold">Home</Link>
+                <Link to={'/profil'} className="active:font-bold hover:font-bold">Profil</Link>
+                <Link className="active:font-bold hover:font-bold">Jurusan</Link>
+                <Link className="active:font-bold hover:font-bold">Artikel</Link>
+                <Link to={'/gallery'} className="active:font-bold hover:font-bold">Galeri</Link>
+                <Link to={'/announcement'} className="active:font-bold hover:font-bold">Pengumuman</Link>
+            </div>
+            
+            <div className="hidden lg:flex relative w-full lg:w-72">
+                <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
+                <input
+                    type="search"
+                    placeholder="Search"
+                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-500"
+                />
+            </div>
+            <div className="relative flex lg:hidden">
+                <button onClick={handleToggleSearch}>
+                    {isSearch ? (
+                        <FaTimes className={`text-xl absolute top-1/2 -translate-y-1/2 ${isSearch ? 'left-3' : 'right-3'}`}/>
+                    ) : (
+                        <FaSearch className={`text-xl absolute top-1/2 -translate-y-1/2 ${isSearch ? 'left-3' : 'right-3'}`}/>
+                    )}
+                </button>
+                <input
+                    type="search"
+                    placeholder="Search"
+                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-500 transition-transform duration-300 ease-in-out ${isSearch ? 'flex' : 'hidden'}`}
+                />
+            </div>
 
         </div>
 
-        <div className="menu-drop sticky top-[4rem] w-full flex flex-col lg:hidden z-20 bg-transparent">
+        <div className="menu-drop sticky top-[3.8rem] w-full flex flex-col lg:hidden z-20 bg-transparent">
             <div
                 className={`absolute top-0 left-0 w-full bg-white shadow-md transition-transform z-20 duration-300 ease-in-out ${
                 isOpen ? 'translate-y-0' : '-translate-y-full'
                 }`}
             >
                 <div className="flex flex-col font-poppins gap-2 text-center py-5 text-[#4c4c4c]">
-                <a href="">Home</a>
-                <a href="">Profil</a>
-                <a href="">Jurusan</a>
-                <a href="">Blog</a>
-                <a href="">Galeri</a>
-                <a href="">Pengumuman</a>
+                <a href="" className="active:font-bold hover:font-bold">Home</a>
+                <a href="" className="active:font-bold hover:font-bold">Profil</a>
+                <a href="" className="active:font-bold hover:font-bold">Jurusan</a>
+                <a href="" className="active:font-bold hover:font-bold">Blog</a>
+                <a href="" className="active:font-bold hover:font-bold">Galeri</a>
+                <a href="" className="active:font-bold hover:font-bold">Pengumuman</a>
                 </div>
             </div>
         </div>

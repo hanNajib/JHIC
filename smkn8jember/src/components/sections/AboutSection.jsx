@@ -40,8 +40,8 @@ const AboutSection = ({ className = '' }) => {
           </div>
 
           <div className="grid grid-cols-4 md:grid-cols-2 w-full gap-3 py-4 lg:pr-8">
-            {stats.map((stat) => (
-              <StatCard key={stat.id} stat={stat} />
+            {stats.map((stat, index) => (
+              <StatCard key={stat.id} stat={stat} position={index >= 2 ? 'right' : 'left'}/>
             ))}
           </div>
         </div>

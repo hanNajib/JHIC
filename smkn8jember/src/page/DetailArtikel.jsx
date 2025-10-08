@@ -25,7 +25,7 @@ function DetailArtikel() {
                             Telah Dilihat Sebanyak 54
                         </div>
                     </div>
-                    <img src="assets/images/dewa.png" alt="" className='w-full h-[20rem] md:h-[30rem] object-cover object-center'/>
+                    <img src="assets/images/dewa.png" alt="" className='w-full h-[15rem] md:h-[30rem] object-cover object-center'/>
                     <p className="font-poppins text-start text-black leading-relaxed py-8">
                         Gelaran Lomba Kompetensi Siswa (LKS) tingkat Kabupaten Jember tahun 2025 telah usai, menyisakan euforia dan kebanggaan bagi para pemenangnya. Salah satu bidang yang paling dinanti, yaitu pengembangan website, berhasil menelurkan talenta muda berbakat dari Kabupaten Jember. Dengan bangga, kami mengumumkan bahwa Dewa Permana Putra S dari XI RPL 1 berhasil meraih  juara pertama dalam kompetisi bergengsi ini!
 
