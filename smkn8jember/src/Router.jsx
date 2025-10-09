@@ -47,6 +47,7 @@ import Gallery from './page/Gallery'
 import Announcement from './page/Announcement'
 import Login from './page/Login'
 import DetailArtikel from "./page/DetailArtikel";
+import Struktur from "./page/Struktur";
 
 function Router() {
   return (
@@ -106,6 +107,7 @@ function Router() {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/login" element={<Login/>} />
         <Route path="/detail" element={<DetailArtikel/>} />
+        <Route path="/struktur" element={<Struktur/>} />
       </Routes>
     </BrowserRouter>
   );

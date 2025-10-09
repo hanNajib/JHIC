@@ -63,9 +63,9 @@ const handleToggleSearch = () => {
                         )}
                 </button>
             </div>
-            <div className="flex gap-3 items-center relative">
+            <div className={`flex gap-3 items-center relative ${isSearch ? 'mr-0' : 'mr-6 lg:mr-0'}`}>
                 <img src="assets/images/logo-smk.png" alt="" className="w-[40px] md:w-[50px] relative"/>
-                <h1 className={`font-poppins font-bold text-[#424242] lg:hidden ${isSearch ? 'hidden md:flex' : 'flex'}`}>SMKN 8 Jember</h1>
+                <h1 className={`font-poppins font-bold text-[#424242] lg:hidden ${isSearch ? 'hidden md:flex' : 'flex'}`}>SMKN 8 JEMBER</h1>
             </div>
             <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
                 <Link to={'/'} className="active:font-bold hover:font-bold">Home</Link>
