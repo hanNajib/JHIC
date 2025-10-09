@@ -93,7 +93,7 @@ function Router() {
           <Route path="jurusan" element={<Jurusan />} />
           <Route path="jurusan/tambah" element={<TambahJurusan />} />
           <Route path="jurusan/edit/:id" element={<EditJurusan />} />
-          <Route path="jurusantrash" element={<JurusanTrash />} />
+          <Route path="jurusan/jurusantrash" element={<JurusanTrash />} />
           <Route path="strukturorganisasi" element={<StrukturOrganisasi />} />
           <Route path="strukturorganisasi/tambah" element={<TambahJabatan />} />
           <Route path="strukturorganisasi/edit/:id" element={<EditStrukturOrganisasi />} />

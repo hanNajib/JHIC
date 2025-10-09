@@ -6,38 +6,74 @@ import { MdDeleteOutline } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../components/ui/ImageModal";
+import PaginationAdmin from "../../components/ui/PaginationAdmin";
+import FilterAdmin from "../../components/ui/FilterAdmin";
 
 const Pengumuman = () => {
-  const [artikel, setArtikel] = useState([]);
+  const [pengumuman, setPengumuman] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // Pagiination
+  const [halamanKe, setHalamanKe] = useState(1);
+  const [jumlahPage, setJumlahPage] = useState(5);
+
+  // Search & Filter
+  const [search, setSearch] = useState("");
+  const [filterKategori, setFilterKategori] = useState("Semua");
 
   useEffect(() => {
     fetch("/pengumuman.json")
       .then((res) => res.json())
-      .then((data) => setArtikel(data));
+      .then((data) => setPengumuman(data));
   }, []);
+
+  // Filter dan search
+  const filteredPengumuman = pengumuman.filter((a) => {
+    const matchSearch = a.judul.toLowerCase().includes(search.toLowerCase());
+    const matchKategori =
+      filterKategori === "Semua" || a.kategori.includes(filterKategori);
+    return matchSearch && matchKategori;
+  });
+
+  const jumlahHalaman = Math.ceil(pengumuman.length / jumlahPage);
+  const arrayTerakhir = halamanKe * jumlahPage;
+  const arrayAwal = arrayTerakhir - jumlahPage;
+  const dataHasil = filteredPengumuman.slice(arrayAwal, arrayTerakhir);
+
+  // ganti halaman
+  const handlePageChange = (page) => {
+    setHalamanKe(page);
+  };
+
+  const handleReset = () => {
+    setSearch("");
+    setFilterKategori("Semua");
+    setHalamanKe(1);
+  };
 
   return (
     <div className="flex flex-col justify-center gap-5 lg:gap-14 w-full h-fit bg-white rounded-lg p-5">
       {/* Title */}
-      <div className="flex justify-between flex-col gap-2 lg:flex-row">
-        <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">Pengumuman</h1>
+      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
+        Pengumuman
+      </h1>
 
-        <div className="flex gap-2">
-          <div className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300">
-            <FiFilter />
-            <h6>Semua</h6>
-          </div>
-
-          <a
-            href="/pengumuman/tambah"
-            className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300"
-          >
-            <FaPlus />
-            <h6>Tambah</h6>
-          </a>
-        </div>
-      </div>
+      <FilterAdmin
+        filterKategori={filterKategori}
+        setFilterKategori={(value) => {
+          setFilterKategori(value);
+          setHalamanKe(1);
+        }}
+        search={search}
+        setSearch={(value) => {
+          setSearch(value);
+          setHalamanKe(1);
+        }}
+        handleReset={handleReset}
+        linkTambah="/pengumuman/tambah"
+        titleTambah="Tambah Pengumuman"
+        kategoriList={["RPL", "Prestasi", "Karya", "Edukasi"]} //custom kategori
+      />
 
       {/* tabel */}
       <div class="overflow-x-auto">
@@ -55,9 +91,11 @@ const Pengumuman = () => {
             </tr>
           </thead>
           <tbody>
-            {artikel.map((a, _i) => (
+            {dataHasil.map((a, _i) => (
               <tr class="hover:bg-gray-50 text-[14px]">
-                <td class="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
+                <td class="py-2 px-4 border-b border-gray-400">
+                  {_i + 1 + arrayAwal}
+                </td>
                 <td class="py-2  border-b border-gray-400 ">{a.judul}</td>
                 <td class="py-2 px-4 border-b border-gray-400">
                   <div className="flex gap-2">
@@ -97,6 +135,20 @@ const Pengumuman = () => {
           </tbody>
         </table>
       </div>
+
+      <PaginationAdmin
+        currentPage={halamanKe}
+        totalPages={jumlahHalaman}
+        perPage={jumlahPage}
+        onPageChange={(value) => {
+          setHalamanKe(value);
+        }}
+        onPerPageChange={(value) => {
+          setJumlahPage(value);
+          setHalamanKe(1);
+        }}
+      />
+
       <ImageModal
         image={selectedImage}
         onClose={() => setSelectedImage(null)}

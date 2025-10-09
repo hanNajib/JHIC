@@ -6,10 +6,19 @@ import { MdDeleteOutline } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../components/ui/ImageModal";
+import PaginationAdmin from "../../components/ui/PaginationAdmin";
+import FilterAdmin from "../../components/ui/FilterAdmin";
 
 const Karyawan = () => {
   const [karyawan, setKaryawan] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // Pagiination
+  const [halamanKe, setHalamanKe] = useState(1);
+  const [jumlahPage, setJumlahPage] = useState(5);
+
+  // Search & Filter
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("/guru.json")
@@ -17,20 +26,47 @@ const Karyawan = () => {
       .then((data) => setKaryawan(data));
   }, []);
 
-  return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-14 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title */}
-      <div className="flex justify-between flex-col lg:flex-row gap-2">
-        <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">Data Karyawan</h1>
+  // Filter dan search
+  const filteredKaryawan = karyawan.filter((a) => {
+    const matchSearch = a.nama.toLowerCase().includes(search.toLowerCase());
+    return matchSearch;
+  });
 
-        <a
-          href="/datakaryawan/tambah"
-          className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300 w-fit"
-        >
-          <FaPlus />
-          <h6>Tambah</h6>
-        </a>
-      </div>
+  const jumlahHalaman = Math.ceil(karyawan.length / jumlahPage);
+  const arrayTerakhir = halamanKe * jumlahPage;
+  const arrayAwal = arrayTerakhir - jumlahPage;
+  const dataHasil = filteredKaryawan.slice(arrayAwal, arrayTerakhir);
+
+  // ganti halaman
+  const handlePageChange = (page) => {
+    setHalamanKe(page);
+  };
+
+  const handleReset = () => {
+    setSearch("");
+    setFilterKategori("Semua");
+    setHalamanKe(1);
+  };
+
+  return (
+    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
+      {/* Title */}
+      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
+        Data Karyawan
+      </h1>
+
+      {/*  FILTER SECTION  */}
+      <FilterAdmin
+        showKategori={false} //ini menandakan kategori disembunyikan
+        search={search}
+        setSearch={(value) => {
+          setSearch(value);
+          setHalamanKe(1);
+        }}
+        handleReset={handleReset}
+        linkTambah="/datakaryawan/tambah"
+        titleTambah="Tambah Karyawan"
+      />
 
       {/* tabel */}
       <div className="overflow-x-auto">
@@ -54,9 +90,11 @@ const Karyawan = () => {
             </tr>
           </thead>
           <tbody>
-            {karyawan.map((a, _i) => (
+            {dataHasil.map((a, _i) => (
               <tr className="hover:bg-gray-50 text-[14px]">
-                <td className="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
+                <td className="py-2 px-4 border-b border-gray-400">
+                  {_i + 1 + arrayAwal}
+                </td>
                 <td className="py-2  border-b border-gray-400 ">{a.nama}</td>
                 <td className="py-2 px-4 border-b border-gray-400">
                   {a.jabatan}
@@ -92,6 +130,18 @@ const Karyawan = () => {
           </tbody>
         </table>
       </div>
+
+      <PaginationAdmin
+        currentPage={halamanKe}
+        totalPages={jumlahHalaman}
+        perPage={jumlahPage}
+        onPageChange={handlePageChange}
+        onPerPageChange={(value) => {
+          setJumlahPage(value);
+          setHalamanKe(1);
+        }}
+      />
+
       <ImageModal
         image={selectedImage}
         onClose={() => setSelectedImage(null)}

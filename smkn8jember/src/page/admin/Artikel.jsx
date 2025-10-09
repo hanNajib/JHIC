@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
@@ -7,10 +6,22 @@ import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../components/ui/ImageModal";
 import { Link } from "react-router-dom";
+import PaginationAdmin from "../../components/ui/PaginationAdmin";
+import { HiOutlineSearchCircle } from "react-icons/hi";
+import { IoSearchOutline } from "react-icons/io5";
+import { IoMdRefresh } from "react-icons/io";
+import FilterAdmin from "../../components/ui/FilterAdmin";
 
 const Artikel = () => {
   const [artikel, setArtikel] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  const [halamanKe, setHalamanKe] = useState(1);
+  const [jumlahPage, setJumlahPage] = useState(5);
+
+  // Search & Filter
+  const [search, setSearch] = useState("");
+  const [filterKategori, setFilterKategori] = useState("Semua");
 
   useEffect(() => {
     fetch("/data.json")
@@ -18,79 +29,111 @@ const Artikel = () => {
       .then((data) => setArtikel(data));
   }, []);
 
+  // Filter dan search
+  const filteredArtikel = artikel.filter((a) => {
+    const matchSearch = a.judul.toLowerCase().includes(search.toLowerCase());
+    const matchKategori =
+      filterKategori === "Semua" || a.kategori.includes(filterKategori);
+    return matchSearch && matchKategori;
+  });
+
+  const jumlahHalaman = Math.ceil(filteredArtikel.length / jumlahPage);
+  const arrayTerakhir = halamanKe * jumlahPage;
+  const arrayAwal = arrayTerakhir - jumlahPage;
+  const dataHasil = filteredArtikel.slice(arrayAwal, arrayTerakhir);
+
+  const handlePageChange = (page) => {
+    setHalamanKe(page);
+  };
+
+  const handleReset = () => {
+    setSearch("");
+    setFilterKategori("Semua");
+    setHalamanKe(1);
+  };
+
   return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-14 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title dan Btn Halaman Artikel */}
-      <div className="flex justify-between flex-col gap-2 lg:flex-row">
-        <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">Artikel</h1>
+    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
+      {/* Header Title */}
+      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
+        Artikel
+      </h1>
 
-        <div className="flex gap-2">
-          <div className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300">
-            <FiFilter />
-            <h6>Kategori</h6>
-          </div>
+      {/*  FILTER SECTION  */}
+      <FilterAdmin
+        filterKategori={filterKategori}
+        setFilterKategori={(value) => {
+          setFilterKategori(value);
+          setHalamanKe(1);
+        }}
+        search={search}
+        setSearch={(value) => {
+          setSearch(value);
+          setHalamanKe(1);
+        }}
+        handleReset={handleReset}
+        linkTambah="/artikel/tambah"
+        titleTambah="Tambah Artikel"
+        kategoriList={["RPL", "Prestasi", "Karya", "Edukasi"]} //custom kategori
+      />
 
-          <Link
-            to="/artikel/tambah"
-            className="flex justify-center items-center gap-2 px-3 text-orange-500 text-sm md:text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300"
-          >
-            <FaPlus />
-            <h6>Tambah</h6>
-          </Link>
-        </div>
-      </div>
-
-      {/* tabel-tabel */}
-      <div class="overflow-x-auto">
-        <table class="min-w-fit lg:min-w-full bg-white ">
-          <thead class="bg-orange-500 border-2 border-gray-200">
+      {/* TABLE  */}
+      <div className="overflow-x-auto">
+        <table className="min-w-fit lg:min-w-full bg-white">
+          <thead className="bg-orange-500 border-2 border-gray-200">
             <tr>
-              <th class="py-2 px-4 border text-left text-white">No</th>
-              <th class="py-2 px-4 border text-left text-white min-w-56">
+              <th className="py-2 px-4 border text-left text-white">No</th>
+              <th className="py-2 px-4 border text-left text-white min-w-56">
                 Judul
               </th>
-              <th class="py-2 px-4 border text-left text-white">Kategori</th>
-              <th class="py-2 px-4 border text-left text-white">Tanggal</th>
-              <th class="py-2 px-4 border text-left text-white">Foto</th>
-              <th class="py-2 px-4 border text-left text-white">Aksi</th>
+              <th className="py-2 px-4 border text-left text-white">
+                Kategori
+              </th>
+              <th className="py-2 px-4 border text-left text-white">Tanggal</th>
+              <th className="py-2 px-4 border text-left text-white">Foto</th>
+              <th className="py-2 px-4 border text-left text-white">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            {artikel.map((a, _i) => (
-              <tr class="hover:bg-gray-50 text-[14px]">
-                <td class="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
-                <td class="py-2  border-b border-gray-400 ">{a.judul}</td>
-                <td class="py-2 px-4 border-b border-gray-400">
+            {dataHasil.map((a, i) => (
+              <tr
+                key={a.id}
+                className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
+              >
+                <td className="py-2 px-4">{arrayAwal + i + 1}</td>
+                <td className="py-2 px-4">{a.judul}</td>
+                <td className="py-2 px-4">
                   <div className="grid grid-cols-2 gap-2 w-32">
-                    {a.kategori.map((kate) => (
-                      <div className="bg-orange-500 px-2.5 w-fit rounded-2xl text-sm text-white">
+                    {a.kategori.map((kate, k) => (
+                      <div
+                        key={k}
+                        className="bg-orange-500 px-2.5 w-fit rounded-2xl text-sm text-white"
+                      >
                         {kate}
                       </div>
                     ))}
                   </div>
                 </td>
-                <td class="py-2 px-4 border-b border-gray-400">{a.tanggal}</td>
-                <td class="py-2 px-4 border-b border-gray-400">
+                <td className="py-2 px-4">{a.tanggal}</td>
+                <td className="py-2 px-4">
                   <button
-                    onClick={() => setSelectedImage(a.image)} // buka modal
+                    onClick={() => setSelectedImage(a.image)}
                     className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
                   >
                     <CiImageOn className="text-xl" />
                     {a.image}
                   </button>
                 </td>
-                <td class="py-2 px-4 border-b border-gray-400 text-white ">
-                  <div className="flex gap-2 justify-center ">
-                    {/* Btn Edit */}
+                <td className="py-2 px-4 text-white">
+                  <div className="flex gap-2 justify-center">
                     <a
                       href={`/artikel/edit/${a.id}`}
                       className="text-center text-3xl bg-green-500 p-2 rounded-2xl shadow-lg"
                     >
                       <FaRegEdit className="text-lg" />
                     </a>
-                    {/* hapus */}
                     <a
-                      href=""
+                      href="#"
                       className="text-center text-3xl bg-red-500 p-2 rounded-2xl shadow-lg"
                     >
                       <MdDeleteOutline className="text-lg" />
@@ -102,7 +145,24 @@ const Artikel = () => {
           </tbody>
         </table>
       </div>
-      <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />
+
+      {/* ===================== PAGINATION ===================== */}
+      <PaginationAdmin
+        currentPage={halamanKe}
+        totalPages={jumlahHalaman}
+        perPage={jumlahPage}
+        onPageChange={handlePageChange}
+        onPerPageChange={(value) => {
+          setJumlahPage(value);
+          setHalamanKe(1);
+        }}
+      />
+
+      {/*modal image*/}
+      <ImageModal
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };

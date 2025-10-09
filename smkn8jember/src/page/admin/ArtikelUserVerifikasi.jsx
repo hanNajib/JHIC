@@ -1,22 +1,40 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { FaCheck, FaRegEdit } from "react-icons/fa";
-import { FaPlus, FaX } from "react-icons/fa6";
-import { MdDeleteOutline } from "react-icons/md";
-import { FiCheck, FiFilter, FiX } from "react-icons/fi";
-import { NavLink, useNavigate } from "react-router-dom";
-import { RiVerifiedBadgeLine } from "react-icons/ri";
+import React, { useState, useEffect } from "react";
+import { FaRegEdit } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
+import { FiFilter, FiCheck, FiX } from "react-icons/fi";
 import { IoIosArrowBack } from "react-icons/io";
+import { useNavigate, NavLink } from "react-router-dom";
+import { CiImageOn } from "react-icons/ci";
+import ImageModal from "../../components/ui/ImageModal";
+import PaginationAdmin from "../../components/ui/PaginationAdmin";
 
 const ArtikelUserVerifikasi = () => {
   const navigate = useNavigate();
   const [artikel, setArtikel] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // Pagination
+  const [halamanKe, setHalamanKe] = useState(1);
+  const [jumlahPage, setJumlahPage] = useState(5);
 
   useEffect(() => {
     fetch("/data.json")
       .then((res) => res.json())
       .then((data) => setArtikel(data));
   }, []);
+
+  // Hitung total halaman
+  const jumlahHalaman = Math.ceil(artikel.length / jumlahPage);
+
+  // Data untuk halaman aktif
+  const arrayTerakhir = halamanKe * jumlahPage;
+  const arrayAwal = arrayTerakhir - jumlahPage;
+  const dataHasil = artikel.slice(arrayAwal, arrayTerakhir);
+
+  // Ganti halaman
+  const handlePageChange = (page) => {
+    setHalamanKe(page);
+  };
 
   return (
     <div className="flex flex-col justify-center gap-5 lg:gap-14 w-full h-fit bg-white rounded-lg p-5">
@@ -30,7 +48,7 @@ const ArtikelUserVerifikasi = () => {
             <IoIosArrowBack />
           </a>
           <h1 className="font-bold text-gray-900 text-3xl lg:text-4xl">
-            Verift Artikel User
+            Verifikasi Artikel User
           </h1>
         </div>
 
@@ -60,14 +78,19 @@ const ArtikelUserVerifikasi = () => {
             </tr>
           </thead>
           <tbody>
-            {artikel.map((a, _i) => (
+            {dataHasil.map((a, _i) => (
               <tr className="hover:bg-gray-50 text-[14px]" key={a.id}>
-                <td className="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
-                <td className="py-2  border-b border-gray-400 ">{a.judul}</td>
+                <td className="py-2 px-4 border-b border-gray-400">
+                  {_i + 1 + arrayAwal}
+                </td>
+                <td className="py-2 border-b border-gray-400">{a.judul}</td>
                 <td className="py-2 px-4 border-b border-gray-400">
                   <div className="grid grid-cols-2 gap-2 w-32">
-                    {a.kategori.map((kate) => (
-                      <div className="bg-orange-500 px-2.5 w-fit rounded-2xl text-sm text-white">
+                    {a.kategori.map((kate, index) => (
+                      <div
+                        key={index}
+                        className="bg-orange-500 px-2.5 w-fit rounded-2xl text-sm text-white"
+                      >
                         {kate}
                       </div>
                     ))}
@@ -77,7 +100,11 @@ const ArtikelUserVerifikasi = () => {
                   {a.tanggal}
                 </td>
                 <td className="py-2 px-4 border-b border-gray-400">
-                  <button className="py-1 px-3 rounded-2xl bg-gray-400">
+                  <button
+                    onClick={() => setSelectedImage(a.image)}
+                    className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                  >
+                    <CiImageOn className="text-xl" />
                     {a.image}
                   </button>
                 </td>
@@ -90,13 +117,13 @@ const ArtikelUserVerifikasi = () => {
                       <FaRegEdit className="text-lg" />
                     </NavLink>
                     <a
-                      href=""
+                      href="#"
                       className="text-center text-3xl bg-green-500 p-2 rounded-2xl shadow-lg"
                     >
                       <FiCheck className="text-lg" />
                     </a>
                     <a
-                      href=""
+                      href="#"
                       className="text-center text-3xl bg-red-500 p-2 rounded-2xl shadow-lg"
                     >
                       <FiX className="text-lg" />
@@ -108,6 +135,24 @@ const ArtikelUserVerifikasi = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      <PaginationAdmin
+        currentPage={halamanKe}
+        totalPages={jumlahHalaman}
+        perPage={jumlahPage}
+        onPageChange={handlePageChange}
+        onPerPageChange={(value) => {
+          setJumlahPage(value);
+          setHalamanKe(1);
+        }}
+      />
+
+      {/* Modal Gambar */}
+      <ImageModal
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };
