@@ -9,6 +9,7 @@ const TambahUserJurusan = () => {
 
   const [judul, setJudul] = useState("");
   const [konten, setKonten] = useState("");
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();

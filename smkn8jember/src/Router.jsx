@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./page/admin/Dashboard";
 import Artikel from "./page/admin/Artikel";
 import EditArtikel from "./page/admin/EditArtikel";
@@ -48,15 +48,16 @@ import Announcement from './page/Announcement'
 import Login from './page/Login'
 import MajorDetail from "./page/MajorDetail";
 import DetailArtikel from "./page/DetailArtikel";
+import ProtectedRoute from "./ProtectedRoute";
 
 function Router() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        
+
         {/* ADMIN ROUTES */}
-        <Route path="/" element={<AdminLayout />}>
+        <Route path="/" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="artikel" element={<Artikel />} />
           <Route path="artikelUser" element={<ArtikelUser />} />
@@ -86,9 +87,9 @@ function Router() {
           <Route path="mapel" element={<Mapel />} />
           <Route path="mapel/tambah" element={<TambahMapel />} />
           <Route path="mapel/edit/:id" element={<EditMapel />} />
-          <Route path="userjurusan" element={<UserJurusan />} />
-          <Route path="userjurusan/tambah" element={<TambahUserJurusan />} />
-          <Route path="userjurusan/edit/:id" element={<EditUserJurusan />} />
+          <Route path="admin-jurusan" element={<UserJurusan />} />
+          <Route path="admin-jurusan/tambah" element={<TambahUserJurusan />} />
+          <Route path="admin-jurusan/edit/:id" element={<EditUserJurusan />} />
           <Route path="jurusan" element={<Jurusan />} />
           <Route path="jurusan/tambah" element={<TambahJurusan />} />
           <Route path="jurusan/edit/:id" element={<EditJurusan />} />
@@ -109,6 +110,9 @@ function Router() {
 
         <Route path="/login" element={<Login/>} />
         <Route path="/detail" element={<DetailArtikel/>} />
+
+        {/* Navigate notfuond */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );

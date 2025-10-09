@@ -70,6 +70,14 @@ class SchoolSettingsSeeder extends Seeder
                 'title' => 'alamat',
                 'value' => 'Jl. Pelita no 27 Sidomekar - Semboro - Jember, Jawa Timur, Indonesia'
             ],
+            [
+                'title' => 'visi',
+                'value' => 'Terwujudnya lulusan yang berprofil Pelajar Pancasila sehingga mampu bersaing di dunia kerja dan Perguruan Tinggi, serta tumbuh jiwa wirausaha'
+            ],
+            [
+                'title' => 'misi',
+                'value' => '<ol><li>Meningkatkan softskill peserta didik yang berprofil pelajar Pancasila dan sesuai dengan kebutuhan dunia kerja.</li><li>Mensinkronkan Kurikulum secara kontekstual terhadap tuntutan kebutuhan dan perkembangan dunia kerja.</li><li>Menerapkan pembelajaran yang berpusat pada peserta didik dengan pembelajaran berbasis projek nyata dari dunia kerja.</li><li>Meningkatkan kompetensi pendidik dan tenaga kependidikan sesuai dengan perkembangan teknologi terkini dan berdedikasi tinggi.</li><li>Mewujudkan kelas wirausaha untuk menumbuhkan jiwa wirausaha peserta didik.</li><li>Menerapkan pola pengelolaan keuangan Badan Layanan Umum Daerah.</li><li>Meningkatkan mutu sarana dan prasarana serta lingkungan belajar yang sesuai standar pendidikan dan standar kerja industri.</li><li>Menerapkan budaya kerja industri bagi semua warga sekolah.</li><li>Menjalin kemitraan dengan stakeholder untuk menyelenggarakan pendidikan berbasis Teaching Factory, pelatihan, magang, dan perekrutan lulusan.</li></ol>'
+            ]
         ];
 
         foreach ($listSettings as $setting) {

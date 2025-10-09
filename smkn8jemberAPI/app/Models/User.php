@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Traits\HasCursorPagination;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,7 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
+    use HasFactory, Notifiable, SoftDeletes, HasApiTokens, HasCursorPagination;
 
     /**
      * The attributes that are mass assignable.
@@ -74,6 +75,11 @@ class User extends Authenticatable
                 $query->orWhere('username', $login['username']);
             }
         });
+    }
+
+    public static function whereRole($role): Builder
+    {
+        return self::where('role', $role);
     }
 
 
