@@ -1,24 +1,22 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { FaChevronUp, FaChevronDown } from "react-icons/fa";
-import { GALLERY_CATEGORIES, SAMPLE_GALLERY } from "../constants/schoolData";
-import { Button, GalleryCard } from "../components/ui";
-import { useGallery } from "../hooks/useSchool";
-const Gallery = () => {
-  const [sort, setSort] = useState("terbaru");
-  const [category, setCategory] = useState("");
-  const { filteredGallery } = useGallery();
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { ARTICLE_CATEGORIES } from "../constants/schoolData";
+import { useArticles } from "../hooks/useSchool";
+import { ArticleCard, Button } from "../components/ui";
 
+const Articles = () => {
+  const [sort, setSort] = useState("terbaru");
+  const { visibleArticles, isLoading } = useArticles();
+  const [category, setCategory] = useState("");
   return (
     <>
       <Navbar />
-
-      {/* Header Section */}
       <section
         className="flex flex-col items-center justify-center py-20 relative text-center"
         style={{
-          backgroundImage: "url('/assets/images/header-gallery.jpg')",
+          backgroundImage: "url('/assets/images/header-artikel.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -27,16 +25,18 @@ const Gallery = () => {
 
         <div className="relative z-10 max-w-3xl">
           <h1 className="font-poppins font-bold text-white text-4xl md:text-6xl mb-4">
-            Galeri Sekolah
+            Artikel Kami
           </h1>
           <p className="font-poppins hidden md:block text-white text-lg md:text-xl leading-relaxed">
-            Jejak Langkah dan Warna Kehidupan SMK Negeri 8 Jember
+            Temukan Berita Berita Terbaru Mengenai SMK Negeri 8 Jember
           </p>
         </div>
       </section>
 
       <section className="bg-[#e6ecf2] flex flex-col items-center justify-center py-8 px-6">
-        <h1 className="text-2xl font-bold mb-4 text-center">Kategori Galeri</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">
+          Kategori Artikel
+        </h1>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <select
@@ -46,7 +46,7 @@ const Gallery = () => {
             className="w-full border border-gray-300 rounded-md py-2 pl-3 pr-20 focus:outline-none bg-white text-gray-700"
           >
             {" "}
-            {GALLERY_CATEGORIES.map((c) => (
+            {ARTICLE_CATEGORIES.map((c) => (
               <option key={c.id} value={c.id}>
                 {" "}
                 {c.label}{" "}
@@ -71,12 +71,12 @@ const Gallery = () => {
         </div>
       </section>
 
-      <section className="bg-white py-4 ">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 w-full pt-10 gap-6 items-stretch pb-4 px-6 md:px-16">
-          {filteredGallery.map((image, index) => (
-            <GalleryCard
-              key={image.id}
-              image={image}
+      <section className="bg-white flex flex-col items-center justify-center py-8 px-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 w-full pt-10 gap-6 items-stretch pb-4">
+          {visibleArticles.map((article, index) => (
+            <ArticleCard
+              key={article.id}
+              article={article}
               className={
                 index >= 3 ? "hidden md:flex md:flex-col md:flex-none" : ""
               }
@@ -84,9 +84,9 @@ const Gallery = () => {
           ))}
         </div>
       </section>
-          <div className="w-full py-6">
+      <div className="w-full py-6 bg-white">
         <div className="w-full max-w-6xl mx-auto px-6 md:px-16 flex justify-center">
-          <Button>Tampilkan Lebih Banyak Gallery</Button>
+          <Button>Tampilkan Lebih Banyak Artikel</Button>
         </div>
       </div>
       <Footer />
@@ -94,4 +94,4 @@ const Gallery = () => {
   );
 };
 
-export default Gallery;
+export default Articles;
