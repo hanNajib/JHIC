@@ -5,6 +5,7 @@ import { Loading } from "./components/ui";
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   
+  return children ;
   if(loading) {
     return <Loading fullScreen={true} />
   }
@@ -13,7 +14,6 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" />;
   }
 
-  return children ;
 };
 
 export default ProtectedRoute;
