@@ -5,7 +5,9 @@ const Loading = ({
   size = 'md', 
   color = 'orange', 
   text = '', 
-  fullScreen = false 
+  fullScreen = false ,
+  direction = 'flex-col',
+  skeletonTotal = 3
 }) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -90,12 +92,11 @@ const Loading = ({
     </div>
   );
 
-  // Skeleton Loading
   const SkeletonLoader = () => (
-    <div className="animate-pulse space-y-3">
-      <div className="bg-gray-300 rounded h-4 w-3/4"></div>
-      <div className="bg-gray-300 rounded h-4 w-1/2"></div>
-      <div className="bg-gray-300 rounded h-4 w-5/6"></div>
+    <div className={`animate-pulse space-y-3 w-full flex ${direction} gap-2`}>
+      {Array.from({ length: skeletonTotal }).map((_, index) => (
+        <div key={index} className="bg-gray-300 rounded h-4 w-3/4"></div>
+      ))}
     </div>
   );
 

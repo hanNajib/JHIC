@@ -23,10 +23,10 @@ trait HasCursorPagination
         $sortDir = $request->query('sortDir', 'desc');
         $search = trim($request->query('s', ''));
 
-        $query = $this->applySoftDeleteFilter($query)
-                      ->applyDynamicFilters($query, $request, $filters)
-                      ->applySearch($query, $search, $searchable)
-                      ->orderBy($sortBy, $sortDir);
+        $query = $this->applySoftDeleteFilter($query);
+        $query = $this->applyDynamicFilters($query, $request, $filters);
+        $query = $this->applySearch($query, $search, $searchable);
+        $query = $query->orderBy($sortBy, $sortDir);
 
         $result = $query->cursorPaginate($limit)->withQueryString();
 
@@ -36,34 +36,34 @@ trait HasCursorPagination
     protected function applySoftDeleteFilter($query)
     {
         if ($this->usesSoftDeletes()) {
-            $query->whereNull('deleted_at');
+            $query = $query->whereNull('deleted_at');
         }
 
-        return $this;
+        return $query;
     }
 
     protected function applyDynamicFilters($query, Request $request, array $filters)
     {
         foreach ($filters as $field) {
             if ($request->filled($field)) {
-                $query->where($field, $request->query($field));
+                $query = $query->where($field, $request->query($field));
             }
         }
 
-        return $this;
+        return $query;
     }
 
     protected function applySearch($query, string $search, array $searchable)
     {
         if ($search && !empty($searchable)) {
-            $query->where(function ($q) use ($search, $searchable) {
+            $query = $query->where(function ($q) use ($search, $searchable) {
                 foreach ($searchable as $field) {
                     $q->orWhere($field, 'like', "%{$search}%");
                 }
             });
         }
 
-        return $this;
+        return $query;
     }
 
     protected function usesSoftDeletes(): bool

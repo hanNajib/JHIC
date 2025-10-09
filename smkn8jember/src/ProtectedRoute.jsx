@@ -1,18 +1,18 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
-import { Loading } from "./components/ui";
+import TextLoading from "./components/ui/TextLoading";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  
-  return children ;
-  if(loading) {
-    return <Loading fullScreen={true} />
-  }
 
+  if(loading) {
+    return <TextLoading variant="flipFlow" text="ESKALABER" />;
+  }
+  
   if (!loading && !user) {
     return <Navigate to="/login" />;
   }
+  return children ;
 
 };
 

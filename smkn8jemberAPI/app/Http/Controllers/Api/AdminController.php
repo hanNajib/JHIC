@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     public function index(Request $request) {
-        $adminsPaginated = User::where('role', 'admin')->applyFilters($request, ['username', 'email'], []);
+        $adminsPaginated = User::where('role', 'admin')
+            ->applyFilters($request, ['username', 'email'], []);
         return $this->cursorPaginated($adminsPaginated, 'Admins retrieved successfully');
     }
 
