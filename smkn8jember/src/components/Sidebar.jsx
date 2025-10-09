@@ -170,7 +170,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         } fixed md:static top-0 left-0 z-50 `}
     >
       <div>
-        {/* Header */}
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center gap-3">
             <img src="/image/logosmk.png" className="w-10" alt="logo" />
@@ -232,6 +231,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               to="/pengumuman"
               icon={HiOutlineSpeakerphone}
               label="Pengumuman"
+              isOpen={isOpen}
+            />
+            <NavItem
+              to="/kategori"
+              icon={MdOutlineCategory}
+              label="Kategori"
               isOpen={isOpen}
             />
           </div>
