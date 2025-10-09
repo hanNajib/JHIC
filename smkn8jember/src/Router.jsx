@@ -50,6 +50,7 @@ import MajorDetail from "./page/MajorDetail";
 import DetailArtikel from "./page/DetailArtikel";
 import VisiMisi from "./page/VisiMisi";
 import Articles from "./page/Articles";
+import StudentData from "./page/StudentData";
 
 function Router() {
   return (
@@ -108,6 +109,7 @@ function Router() {
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/articles" element={<Articles />} />
+        <Route path="/student-data" element={<StudentData />} />
         <Route path="/major/detail" element={<MajorDetail />} />
         <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/login" element={<Login/>} />
