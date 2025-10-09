@@ -167,7 +167,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                             items={manajemenItems}
                         />
                         <NavItem to="/mapel" icon={FaRegListAlt} label="Mapel" isOpen={isOpen} />
-                        <NavItem to="/userjurusan" icon={LuUserPlus} label="User Jurusan" isOpen={isOpen} />
+                        <NavItem to="/admin-jurusan" icon={LuUserPlus} label="Admin Jurusan" isOpen={isOpen} />
                         <NavItem to="/jurusan" icon={MdOutlineCategory} label="Jurusan" isOpen={isOpen} />
                         <NavItem to="/strukturorganisasi" icon={PiTreeStructureBold} label="Struktur Organisasi" isOpen={isOpen} />
                     </div>

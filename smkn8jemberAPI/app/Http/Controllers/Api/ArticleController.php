@@ -14,29 +14,21 @@ use Illuminate\Support\Facades\Storage;
 class ArticleController extends Controller
 {
     public function index(Request $request) {
-        $data = Article::applyFilters(
+        $articlesPaginated = Article::applyFilters(
             $request,
             ['title', 'content', 'slug'],
             ['author_id', 'status']
         );
-        return $this->cursorPaginated(ArticleResource::collection($data));
+        return $this->cursorPaginatedResource($articlesPaginated, ArticleResource::class, 'Articles retrieved successfully');
     }
 
-    public function show($id) {
-        $article = Article::find($id);
-        if (!$article) {
-            return $this->notFound('Article not found');
-        }
-        return $this->success(new ArticleResource($article), 'Article retrieved successfully');
-    } 
-
-    public function showBySlug($slug) {
+    public function show($slug) {
         $article = Article::whereSlug($slug)->first();
         if (!$article) {
             return $this->notFound('Article not found');
         }
         return $this->success(new ArticleResource($article), 'Article retrieved successfully');
-    }
+    } 
 
     public function store(ArticleStoreRequest $request) {
         $validated = $request->validated();

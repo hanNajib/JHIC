@@ -10,3 +10,6 @@ export { default as AnnouncementCard } from './AnnouncementCard';
 export { default as GalleryCard } from './GalleryCard';
 export { default as DropdownSelect } from './DropdownSelect';
 export { default as ImageModal } from './ImageModal';
+export { default as Loading } from './Loading';
+export { default as AdminLoading } from './AdminLoading';
+export { default as SimpleLoading } from './SimpleLoading';

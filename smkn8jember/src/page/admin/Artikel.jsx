@@ -6,6 +6,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../components/ui/ImageModal";
+import { Link } from "react-router-dom";
 
 const Artikel = () => {
   const [artikel, setArtikel] = useState([]);
@@ -29,13 +30,13 @@ const Artikel = () => {
             <h6>Kategori</h6>
           </div>
 
-          <a
-            href="/artikel/tambah"
+          <Link
+            to="/artikel/tambah"
             className="flex justify-center items-center gap-2 px-3 text-orange-500 text-sm md:text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300"
           >
             <FaPlus />
             <h6>Tambah</h6>
-          </a>
+          </Link>
         </div>
       </div>
 
