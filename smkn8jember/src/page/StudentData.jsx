@@ -73,11 +73,11 @@ const StudentData = () => {
         </div>
       </section>
 
-      <section className="flex flex-row items-center gap-6 justify-center py-8 px-16 flex-wrap">
+      <section className="grid grid-cols-2 md:flex md:flex-row items-center gap-6 justify-center py-8 px-6">
         {statistik.map((item, index) => (
           <div
             key={index}
-            className="bg-[#F77F00]/20 w-48 p-6 rounded-lg shadow-md flex flex-col items-center gap-6"
+            className="bg-[#F77F00]/20 w-full md:w-48 p-6 rounded-lg shadow-md flex flex-col items-center gap-6"
           >
             <div className="bg-[#FF6000] text-white p-2 rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
               {item.icon}
