@@ -92,7 +92,7 @@ const StudentData = () => {
         ))}
       </section>
 
-      <section className="bg-[#EEEEEE] py-18 flex flex-col items-center justify-center px-6 m-8 rounded-lg  ">
+      <section className="bg-[#EEEEEE] py-16 flex flex-col items-center justify-center px-6 m-8 rounded-lg  ">
         <h1 className="font-bold text-2xl font-poppins">Daftar Data Siswa</h1>
         <div className="flex flex-row items-center justify-center gap-8 mt-10 flex-wrap">
           {classes.map((kelas, index) => (
