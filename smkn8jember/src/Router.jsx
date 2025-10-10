@@ -46,6 +46,10 @@ import HeadMaster from './page/HeadMaster'
 import Gallery from './page/Gallery'
 import Announcement from './page/Announcement'
 import Login from './page/Login'
+import Facilitas from "./page/Facilitas";
+import Extracurricular from "./page/Extracurricular";
+import Teacher from "./page/Teacher";
+import Employee from "./page/Employee";
 
 function Router() {
   return (
@@ -100,13 +104,17 @@ function Router() {
 
         {/* USER ROUTES */}
         <Route path="/history" element={<History />} />
+        <Route path="/teacher" element={<Teacher />} />
+        <Route path="/employee" element={<Employee />} />
+        <Route path="/facilitas" element={<Facilitas />} />
+        <Route path="/extracurricular" element={<Extracurricular />} />
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/login" element={<Login/>} />
       </Routes>
     </BrowserRouter>
-  );
+  );  
 }
 
 export default Router;

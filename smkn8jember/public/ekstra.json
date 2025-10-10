@@ -4,7 +4,7 @@
     "nama": "Pramuka Reguler",
     "pembimbing": "Sumardiono",
     "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
-    "foto": "/image/logosmk.png"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 2,
@@ -12,5 +12,96 @@
     "pembimbing": "Yanuar Rizal P.",
     "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
     "foto": "/image/logosmk.png"
+  },
+  {
+    "id": 3,
+    "nama": "PMR (Palang Merah Remaja)",
+    "pembimbing": "Siti Haryani",
+    "deskripsi": "Melatih siswa untuk sigap dan terampil dalam bidang pertolongan pertama.",
+    "foto": "https://images.pexels.com/photos/39584/medical-hospital-healthcare-medicine.jpg"
+  },
+  {
+    "id": 4,
+    "nama": "OSIS",
+    "pembimbing": "Hendri Santoso",
+    "deskripsi": "Wadah pengembangan kepemimpinan dan tanggung jawab siswa.",
+    "foto": "https://images.pexels.com/photos/3183171/pexels-photo-3183171.jpeg"
+  },
+  {
+    "id": 5,
+    "nama": "KIR (Karya Ilmiah Remaja)",
+    "pembimbing": "Nur Aini",
+    "deskripsi": "Mengembangkan kemampuan riset dan berpikir ilmiah di kalangan siswa.",
+    "foto": "https://images.pexels.com/photos/1181352/pexels-photo-1181352.jpeg"
+  },
+  {
+    "id": 6,
+    "nama": "Paduan Suara",
+    "pembimbing": "Rini Astuti",
+    "deskripsi": "Mengembangkan bakat seni suara dan kerja sama dalam harmoni.",
+    "foto": "https://images.pexels.com/photos/164631/pexels-photo-164631.jpeg"
+  },
+  {
+    "id": 7,
+    "nama": "Teater Sekolah",
+    "pembimbing": "Agus Widodo",
+    "deskripsi": "Meningkatkan kemampuan ekspresi dan kepercayaan diri siswa lewat seni peran.",
+    "foto": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg"
+  },
+  {
+    "id": 8,
+    "nama": "Basket",
+    "pembimbing": "Dwi Rahmanto",
+    "deskripsi": "Membentuk kerja sama tim dan kedisiplinan lewat olahraga bola basket.",
+    "foto": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg"
+  },
+  {
+    "id": 9,
+    "nama": "Futsal",
+    "pembimbing": "Ahmad Syaifuddin",
+    "deskripsi": "Menumbuhkan semangat sportivitas dan kebugaran fisik melalui futsal.",
+    "foto": "https://images.pexels.com/photos/1618206/pexels-photo-1618206.jpeg"
+  },
+  {
+    "id": 10,
+    "nama": "English Club",
+    "pembimbing": "Dewi Lestari",
+    "deskripsi": "Meningkatkan kemampuan berbahasa Inggris dengan kegiatan interaktif.",
+    "foto": "https://images.pexels.com/photos/3184460/pexels-photo-3184460.jpeg"
+  },
+  {
+    "id": 11,
+    "nama": "Japanese Club",
+    "pembimbing": "Fajar Setiawan",
+    "deskripsi": "Memperkenalkan budaya Jepang dan meningkatkan kemampuan bahasa Jepang.",
+    "foto": "https://images.pexels.com/photos/1181341/pexels-photo-1181341.jpeg"
+  },
+  {
+    "id": 12,
+    "nama": "Komputer Club",
+    "pembimbing": "Wahyu Saputra",
+    "deskripsi": "Tempat belajar coding, desain, dan teknologi informasi.",
+    "foto": "https://images.pexels.com/photos/1181352/pexels-photo-1181352.jpeg"
+  },
+  {
+    "id": 13,
+    "nama": "Fotografi",
+    "pembimbing": "Rama Nugraha",
+    "deskripsi": "Mengasah keterampilan dalam seni memotret dan dokumentasi.",
+    "foto": "https://images.pexels.com/photos/414519/pexels-photo-414519.jpeg"
+  },
+  {
+    "id": 14,
+    "nama": "Seni Tari",
+    "pembimbing": "Indah Permata",
+    "deskripsi": "Menyalurkan kreativitas dan melestarikan budaya lewat gerak tari.",
+    "foto": "https://images.pexels.com/photos/3183171/pexels-photo-3183171.jpeg"
+  },
+  {
+    "id": 15,
+    "nama": "Pencak Silat",
+    "pembimbing": "Eko Prasetyo",
+    "deskripsi": "Membangun mental dan fisik tangguh dengan seni bela diri tradisional.",
+    "foto": "https://images.pexels.com/photos/33861981/pexels-photo-33861981.jpeg"
   }
 ]

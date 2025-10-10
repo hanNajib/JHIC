@@ -3,21 +3,161 @@
     "id": 1,
     "nama": "Lab Komputer",
     "total": 2,
-    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
-    "foto": "/image/logosmk.png"
+    "deskripsi": "Dilengkapi dengan jaringan internet cepat dan 36 unit komputer berkualitas tinggi untuk pembelajaran teknologi.",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 2,
     "nama": "Lab TKJ",
     "total": 2,
-    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
-    "foto": "/image/logosmk.png"
+    "deskripsi": "Tempat praktik siswa jurusan TKJ, dilengkapi perangkat jaringan, server, dan alat perakitan komputer.",
+    "foto": "https://images.pexels.com/photos/1181341/pexels-photo-1181341.jpeg"
   },
   {
     "id": 3,
     "nama": "Studio DKV",
     "total": 2,
-    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
-    "foto": "/image/logosmk.png"
+    "deskripsi": "Ruang kreatif untuk jurusan DKV dengan komputer desain, tablet grafis, dan pencahayaan profesional.",
+    "foto": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg"
+  },
+  {
+    "id": 4,
+    "nama": "Perpustakaan Utama",
+    "total": 1,
+    "deskripsi": "Koleksi buku lengkap (fiksi & non-fiksi), area baca nyaman, dan akses e-book.",
+    "foto": "https://images.pexels.com/photos/256541/pexels-photo-256541.jpeg"
+  },
+  {
+    "id": 5,
+    "nama": "Ruang Kelas Standar",
+    "total": 30,
+    "deskripsi": "Ruangan ber-AC, proyektor, papan tulis interaktif, dan kursi ergonomis.",
+    "foto": "https://images.pexels.com/photos/414429/pexels-photo-414429.jpeg"
+  },
+  {
+    "id": 6,
+    "nama": "Lab Kimia",
+    "total": 1,
+    "deskripsi": "Peralatan praktikum kimia lengkap, lemari asam, dan perlengkapan keselamatan standar.",
+    "foto": "https://images.pexels.com/photos/356079/pexels-photo-356079.jpeg"
+  },
+  {
+    "id": 7,
+    "nama": "Lab Fisika",
+    "total": 1,
+    "deskripsi": "Peralatan praktikum fisika dasar dan lanjutan, termasuk set optik dan mekanika.",
+    "foto": "https://images.pexels.com/photos/3825529/pexels-photo-3825529.jpeg"
+  },
+  {
+    "id": 8,
+    "nama": "Lab Biologi",
+    "total": 1,
+    "deskripsi": "Mikroskop digital, preparat, dan model anatomi lengkap.",
+    "foto": "https://images.pexels.com/photos/3825527/pexels-photo-3825527.jpeg"
+  },
+  {
+    "id": 9,
+    "nama": "Ruang Serbaguna (Aula)",
+    "total": 1,
+    "deskripsi": "Kapasitas 500 orang, dilengkapi sound system dan panggung untuk acara.",
+    "foto": "https://images.pexels.com/photos/262713/pexels-photo-262713.jpeg"
+  },
+  {
+    "id": 10,
+    "nama": "Lapangan Basket",
+    "total": 1,
+    "deskripsi": "Standar internasional, permukaan anti-slip, dan lampu penerangan malam.",
+    "foto": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg"
+  },
+  {
+    "id": 11,
+    "nama": "Lapangan Futsal",
+    "total": 1,
+    "deskripsi": "Lapangan indoor dengan rumput sintetis berkualitas tinggi.",
+    "foto": "https://images.pexels.com/photos/1618206/pexels-photo-1618206.jpeg"
+  },
+  {
+    "id": 12,
+    "nama": "Kantin Sekolah",
+    "total": 1,
+    "deskripsi": "Menyediakan makanan dan minuman sehat, area makan bersih dan luas.",
+    "foto": "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg"
+  },
+  {
+    "id": 13,
+    "nama": "Ruang UKS (Unit Kesehatan Sekolah)",
+    "total": 1,
+    "deskripsi": "Tempat tidur pasien, perlengkapan P3K lengkap, dan tenaga kesehatan siaga.",
+    "foto": "https://images.pexels.com/photos/39584/medical-hospital-healthcare-medicine.jpg"
+  },
+  {
+    "id": 14,
+    "nama": "Mushola / Tempat Ibadah",
+    "total": 1,
+    "deskripsi": "Ruangan ibadah yang bersih dan nyaman, dilengkapi perlengkapan sholat.",
+    "foto": "https://images.pexels.com/photos/384572/pexels-photo-384572.jpeg"
+  },
+  {
+    "id": 15,
+    "nama": "Ruang Guru",
+    "total": 1,
+    "deskripsi": "Meja kerja individual untuk setiap guru, akses internet, dan loker penyimpanan.",
+    "foto": "https://images.pexels.com/photos/414519/pexels-photo-414519.jpeg"
+  },
+  {
+    "id": 16,
+    "nama": "Ruang Kepala Sekolah",
+    "total": 1,
+    "deskripsi": "Ruangan kerja, ruang rapat kecil, dan area tamu.",
+    "foto": "https://images.pexels.com/photos/3184460/pexels-photo-3184460.jpeg"
+  },
+  {
+    "id": 17,
+    "nama": "Bengkel Otomotif",
+    "total": 1,
+    "deskripsi": "Peralatan praktik mesin mobil/motor lengkap, dongkrak hidrolik, dan alat diagnosa.",
+    "foto": "https://images.pexels.com/photos/4489734/pexels-photo-4489734.jpeg"
+  },
+  {
+    "id": 18,
+    "nama": "Studio Musik",
+    "total": 1,
+    "deskripsi": "Ruangan kedap suara, dilengkapi alat musik band lengkap (gitar, drum, keyboard).",
+    "foto": "https://images.pexels.com/photos/164631/pexels-photo-164631.jpeg"
+  },
+  {
+    "id": 19,
+    "nama": "Green House / Kebun Sekolah",
+    "total": 1,
+    "deskripsi": "Area praktik pertanian dan biologi, dilengkapi sistem irigasi sederhana.",
+    "foto": "https://images.pexels.com/photos/7988090/pexels-photo-7988090.jpeg"
+  },
+  {
+    "id": 20,
+    "nama": "Toilet Siswa (Pria/Wanita)",
+    "total": 6,
+    "deskripsi": "Kebersihan terjamin, dilengkapi wastafel dan sabun cuci tangan.",
+    "foto": "https://images.pexels.com/photos/3965547/pexels-photo-3965547.jpeg"
+  },
+  {
+    "id": 21,
+    "nama": "Area Parkir Luas",
+    "total": 1,
+    "deskripsi": "Area aman untuk parkir motor dan mobil guru/siswa, diawasi CCTV.",
+    "foto": "https://images.pexels.com/photos/21014/pexels-photo.jpg"
+  },
+  {
+    "id": 22,
+    "nama": "Ruang OSIS",
+    "total": 1,
+    "deskripsi": "Ruangan khusus untuk rapat dan kegiatan organisasi siswa.",
+    "foto": "https://images.pexels.com/photos/3183171/pexels-photo-3183171.jpeg"
+  },
+  {
+    "id": 23,
+    "nama": "Kolam Renang",
+    "total": 1,
+    "deskripsi": "Kolam standar dengan kedalaman bervariasi untuk latihan, area bilas/ganti.",
+    "foto": "https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg"
   }
 ]
