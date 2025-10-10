@@ -65,6 +65,8 @@ import StrukturOrganisasiTrash from "./page/admin/struktur/StrukturOrganisasiTra
 // Admin - Settings
 import TambahJabatan from "./page/admin/settings/TambahJabatan";
 import WebSetting from "./page/admin/settings/WebSetting";
+import VisiMisi from "./page/public/VisiMisi";
+import StudentData from "./page/public/StudentData";
 
 function Router() {
   return (
@@ -151,6 +153,10 @@ function Router() {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/major/detail" element={<MajorDetail />} />
         <Route path="/detail" element={<DetailArtikel />} />
+        <Route path="/visi-misi" element={<VisiMisi />} />
+        <Route path="/student-data" element={<StudentData />} />
+        <Route path="/artikel" element={<Artikel />} />
+        
 
         {/* Not Found */}
         <Route path="*" element={<Navigate to="/" />} />

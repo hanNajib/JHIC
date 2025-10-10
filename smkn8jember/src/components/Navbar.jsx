@@ -68,12 +68,12 @@ const handleToggleSearch = () => {
                 <h1 className={`font-poppins font-bold text-[#424242] lg:hidden ${isSearch ? 'hidden md:flex' : 'flex'}`}>SMKN 8 Jember</h1>
             </div>
             <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
-                <Link to={'/'} className="active:font-bold hover:font-bold">Home</Link>
-                <Link to={'/profil'} className="active:font-bold hover:font-bold">Profil</Link>
-                <Link className="active:font-bold hover:font-bold">Jurusan</Link>
-                <Link className="active:font-bold hover:font-bold">Artikel</Link>
-                <Link to={'/gallery'} className="active:font-bold hover:font-bold">Galeri</Link>
-                <Link to={'/announcement'} className="active:font-bold hover:font-bold">Pengumuman</Link>
+                <Link to={'/'} className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Home</Link>
+                <Link to={'/profil'} className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Profil</Link>
+                <Link className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Jurusan</Link>
+                <Link className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Artikel</Link>
+                <Link to={'/gallery'} className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Galeri</Link>
+                <Link to={'/announcement'} className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Pengumuman</Link>
             </div>
             
             <div className="hidden lg:flex relative w-full lg:w-72">
@@ -108,12 +108,12 @@ const handleToggleSearch = () => {
                 }`}
             >
                 <div className="flex flex-col font-poppins gap-2 text-center py-5 text-[#4c4c4c]">
-                <a href="" className="active:font-bold hover:font-bold">Home</a>
-                <a href="" className="active:font-bold hover:font-bold">Profil</a>
-                <a href="" className="active:font-bold hover:font-bold">Jurusan</a>
-                <a href="" className="active:font-bold hover:font-bold">Blog</a>
-                <a href="" className="active:font-bold hover:font-bold">Galeri</a>
-                <a href="" className="active:font-bold hover:font-bold">Pengumuman</a>
+                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Home</a>
+                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Profil</a>
+                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Jurusan</a>
+                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Blog</a>
+                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Galeri</a>
+                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Pengumuman</a>
                 </div>
             </div>
         </div>
