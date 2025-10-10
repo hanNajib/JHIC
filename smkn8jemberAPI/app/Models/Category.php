@@ -11,7 +11,7 @@ class Category extends Model
     use SoftDeletes, HasCursorPagination;
 
     protected $fillable = ['type', 'name', 'color'];
-    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+    // protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 
     public function articles()
     {
