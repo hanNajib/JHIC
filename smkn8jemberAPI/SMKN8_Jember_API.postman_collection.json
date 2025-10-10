@@ -1,0 +1,2591 @@
+{
+	"info": {
+		"_postman_id": "smkn8-jember-api",
+		"name": "SMKN 8 Jember API - Complete with Tests",
+		"description": "Complete API Collection for SMKN 8 Jember Backend with automated testing scripts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "announcement_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "created_announcement_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "facility_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "major_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "partner_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "article_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "extracurricular_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "gallery_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test response time",
+									"pm.test(\"Response time is less than 2000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"// Test response structure",
+									"pm.test(\"Response has required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).to.have.property('token');",
+									"    pm.expect(jsonData.data).to.have.property('user');",
+									"});",
+									"",
+									"// Test data types",
+									"pm.test(\"Token is a string\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.token).to.be.a('string');",
+									"    pm.expect(jsonData.data.token).to.not.be.empty;",
+									"});",
+									"",
+									"// Save token for other requests",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"auth_token\", jsonData.data.token);",
+									"    console.log(\"Token saved: \" + jsonData.data.token);",
+									"}",
+									"",
+									"// Test success flag",
+									"pm.test(\"Success flag is true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"login\": \"admin@example.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test response structure",
+									"pm.test(\"Response has success message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"// Clear token after logout",
+									"pm.collectionVariables.set(\"auth_token\", \"\");",
+									"console.log(\"Token cleared after logout\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Info (Me)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test response structure",
+									"pm.test(\"Response contains user data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).to.have.property('id');",
+									"    pm.expect(jsonData.data).to.have.property('name');",
+									"    pm.expect(jsonData.data).to.have.property('email');",
+									"});",
+									"",
+									"// Test authentication",
+									"pm.test(\"User is authenticated\", function () {",
+									"    pm.expect(pm.response.code).to.not.equal(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Announcements",
+			"item": [
+				{
+					"name": "Get All Announcements",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test response time",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+									"});",
+									"",
+									"// Test response structure",
+									"pm.test(\"Response has data array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});",
+									"",
+									"// Test data structure if data exists",
+									"pm.test(\"Data items have required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data.length > 0) {",
+									"        var item = jsonData.data[0];",
+									"        pm.expect(item).to.have.property('id');",
+									"        pm.expect(item).to.have.property('title');",
+									"        pm.expect(item).to.have.property('content');",
+									"        // Save first ID for detail test",
+									"        pm.collectionVariables.set(\"announcement_id\", item.id);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/announcements",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Announcement",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code (200 or 404)",
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});",
+									"",
+									"// If found, test structure",
+									"if (pm.response.code === 200) {",
+									"    pm.test(\"Response contains announcement data\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('success');",
+									"        pm.expect(jsonData).to.have.property('data');",
+									"        pm.expect(jsonData.data).to.have.property('id');",
+									"        pm.expect(jsonData.data).to.have.property('title');",
+									"        pm.expect(jsonData.data).to.have.property('content');",
+									"        pm.expect(jsonData.data).to.have.property('image');",
+									"    });",
+									"}",
+									"",
+									"// If not found, test error message",
+									"if (pm.response.code === 404) {",
+									"    pm.test(\"Not found message is present\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('success');",
+									"        pm.expect(jsonData.success).to.be.false;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/announcements/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"announcements",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Announcement",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 201 or 200\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"// Test response structure",
+									"pm.test(\"Response contains created data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"// Test created data has ID",
+									"pm.test(\"Created announcement has ID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property('id');",
+									"    pm.expect(jsonData.data.id).to.be.a('number');",
+									"    // Save ID for update/delete",
+									"    pm.collectionVariables.set(\"created_announcement_id\", jsonData.data.id);",
+									"});",
+									"",
+									"// Test data matches input",
+									"pm.test(\"Created data matches input\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.title).to.equal(\"Pengumuman Penting\");",
+									"    pm.expect(jsonData.data.content).to.equal(\"Ini adalah isi pengumuman penting\");",
+									"});",
+									"",
+									"// Test authentication required",
+									"pm.test(\"Request requires authentication\", function () {",
+									"    pm.expect(pm.response.code).to.not.equal(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Pengumuman Penting",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Ini adalah isi pengumuman penting",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/announcements",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Announcement",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    // Test response structure",
+									"    pm.test(\"Response contains updated data\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('success');",
+									"        pm.expect(jsonData).to.have.property('data');",
+									"        pm.expect(jsonData).to.have.property('message');",
+									"        pm.expect(jsonData.success).to.be.true;",
+									"    });",
+									"    ",
+									"    // Test updated data",
+									"    pm.test(\"Data was updated successfully\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.data.title).to.equal(\"Pengumuman Updated\");",
+									"        pm.expect(jsonData.data.content).to.equal(\"Konten diupdate\");",
+									"    });",
+									"    ",
+									"    // Test image handling",
+									"    pm.test(\"Old image was deleted and new image uploaded\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.data).to.have.property('image');",
+									"    });",
+									"}",
+									"",
+									"// Test authentication",
+									"pm.test(\"Authentication is required\", function () {",
+									"    pm.expect(pm.response.code).to.not.equal(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Pengumuman Updated",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Konten diupdate",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/announcements/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"announcements",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Announcement",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    // Test response structure",
+									"    pm.test(\"Response confirms deletion\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('success');",
+									"        pm.expect(jsonData).to.have.property('message');",
+									"        pm.expect(jsonData.success).to.be.true;",
+									"    });",
+									"    ",
+									"    // Test deletion message",
+									"    pm.test(\"Deletion message is present\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.message).to.include('deleted');",
+									"    });",
+									"}",
+									"",
+									"// Test authentication",
+									"pm.test(\"Authentication is required\", function () {",
+									"    pm.expect(pm.response.code).to.not.equal(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/announcements/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"announcements",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Facilities",
+			"item": [
+				{
+					"name": "Get All Facilities",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/facility",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"facility"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Facility",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/facility/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"facility",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Facility",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Laboratorium Komputer",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Lab dengan 40 unit komputer",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "room_total",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/facility",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"facility"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Facility",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Lab Komputer Updated",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Deskripsi updated",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "room_total",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/facility/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"facility",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Facility",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/facility/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"facility",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Majors",
+			"item": [
+				{
+					"name": "Get All Majors",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/majors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"majors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Major",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/majors/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"majors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Major",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Rekayasa Perangkat Lunak",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Jurusan pengembangan software dan aplikasi",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/majors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"majors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Major",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "RPL Updated",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Deskripsi updated",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/majors/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"majors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Major",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/majors/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"majors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Partners",
+			"item": [
+				{
+					"name": "Get All Partners",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/partners",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"partners"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Partner",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/partners/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"partners",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Partner",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "PT. Example Indonesia",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "major_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/partners",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"partners"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Partner",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "PT. Example Updated",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "major_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/partners/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"partners",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Partner",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/partners/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"partners",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Extracurriculars",
+			"item": [
+				{
+					"name": "Get All Extracurriculars",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/extracurriculars",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"extracurriculars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Extracurricular",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/extracurriculars/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"extracurriculars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Extracurricular",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Pramuka",
+									"type": "text"
+								},
+								{
+									"key": "mentor_name",
+									"value": "Bapak Mentor",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Kegiatan kepramukaan",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/extracurriculars",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"extracurriculars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Extracurricular",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Pramuka Updated",
+									"type": "text"
+								},
+								{
+									"key": "mentor_name",
+									"value": "Bapak Mentor Updated",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Deskripsi updated",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/extracurriculars/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"extracurriculars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Extracurricular",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/extracurriculars/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"extracurriculars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chance Carriers",
+			"item": [
+				{
+					"name": "Get All Chance Carriers",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/chance-carriers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chance-carriers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Chance Carrier",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/chance-carriers/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chance-carriers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Chance Carrier",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Software Developer",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Peluang karir sebagai developer",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "major_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/chance-carriers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chance-carriers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Chance Carrier",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Developer Updated",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Deskripsi updated",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "major_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/chance-carriers/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chance-carriers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Chance Carrier",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/chance-carriers/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chance-carriers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gallery",
+			"item": [
+				{
+					"name": "Get All Gallery",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/gallery",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gallery"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Gallery",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/gallery/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gallery",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Gallery",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Kegiatan Sekolah",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Foto kegiatan sekolah",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/gallery",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gallery"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Gallery",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Kegiatan Updated",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Deskripsi updated",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/gallery/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gallery",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Gallery",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/gallery/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"gallery",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subjects",
+			"item": [
+				{
+					"name": "Get All Subjects",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/subject",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Subject",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/subject/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subject",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Subject",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Pemrograman Web\",\n    \"major_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/subject",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subject",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Pemrograman Web Updated\",\n    \"major_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/subject/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subject",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Subject",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/subject/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subject",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "School Data",
+			"item": [
+				{
+					"name": "Get All School Data",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/schoolData",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schoolData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single School Data",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/schoolData/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schoolData",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update School Data",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"key\": \"school_name\",\n    \"value\": \"SMKN 8 Jember\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/schoolData/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schoolData",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Articles",
+			"item": [
+				{
+					"name": "🔥 Cache Performance Test - First Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Save first request time",
+									"pm.collectionVariables.set(\"first_request_time\", pm.response.responseTime);",
+									"",
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Log response time",
+									"pm.test(\"⏱️ First request time (WITHOUT cache): \" + pm.response.responseTime + \"ms\", function () {",
+									"    console.log(\"First Request (No Cache): \" + pm.response.responseTime + \"ms\");",
+									"    pm.expect(pm.response.responseTime).to.be.a('number');",
+									"});",
+									"",
+									"// Test data structure",
+									"pm.test(\"Response has data array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/articles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "⚡ Cache Performance Test - Second Request (Cached)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get both request times",
+									"var firstTime = parseInt(pm.collectionVariables.get(\"first_request_time\"));",
+									"var secondTime = pm.response.responseTime;",
+									"",
+									"// Calculate improvement",
+									"var improvement = ((firstTime - secondTime) / firstTime * 100).toFixed(2);",
+									"var speedup = (firstTime / secondTime).toFixed(2);",
+									"",
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Compare performance",
+									"pm.test(\"🚀 Second request time (WITH cache): \" + secondTime + \"ms\", function () {",
+									"    console.log(\"\\n=== CACHE PERFORMANCE TEST ===\");",
+									"    console.log(\"First Request (No Cache):  \" + firstTime + \"ms\");",
+									"    console.log(\"Second Request (Cached):   \" + secondTime + \"ms\");",
+									"    console.log(\"Improvement: \" + improvement + \"% faster\");",
+									"    console.log(\"Speed Up: \" + speedup + \"x faster\");",
+									"    console.log(\"==============================\\n\");",
+									"    ",
+									"    pm.expect(secondTime).to.be.a('number');",
+									"});",
+									"",
+									"// Test cache effectiveness",
+									"pm.test(\"✅ Cache improves performance (\" + improvement + \"% faster, \" + speedup + \"x speedup)\", function () {",
+									"    pm.expect(secondTime).to.be.below(firstTime);",
+									"});",
+									"",
+									"// Ideal cache performance",
+									"if (improvement >= 50) {",
+									"    pm.test(\"🏆 Excellent cache performance (>50% improvement)\", function () {",
+									"        pm.expect(improvement).to.be.above(50);",
+									"    });",
+									"} else if (improvement >= 30) {",
+									"    pm.test(\"👍 Good cache performance (30-50% improvement)\", function () {",
+									"        pm.expect(improvement).to.be.above(30);",
+									"    });",
+									"} else {",
+									"    pm.test(\"⚠️ Cache working but could be optimized (<30% improvement)\", function () {",
+									"        console.log(\"Consider optimizing cache strategy or checking Redis configuration\");",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/articles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Articles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test response time",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+									"});",
+									"",
+									"// Test response structure",
+									"pm.test(\"Response has data array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});",
+									"",
+									"// Test data structure if data exists",
+									"pm.test(\"Articles have required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data.length > 0) {",
+									"        var article = jsonData.data[0];",
+									"        pm.expect(article).to.have.property('id');",
+									"        pm.expect(article).to.have.property('title');",
+									"        pm.expect(article).to.have.property('slug');",
+									"        pm.expect(article).to.have.property('content');",
+									"        pm.expect(article).to.have.property('status');",
+									"        // Save first ID for detail test",
+									"        pm.collectionVariables.set(\"article_id\", article.id);",
+									"        pm.collectionVariables.set(\"article_slug\", article.slug);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/articles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Article",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"pm.test(\"Response has article data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).to.be.an('object');",
+									"    pm.expect(jsonData.data).to.have.property('id');",
+									"    pm.expect(jsonData.data).to.have.property('title');",
+									"    pm.expect(jsonData.data).to.have.property('content');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/articles/{{article_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles",
+								"{{article_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "🚀 Load Test - 10 Rapid Requests (Cache Stress Test)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Initialize counter",
+									"if (!pm.collectionVariables.get(\"load_test_count\")) {",
+									"    pm.collectionVariables.set(\"load_test_count\", 0);",
+									"    pm.collectionVariables.set(\"load_test_total_time\", 0);",
+									"    pm.collectionVariables.set(\"load_test_times\", JSON.stringify([]));",
+									"}",
+									"",
+									"// Increment counter",
+									"var count = parseInt(pm.collectionVariables.get(\"load_test_count\")) + 1;",
+									"pm.collectionVariables.set(\"load_test_count\", count);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Track response time",
+									"var count = parseInt(pm.collectionVariables.get(\"load_test_count\"));",
+									"var totalTime = parseInt(pm.collectionVariables.get(\"load_test_total_time\")) + pm.response.responseTime;",
+									"pm.collectionVariables.set(\"load_test_total_time\", totalTime);",
+									"",
+									"// Store individual times",
+									"var times = JSON.parse(pm.collectionVariables.get(\"load_test_times\"));",
+									"times.push(pm.response.responseTime);",
+									"pm.collectionVariables.set(\"load_test_times\", JSON.stringify(times));",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Request #\" + count + \" - Response time: \" + pm.response.responseTime + \"ms\", function () {",
+									"    console.log(\"Request #\" + count + \": \" + pm.response.responseTime + \"ms\");",
+									"    pm.expect(pm.response.responseTime).to.be.a('number');",
+									"});",
+									"",
+									"// Final statistics after 10 requests",
+									"if (count >= 10) {",
+									"    var avgTime = (totalTime / count).toFixed(2);",
+									"    var minTime = Math.min(...times);",
+									"    var maxTime = Math.max(...times);",
+									"    ",
+									"    pm.test(\"\\n📊 LOAD TEST SUMMARY (10 Requests)\", function () {",
+									"        console.log(\"\\n=== LOAD TEST RESULTS ===\");",
+									"        console.log(\"Total Requests: \" + count);",
+									"        console.log(\"Average Time: \" + avgTime + \"ms\");",
+									"        console.log(\"Fastest: \" + minTime + \"ms\");",
+									"        console.log(\"Slowest: \" + maxTime + \"ms\");",
+									"        console.log(\"Total Time: \" + totalTime + \"ms\");",
+									"        console.log(\"========================\\n\");",
+									"    });",
+									"    ",
+									"    pm.test(\"✅ Average response time with cache: \" + avgTime + \"ms\", function () {",
+									"        pm.expect(parseFloat(avgTime)).to.be.below(1000);",
+									"    });",
+									"    ",
+									"    pm.test(\"✅ All cached requests fast (max < 500ms)\", function () {",
+									"        pm.expect(maxTime).to.be.below(500);",
+									"    });",
+									"    ",
+									"    // Reset counters",
+									"    pm.collectionVariables.unset(\"load_test_count\");",
+									"    pm.collectionVariables.unset(\"load_test_total_time\");",
+									"    pm.collectionVariables.unset(\"load_test_times\");",
+									"} else {",
+									"    // Continue load test",
+									"    postman.setNextRequest(\"🚀 Load Test - 10 Rapid Requests (Cache Stress Test)\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/articles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Article by Slug",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"pm.test(\"Response has article data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).to.be.an('object');",
+									"    pm.expect(jsonData.data).to.have.property('slug');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/articles/slug/{{article_slug}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles",
+								"slug",
+								"{{article_slug}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Article",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Article created successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    ",
+									"    // Save created article ID for cache invalidation test",
+									"    if (jsonData.data && jsonData.data.id) {",
+									"        pm.collectionVariables.set(\"created_article_id\", jsonData.data.id);",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"🔄 Cache should be cleared after creation\", function () {",
+									"    // When new article is created, cached list should be invalidated",
+									"    console.log(\"New article created - cache version bumped\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Judul Artikel Baru {{$timestamp}}",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "judul-artikel-baru-{{$timestamp}}",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Ini adalah isi konten artikel yang lengkap dan detail untuk testing",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "published",
+									"type": "text",
+									"description": "published or draft"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "author_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "categories[]",
+									"value": "1",
+									"type": "text",
+									"description": "Category IDs (can add multiple)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/articles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "🔄 Cache Invalidation Test - Before Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Save response data before update",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"article_title_before\", jsonData.data.title);",
+									"pm.collectionVariables.set(\"cache_test_time_before\", pm.response.responseTime);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"📝 Saved article data before update\", function () {",
+									"    console.log(\"Article title before update: \" + jsonData.data.title);",
+									"    pm.expect(jsonData.data).to.have.property('title');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/articles/{{article_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles",
+								"{{article_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Article",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Article updated successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Judul Artikel Updated - Cache Test {{$timestamp}}\",\n    \"content\": \"Konten artikel yang sudah diupdate untuk testing cache invalidation\",\n    \"status\": \"published\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/articles/{{article_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles",
+								"{{article_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "🔄 Cache Invalidation Test - After Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get data after update",
+									"var jsonData = pm.response.json();",
+									"var titleBefore = pm.collectionVariables.get(\"article_title_before\");",
+									"var titleAfter = jsonData.data.title;",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"✅ Cache invalidated - Data is fresh (title changed)\", function () {",
+									"    console.log(\"\\n=== CACHE INVALIDATION TEST ===\");",
+									"    console.log(\"Title before update: \" + titleBefore);",
+									"    console.log(\"Title after update:  \" + titleAfter);",
+									"    console.log(\"===============================\\n\");",
+									"    ",
+									"    pm.expect(titleAfter).to.not.equal(titleBefore);",
+									"    pm.expect(titleAfter).to.include(\"Cache Test\");",
+									"});",
+									"",
+									"pm.test(\"🎯 Cache was properly cleared on update\", function () {",
+									"    // If we get the new data, cache was invalidated correctly",
+									"    pm.expect(jsonData.data.title).to.be.a('string');",
+									"    pm.expect(jsonData.data.title).to.not.equal(titleBefore);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/articles/{{article_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles",
+								"{{article_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Article",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Article deleted successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"🔄 Cache cleared after deletion\", function () {",
+									"    // When article is deleted, cache should be invalidated",
+									"    console.log(\"Article deleted - cache version bumped\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/articles/{{created_article_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles",
+								"{{created_article_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -66,6 +66,39 @@ trait ApiResponse
             ],
         ]);
     }
+
+    /**
+     * Response untuk cursor pagination
+     * Compatible dengan HasCursorPagination trait
+     * 
+     * @param \Illuminate\Contracts\Pagination\CursorPaginator $paginator
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function cursorPaginated($paginator, string $message = 'Success')
+    {
+        return response()->json([
+            'status'  => 'success',
+            'message' => $message,
+            'data'    => $paginator->items(),
+            'meta'    => [
+                'per_page'         => $paginator->perPage(),
+                'next_cursor'      => $paginator->nextCursor()?->encode(),
+                'previous_cursor'  => $paginator->previousCursor()?->encode(),
+                'has_pages'        => $paginator->hasPages(),
+                'has_more_pages'   => $paginator->hasMorePages(),
+                'path'             => $paginator->path(),
+            ],
+            'links' => [
+                'first' => $paginator->url($paginator->cursor()),
+                'last'  => null, // Cursor pagination doesn't have last page concept
+                'prev'  => $paginator->previousPageUrl(),
+                'next'  => $paginator->nextPageUrl(),
+            ],
+        ]);
+    }
+
+
     /**
      * Response not found (404)
      */
@@ -121,6 +154,37 @@ trait ApiResponse
             'status'  => 'success',
             'message' => $message,
         ], 200);
+    }
+
+    /**
+     * Response untuk cursor pagination dengan resource transformation
+     * 
+     * @param \Illuminate\Contracts\Pagination\CursorPaginator $paginator
+     * @param string $resourceClass
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function cursorPaginatedResource($paginator, $resourceClass, string $message = 'Success')
+    {
+        return response()->json([
+            'status'  => 'success',
+            'message' => $message,
+            'data'    => $resourceClass::collection($paginator->items()),
+            'meta'    => [
+                'per_page'         => $paginator->perPage(),
+                'next_cursor'      => $paginator->nextCursor()?->encode(),
+                'previous_cursor'  => $paginator->previousCursor()?->encode(),
+                'has_pages'        => $paginator->hasPages(),
+                'has_more_pages'   => $paginator->hasMorePages(),
+                'path'             => $paginator->path(),
+            ],
+            'links' => [
+                'first' => $paginator->url($paginator->cursor()),
+                'last'  => null, // Cursor pagination doesn't have last page concept
+                'prev'  => $paginator->previousPageUrl(),
+                'next'  => $paginator->nextPageUrl(),
+            ],
+        ]);
     }
 
     /**

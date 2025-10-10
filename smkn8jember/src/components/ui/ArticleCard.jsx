@@ -38,7 +38,7 @@ const ArticleCard = ({ article, className = '' }) => {
                 </p>
             </div>
 
-            <div className="flex flex-row justify-between items-center pb-7 pt-2 px-5 gap-4 relative">
+            <div className="flex flex-col pb-7 pt-3 px-5 gap-2 relative">
                 <div className="flex items-center gap-2 text-[#5a5a5a] leading-snug font-medium text-sm">
                     <Icon name="IoCalendarClearOutline" size={16} />
                     {article.date}

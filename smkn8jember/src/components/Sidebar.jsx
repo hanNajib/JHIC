@@ -175,8 +175,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           <div className="flex items-center gap-3">
             <img src="/image/logosmk.png" className="w-10" alt="logo" />
             {isOpen && (
-              <h1 className="font-bold text-2xl tracking-wide boderTeks">
-                Eskalaber
+              <h1 className="font-bold text-lg tracking-wide boderTeks">
+                SMKN 8 JEMBER
               </h1>
             )}
           </div>
@@ -262,7 +262,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               isOpen={isOpen}
             />
             <NavItem
-              to="/userjurusan"
+              to="/admin-jurusan"
               icon={LuUserPlus}
               label="User Jurusan"
               isOpen={isOpen}

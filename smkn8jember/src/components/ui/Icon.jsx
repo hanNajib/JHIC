@@ -11,8 +11,10 @@ import {
   FaWifi
 } from "react-icons/fa";
 import { 
-  FaCode as FaCode6
+  FaCode as FaCode6,
+  FaNewspaper
 } from "react-icons/fa6";
+import { TbCategoryFilled } from "react-icons/tb";
 import { PiStudentBold, PiPlantFill } from "react-icons/pi";
 import { IoMdColorPalette } from "react-icons/io";
 import { IoCarSport, IoCalendarClearOutline } from "react-icons/io5";
@@ -34,6 +36,8 @@ const iconMap = {
   RiMegaphoneFill,
   FaMotorcycle,
   FaCode6,
+  FaNewspaper,
+  TbCategoryFilled
 };
 
 const Icon = ({ 

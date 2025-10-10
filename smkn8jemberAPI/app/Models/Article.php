@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\AutoCacheable;
+use App\Traits\HasCursorPagination;
 use App\Traits\HasImageUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +11,7 @@ use Illuminate\Support\Str;
 
 class Article extends Model
 {
-    use SoftDeletes, HasImageUrl;
+    use SoftDeletes, HasImageUrl, HasCursorPagination;
 
     protected $fillable = [
         'title',
@@ -20,6 +22,7 @@ class Article extends Model
         'views',
         'author_id'
     ];
+    protected $with = ['author', 'categories'];
 
     public function author()
     {
@@ -39,5 +42,25 @@ class Article extends Model
     public function isPublished(): bool
     {
         return $this->status === 'published';
+    }
+
+    public function incrementViews(): void
+    {
+        $this->increment('views');
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('status', 'published');
+    }
+
+    public function scopeDraft($query)
+    {
+        return $query->where('status', 'draft');
+    }
+
+    public static function whereSlug($slug)
+    {
+        return self::where('slug', $slug);
     }
 }

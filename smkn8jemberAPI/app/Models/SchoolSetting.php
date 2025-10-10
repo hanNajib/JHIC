@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -10,4 +11,28 @@ class SchoolSetting extends Model
     use SoftDeletes;
 
     protected $fillable = ['title', 'value'];
+
+    public $availableSettings = [
+        'judul_halaman',
+        'deskripsi_halaman',
+        'deskripsi_halaman',
+        'deskripsi_about',
+        'kata_sambutan',
+        'tahun_berdiri',
+        'logo_sekolah',
+        'hero_image',
+        'youtube_link',
+        'facebook_link',
+        'instagram_link',
+        'email',
+        'telepon',
+        'alamat',
+        'visi',
+        'misi',
+    ];
+
+    public static function whereSetting($title): Builder
+    {
+        return self::where('title', $title);
+    }
 }
