@@ -196,7 +196,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           } max-h-[calc(100vh-71px)] pr-2`}
         >
           <NavItem
-            to="/dashboard"
+            to="/admin/dashboard"
             icon={MdOutlineDashboard}
             label="Dashboard"
             isOpen={isOpen}
@@ -222,19 +222,19 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               items={artikelItems}
             />
             <NavItem
-              to="/gambar"
+              to="/admin/gambar"
               icon={IoImagesOutline}
               label="Gambar"
               isOpen={isOpen}
             />
             <NavItem
-              to="/pengumuman"
+              to="/admin/pengumuman"
               icon={HiOutlineSpeakerphone}
               label="Pengumuman"
               isOpen={isOpen}
             />
             <NavItem
-              to="/kategori"
+              to="/admin/kategori"
               icon={MdOutlineCategory}
               label="Kategori"
               isOpen={isOpen}
@@ -261,25 +261,25 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               items={manajemenItems}
             />
             <NavItem
-              to="/mapel"
+              to="/admin/mapel"
               icon={FaRegListAlt}
               label="Mata Pelajaran"
               isOpen={isOpen}
             />
             <NavItem
-              to="/admin-jurusan"
+              to="/admin/admin-jurusan"
               icon={LuUserPlus}
               label="Data User"
               isOpen={isOpen}
             />
             <NavItem
-              to="/jurusan"
+              to="/admin/jurusan"
               icon={MdOutlineCategory}
               label="Jurusan"
               isOpen={isOpen}
             />
             <NavItem
-              to="/strukturorganisasi"
+              to="/admin/strukturorganisasi"
               icon={PiTreeStructureBold}
               label="Struktur Organisasi"
               isOpen={isOpen}
@@ -287,7 +287,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </div>
 
           <NavItem
-            to="/websetting"
+            to="/admin/websetting"
             icon={MdOutlineSettings}
             label="Web Setting"
             isOpen={isOpen}
