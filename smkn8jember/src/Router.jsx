@@ -49,6 +49,11 @@ import Login from './page/Login'
 import MajorDetail from "./page/MajorDetail";
 import DetailArtikel from "./page/DetailArtikel";
 import ProtectedRoute from "./ProtectedRoute";
+import VisiMisi from "./page/VisiMisi";
+import Articles from "./page/Articles";
+import StudentData from "./page/StudentData";
+
+
 
 function Router() {
   return (
