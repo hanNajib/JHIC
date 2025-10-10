@@ -9,7 +9,6 @@ import History from "./page/public/History";
 import HeadMaster from "./page/public/HeadMaster";
 import Announcement from "./page/public/Announcement";
 import Gallery from "./page/public/Gallery";
-import DetailArtikel from "./page/public/DetailArtikel";
 import MajorDetail from "./page/public/MajorDetail";
 // Admin - Dashboard
 import Dashboard from "./page/admin/dashboard/Dashboard";
@@ -67,6 +66,8 @@ import TambahJabatan from "./page/admin/settings/TambahJabatan";
 import WebSetting from "./page/admin/settings/WebSetting";
 import VisiMisi from "./page/public/VisiMisi";
 import StudentData from "./page/public/StudentData";
+import Struktur from "./page/public/Struktur";
+import DetailArtikel from "./page/public/DetailArtikel";
 
 function Router() {
   return (
@@ -76,9 +77,9 @@ function Router() {
         <Route path="/login" element={<Login />} />
 
         {/* Admin Routes */}
-        <Route path="/" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+        <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
           <Route path="dashboard" element={<Dashboard />} />
-          
+
           {/* Artikel */}
           <Route path="artikel" element={<Artikel />} />
           <Route path="artikel/tambah" element={<TambahArtikel />} />
@@ -86,62 +87,62 @@ function Router() {
           <Route path="artikelUser" element={<ArtikelUser />} />
           <Route path="artikelUser/verifikasi" element={<ArtikelUserVerifikasi />} />
           <Route path="artikelUser/edit/:id" element={<EditArtikel />} />
-          
+
           {/* Pengumuman */}
           <Route path="pengumuman" element={<Pengumuman />} />
           <Route path="pengumuman/tambah" element={<PengumumanTambah />} />
           <Route path="pengumuman/edit/:id" element={<EditPengumuman />} />
-          
+
           {/* Gambar */}
           <Route path="gambar" element={<Gambar />} />
           <Route path="gambar/tambah" element={<TambahGambar />} />
           <Route path="gambar/edit/:id" element={<EditGambar />} />
-          
+
           {/* Data Guru */}
           <Route path="dataguru" element={<Guru />} />
           <Route path="dataguru/tambah" element={<TambahGuru />} />
           <Route path="dataguru/edit/:id" element={<EditGuru />} />
-          
+
           {/* Data Karyawan */}
           <Route path="datakaryawan" element={<Karyawan />} />
           <Route path="datakaryawan/tambah" element={<TambahKaryawan />} />
           <Route path="datakaryawan/edit/:id" element={<EditKaryawan />} />
-          
+
           {/* Siswa */}
           <Route path="siswa" element={<Siswa />} />
-          
+
           {/* Fasilitas */}
           <Route path="fasilitas" element={<Fasilitas />} />
           <Route path="fasilitas/tambah" element={<TambahFasilitas />} />
           <Route path="fasilitas/edit/:id" element={<EditFasilitas />} />
-          
+
           {/* Ekstrakulikuler */}
           <Route path="ekstrakulikuler" element={<Ekstra />} />
           <Route path="ekstrakulikuler/tambah" element={<TambahEkstra />} />
           <Route path="ekstrakulikuler/edit/:id" element={<EditEkstra />} />
-          
+
           {/* Mata Pelajaran */}
           <Route path="mapel" element={<Mapel />} />
           <Route path="mapel/tambah" element={<TambahMapel />} />
           <Route path="mapel/edit/:id" element={<EditMapel />} />
-          
+
           {/* Admin Jurusan */}
           <Route path="admin-jurusan" element={<UserJurusan />} />
           <Route path="admin-jurusan/tambah" element={<TambahUserJurusan />} />
           <Route path="admin-jurusan/edit/:id" element={<EditUserJurusan />} />
-          
+
           {/* Jurusan */}
           <Route path="jurusan" element={<Jurusan />} />
           <Route path="jurusan/tambah" element={<TambahJurusan />} />
           <Route path="jurusan/edit/:id" element={<EditJurusan />} />
           <Route path="jurusan/jurusantrash" element={<JurusanTrash />} />
-          
+
           {/* Struktur Organisasi */}
           <Route path="strukturorganisasi" element={<StrukturOrganisasi />} />
           <Route path="strukturorganisasi/tambah" element={<TambahJabatan />} />
           <Route path="strukturorganisasi/edit/:id" element={<EditStrukturOrganisasi />} />
           <Route path="strukturorganisasitrash" element={<StrukturOrganisasiTrash />} />
-          
+
           {/* Web Setting */}
           <Route path="websetting" element={<WebSetting />} />
         </Route>
@@ -156,7 +157,9 @@ function Router() {
         <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/student-data" element={<StudentData />} />
         <Route path="/artikel" element={<Artikel />} />
-        
+        <Route path="/artiekl/:slug" element={<DetailArtikel />} />
+        <Route path="/struktur" element={<Struktur />} />
+
 
         {/* Not Found */}
         <Route path="*" element={<Navigate to="/" />} />

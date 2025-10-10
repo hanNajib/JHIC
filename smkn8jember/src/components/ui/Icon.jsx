@@ -8,17 +8,22 @@ import {
   FaChalkboardTeacher, 
   FaMotorcycle,
   FaCode,
-  FaWifi
+  FaWifi,
+  FaTools
 } from "react-icons/fa";
 import { 
   FaCode as FaCode6,
-  FaNewspaper
+  FaNewspaper,
+  FaAnglesRight,
+  FaPersonMilitaryPointing,
 } from "react-icons/fa6";
 import { TbCategoryFilled } from "react-icons/tb";
 import { PiStudentBold, PiPlantFill } from "react-icons/pi";
 import { IoMdColorPalette } from "react-icons/io";
 import { IoCarSport, IoCalendarClearOutline } from "react-icons/io5";
 import { RiPlantFill, RiMegaphoneFill } from "react-icons/ri";
+// import { FaAnglesRight } from "react-icons/fa6";
+import { BsPersonVcard } from "react-icons/bs";
 
 const iconMap = {
   LuBookText,
@@ -37,7 +42,11 @@ const iconMap = {
   FaMotorcycle,
   FaCode6,
   FaNewspaper,
-  TbCategoryFilled
+  TbCategoryFilled,
+  FaAnglesRight,
+  BsPersonVcard,
+  FaTools,
+  FaPersonMilitaryPointing,
 };
 
 const Icon = ({ 
