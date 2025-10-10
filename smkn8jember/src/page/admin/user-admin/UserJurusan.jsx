@@ -3,7 +3,7 @@ import { FaRegEdit, FaSearch } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiImageOn } from "react-icons/ci";
 import { AdminLoading, Loading } from "../../../components/ui";
-import { useAdmins, useDeleteUser } from "../../../hooks/api/useAdmin";
+import { useAdmins, useDeleteUser, useRestoreUser } from "../../../hooks/api/useAdmin";
 import { BiRefresh } from "react-icons/bi";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -12,12 +12,14 @@ import { useDebounce } from "../../../hooks/useDebounce";
 
 const UserJurusan = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [trashed, setTrashed] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const { data: admins, isLoading, error, refetch, isFetching } = useAdmins({
-    s: debouncedSearchTerm
+  const { data: admins, error, refetch, isFetching } = useAdmins({
+    s: debouncedSearchTerm,
+    trashed: trashed,
   });
   const deleteUser = useDeleteUser();
-  const [filterStatus, setFilterStatus] = useState("all");
+  const restoreUser = useRestoreUser();
   const navigate = useNavigate();
 
   const handleEdit = (adminId) => {
@@ -40,6 +42,22 @@ const UserJurusan = () => {
     });
   };
 
+  const handleRestore = (admin) => {
+    Swal.fire({
+      title: "Yakin ingin mengaktifkan?",
+      text: `Admin: ${admin.username}`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Aktifkan",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        restoreUser.mutate(admin.id);
+        Swal.fire("Diaktifkan!", "Admin telah diaktifkan.", "success");
+      }
+    });
+  };
+
   const handleAddAdmin = () => {
     navigate('/admin-jurusan/tambah');
   };
@@ -54,8 +72,8 @@ const UserJurusan = () => {
         <div className="text-center">
           <h3 className="text-xl font-semibold text-gray-800 mb-2">Gagal Memuat Data</h3>
           <p className="text-gray-600 mb-4">{error.message || 'Terjadi kesalahan saat memuat data admin'}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-300"
           >
             Coba Lagi
@@ -81,7 +99,7 @@ const UserJurusan = () => {
           >
             <BiRefresh className="text-lg" />
           </button>
-    
+
           <button
             onClick={() => handleAddAdmin()}
             className="flex justify-center items-center gap-2 px-4 py-2 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300 w-fit"
@@ -104,16 +122,16 @@ const UserJurusan = () => {
           />
         </div>
         <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
+          value={trashed}
+          onChange={(e) => setTrashed(e.target.value)}
           className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
         >
-          <option value="all">Semua</option>
-          <option value="inactive">Nonaktif</option>
+          <option value="false">Semua</option>
+          <option value="true">Nonaktif</option>
         </select>
       </div>
 
-      
+
 
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
         {isFetching && (
@@ -155,11 +173,10 @@ const UserJurusan = () => {
                     </div>
                   </td>
                   <td className="py-3 px-4 border-b border-gray-200 w-24">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      admin.role === 'superadmin' 
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${admin.role === 'superadmin'
                         ? 'bg-purple-100 text-purple-800'
                         : 'bg-blue-100 text-blue-800'
-                    }`}>
+                      }`}>
                       {admin.role}
                     </span>
                   </td>
@@ -184,23 +201,26 @@ const UserJurusan = () => {
                   </td>
                   <td className="py-3 px-4 border-b border-gray-200 text-center w-24">
                     <div className="flex gap-1 justify-center">
+                      {
+                        admin.deleted_at === null && (
+                          <button
+                            onClick={() => handleEdit(admin.id)}
+                            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
+                            title="Edit Admin"
+                          >
+                            <FaRegEdit className="text-xs" />
+                          </button>
+                        )
+                      }
                       <button
-                        onClick={() => handleEdit(admin.id)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
-                        title="Edit Admin"
-                      >
-                        <FaRegEdit className="text-xs" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(admin)}
-                        className={`${
-                          admin.deleted_at === null 
-                            ? 'bg-red-500 hover:bg-red-600' 
+                        onClick={() => admin.deleted_at === null ? handleDelete(admin) : handleRestore(admin)}
+                        className={`${admin.deleted_at === null
+                            ? 'bg-red-500 hover:bg-red-600'
                             : 'bg-green-500 hover:bg-green-600'
-                        } text-white p-2 rounded transition duration-200`}
-                        title={admin.deleted_at === null ? 'Hapus Admin' : 'Restore Admin'}
+                          } text-white p-2 rounded transition duration-200`}
+                        title={admin.deleted_at === null ? 'Hapus' : 'Aktifkan'}
                       >
-                        <MdDeleteOutline className="text-xs" />
+                        {admin.deleted_at === null ? <MdDeleteOutline className="text-xs" /> : <BiRefresh className="text-xs" />}
                       </button>
                     </div>
                   </td>

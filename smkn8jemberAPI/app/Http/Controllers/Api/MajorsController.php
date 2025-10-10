@@ -11,10 +11,14 @@ use Illuminate\Support\Facades\Storage;
 class MajorsController extends Controller
 {
     use ApiResponse;
-    public function index()
+    public function index(Request $request)
     {
-        $major = Major::all();
-        return $this->success($major, 'Majors retrieved successfully');
+        $major = Major::applyFilters(
+            $request,
+            ['name', 'description'],
+            []
+        );
+        return $this->cursorPaginated($major, 'Majors retrieved successfully');
     }
 
     public function create(Request $request)
@@ -87,5 +91,17 @@ class MajorsController extends Controller
         }
         $major->delete();
         return $this->deleted('Major deleted successfully');
+    }
+
+    public function restore($id) {
+        $major = Major::withTrashed()->find($id);
+        if (!$major) {
+            return $this->notFound('Major not found');
+        }
+        if (!$major->trashed()) {
+            return $this->badRequest('Major is not deleted');
+        }
+        $major->restore();
+        return $this->success($major, 'Major restored successfully');
     }
 }

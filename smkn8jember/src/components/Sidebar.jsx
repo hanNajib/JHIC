@@ -263,13 +263,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             <NavItem
               to="/mapel"
               icon={FaRegListAlt}
-              label="Mapel"
+              label="Mata Pelajaran"
               isOpen={isOpen}
             />
             <NavItem
               to="/admin-jurusan"
               icon={LuUserPlus}
-              label="User Jurusan"
+              label="Data User"
               isOpen={isOpen}
             />
             <NavItem

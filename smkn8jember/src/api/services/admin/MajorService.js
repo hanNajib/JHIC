@@ -1,8 +1,8 @@
-import { AdminApi } from "../../ApiEndpoint";
+import { MajorsApi } from "../../ApiEndpoint";
 
 export const get = async (params) => {
     try {
-        const response = await AdminApi.get(params);
+        const response = await MajorsApi.get(params);
         return response.data;
     } catch (error) {
         throw error;
@@ -11,7 +11,7 @@ export const get = async (params) => {
 
 export const getById = async (id) => {
     try {
-        const response = await AdminApi.getById(id);
+        const response = await MajorsApi.getById(id);
         return response.data;
     } catch (error) {
         throw error;
@@ -20,7 +20,7 @@ export const getById = async (id) => {
 
 export const create = async (data) => {
     try {
-        const response = await AdminApi.create(data);
+        const response = await MajorsApi.create(data);
         return response.data;
     } catch (error) {
         throw error;
@@ -29,27 +29,27 @@ export const create = async (data) => {
 
 export const update = async (id, data) => {
     try {
-        const response = await AdminApi.update(id, data);
+        const response = await MajorsApi.update(id, data);
         return response.data;
     } catch (error) {
         throw error;
     }
 };
 
-export const deleteUser = async (id) => {
+export const deleteData = async (id) => {
     try {
-        const response = await AdminApi.delete(id);
+        const response = await MajorsApi.delete(id);
         return response.data;
     } catch (error) {
         throw error;
     }
 };
 
-export const restoreUser = async (id) => {
+export const restoreData = async (id) => {
     try {
-        const response = await AdminApi.restore(id);
+        const response = await MajorsApi.restore(id);
         return response.data;
-    } catch(error) {
+    } catch (error) {
         throw error;
     }
 }
