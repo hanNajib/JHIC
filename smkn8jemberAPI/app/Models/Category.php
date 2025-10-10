@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasCursorPagination;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasCursorPagination;
 
     protected $fillable = ['type', 'name', 'color'];
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];

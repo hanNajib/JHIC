@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AnnouncementsController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChanceCarrierController;
 use App\Http\Controllers\Api\ExtracurricularController;
 use App\Http\Controllers\Api\FacilityController;
@@ -103,6 +104,14 @@ Route::middleware('web')->group(function () {
         Route::post('/', [ArticleController::class, 'store'])->middleware('auth:sanctum');
         Route::put('/{id}', [ArticleController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [ArticleController::class, 'delete'])->middleware('auth:sanctum');
+    });
+
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index']);
+        Route::get('/{id}', [CategoryController::class, 'show']);
+        Route::post('/', [CategoryController::class, 'store'])->middleware('auth:sanctum');
+        Route::put('/{id}', [CategoryController::class, 'update'])->middleware('auth:sanctum');
+        Route::delete('/{id}', [CategoryController::class, 'delete'])->middleware('auth:sanctum');
     });
 
 
