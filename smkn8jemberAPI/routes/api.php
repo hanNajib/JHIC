@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AnnouncementsController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChanceCarrierController;
 use App\Http\Controllers\Api\ExtracurricularController;
 use App\Http\Controllers\Api\FacilityController;
@@ -53,6 +54,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [MajorsController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [MajorsController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [MajorsController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [MajorsController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('partners')->group(function () {
@@ -104,6 +106,14 @@ Route::middleware('web')->group(function () {
         Route::delete('/{id}', [ArticleController::class, 'delete'])->middleware('auth:sanctum');
     });
 
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index']);
+        Route::get('/{id}', [CategoryController::class, 'show']);
+        Route::post('/', [CategoryController::class, 'store'])->middleware('auth:sanctum');
+        Route::put('/{id}', [CategoryController::class, 'update'])->middleware('auth:sanctum');
+        Route::delete('/{id}', [CategoryController::class, 'delete'])->middleware('auth:sanctum');
+    });
+
 
 
 
@@ -118,6 +128,7 @@ Route::middleware('web')->group(function () {
             Route::post('/', [AdminController::class, 'create']);
             Route::put('/{id}', [AdminController::class, 'update']);
             Route::delete('/{id}', [AdminController::class, 'delete']);
+            Route::post('/{id}/restore', [AdminController::class, 'restore']);
         });
 
         Route::prefix('settings')->group(function () {

@@ -63,5 +63,16 @@ export const useDeleteUser = (options = {}) => {
     })
 }
 
+export const useRestoreUser = (id, options = {}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id) => adminService.restoreUser(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.LIST]);
+        },
+        ...options
+    })
+}
 
 

@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Support\Facades\Log;
 
 trait HasCursorPagination
 {
@@ -22,25 +23,24 @@ trait HasCursorPagination
         $sortBy = $request->query('sortBy', 'created_at');
         $sortDir = $request->query('sortDir', 'desc');
         $search = trim($request->query('s', ''));
+        $trashed = $request->boolean('trashed', false);
+        $all = $request->boolean('all', false);
 
-        $query = $this->applySoftDeleteFilter($query);
         $query = $this->applyDynamicFilters($query, $request, $filters);
         $query = $this->applySearch($query, $search, $searchable);
         $query = $query->orderBy($sortBy, $sortDir);
+        if ($trashed && $this->usesSoftDeletes()) {
+            $query = $query->onlyTrashed();
+        }
+        if ($all) {
+            $limit = 1000;
+        }
 
         $result = $query->cursorPaginate($limit)->withQueryString();
 
         return $this->cacheIfApplicable($request, $result);
     }
 
-    protected function applySoftDeleteFilter($query)
-    {
-        if ($this->usesSoftDeletes()) {
-            $query = $query->whereNull('deleted_at');
-        }
-
-        return $query;
-    }
 
     protected function applyDynamicFilters($query, Request $request, array $filters)
     {

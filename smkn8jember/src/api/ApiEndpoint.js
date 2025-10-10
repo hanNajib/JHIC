@@ -16,6 +16,7 @@ export const AdminApi = {
     create : (data) => apiClient.post('/admins', data),
     update : (id, data) => apiClient.post(`/admins/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/admins/${id}`),
+    restore: (id) => apiClient.post(`/admins/${id}/restore`)
 } 
 
 export const WebSettingsApi = {
@@ -44,9 +45,10 @@ export const FacilityApi = {
 export const MajorsApi = {
     get : (params) => apiClient.get('/majors', { params }),
     getById : (id) => apiClient.get(`/majors/${id}`),
-    create : (data) => apiClient.post('/majors', data),
+    create : (data) => apiClient.post('/majors', data, {headers: {'Content-Type': 'multipart/form-data'}}),
     update : (id, data) => apiClient.post(`/majors/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/majors/${id}`),
+    restore: (id) => apiClient.post(`majors/${id}/restore`)
 }
 
 export const PartnersApi = {
