@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import { useState } from "react";
+import { useArticles } from "../../hooks/useSchool";
+import Navbar from "../../components/Navbar";
+import { ArticleCard, Button } from "../../components/ui";
+import Footer from "../../components/Footer";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { ARTICLE_CATEGORIES } from "../constants/schoolData";
-import { useArticles } from "../hooks/useSchool";
-import { ArticleCard, Button } from "../components/ui";
 
-const Artikel = () => {
+
+const ArtikelPage = () => {
   const [sort, setSort] = useState("terbaru");
   const { visibleArticles, isLoading } = useArticles();
   const [category, setCategory] = useState("");
@@ -46,7 +46,7 @@ const Artikel = () => {
             className="w-full border border-gray-300 rounded-md py-2 pl-3 pr-20 focus:outline-none bg-white text-gray-700"
           >
             {" "}
-            {ARTICLE_CATEGORIES.map((c) => (
+            {["tes", 'tes2'].map((c) => (
               <option key={c.id} value={c.id}>
                 {" "}
                 {c.label}{" "}
@@ -94,4 +94,4 @@ const Artikel = () => {
   );
 };
 
-export default Artikel;
+export default ArtikelPage;

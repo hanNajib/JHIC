@@ -68,6 +68,7 @@ import VisiMisi from "./page/public/VisiMisi";
 import StudentData from "./page/public/StudentData";
 import Struktur from "./page/public/Struktur";
 import DetailArtikel from "./page/public/DetailArtikel";
+import ArtikelPage from "./page/public/Artikel";
 
 function Router() {
   return (
@@ -156,8 +157,8 @@ function Router() {
         <Route path="/detail" element={<DetailArtikel />} />
         <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/student-data" element={<StudentData />} />
-        <Route path="/artikel" element={<Artikel />} />
-        <Route path="/artiekl/:slug" element={<DetailArtikel />} />
+        <Route path="/artikel" element={<ArtikelPage />} />
+        <Route path="/artikel/:slug" element={<DetailArtikel />} />
         <Route path="/struktur" element={<Struktur />} />
 
 

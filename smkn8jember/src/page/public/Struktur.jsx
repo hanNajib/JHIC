@@ -1,7 +1,7 @@
 import React from 'react'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
-import { Icon } from '../components/ui'
+import Navbar from '../../components/Navbar'
+import Footer from '../../components/Footer'
+import { Icon } from '../../components/ui'
 import { FaChalkboardTeacher } from 'react-icons/fa'
 
 function Struktur() {
