@@ -7,6 +7,10 @@ export const QUERY_KEYS = {
         LIST: 'majors',
         DETAIL: 'majorDetail',
     },
+    CATEGORIES : {
+        LIST: 'categories',
+        DETAIL: 'categoriesDetail',
+    },
     WEB_SETTINGS: {
         LIST: 'webSettings',
         DETAIL: 'webSettingDetail',

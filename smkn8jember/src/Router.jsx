@@ -10,9 +10,6 @@ import HeadMaster from "./page/public/HeadMaster";
 import Announcement from "./page/public/Announcement";
 import Gallery from "./page/public/Gallery";
 import MajorDetail from "./page/public/MajorDetail";
-import Articles from "./page/Articles";
-import StudentData from "./page/StudentData";
-
 // Admin - Dashboard
 import Dashboard from "./page/admin/dashboard/Dashboard";
 // Admin - Artikel
@@ -67,15 +64,14 @@ import StrukturOrganisasiTrash from "./page/admin/struktur/StrukturOrganisasiTra
 // Admin - Settings
 import TambahJabatan from "./page/admin/settings/TambahJabatan";
 import WebSetting from "./page/admin/settings/WebSetting";
-<<<<<<< HEAD
-import VisiMisi from "./page/VisiMisi";
-=======
 import VisiMisi from "./page/public/VisiMisi";
 import StudentData from "./page/public/StudentData";
 import Struktur from "./page/public/Struktur";
 import DetailArtikel from "./page/public/DetailArtikel";
 import ArtikelPage from "./page/public/Artikel";
->>>>>>> 13c8e188ad0bf358123221fef75d1031e5c24bfd
+import Kategori from "./page/admin/kategori/Kategori";
+import TambahKategori from "./page/admin/kategori/TambahKategori";
+import EditKategori from "./page/admin/kategori/EditKategori";
 
 function Router() {
   return (
@@ -118,12 +114,7 @@ function Router() {
 
           {/* Siswa */}
           <Route path="siswa" element={<Siswa />} />
-<<<<<<< HEAD
-          
-          
-=======
 
->>>>>>> 13c8e188ad0bf358123221fef75d1031e5c24bfd
           {/* Fasilitas */}
           <Route path="fasilitas" element={<Fasilitas />} />
           <Route path="fasilitas/tambah" element={<TambahFasilitas />} />
@@ -149,6 +140,11 @@ function Router() {
           <Route path="jurusan/tambah" element={<TambahJurusan />} />
           <Route path="jurusan/edit/:id" element={<EditJurusan />} />
 
+          {/* Kategori */}
+          <Route path="kategori" element={<Kategori />} />
+          <Route path="kategori/tambah" element={<TambahKategori />} />
+          <Route path="kategori/edit/:id" element={<EditKategori />} />
+
           {/* Struktur Organisasi */}
           <Route path="strukturorganisasi" element={<StrukturOrganisasi />} />
           <Route path="strukturorganisasi/tambah" element={<TambahJabatan />} />
@@ -164,20 +160,14 @@ function Router() {
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
-        <Route path="/articles" element={<Articles />} />
-        <Route path="/student-data" element={<StudentData />} />
         <Route path="/major/detail" element={<MajorDetail />} />
         <Route path="/detail" element={<DetailArtikel />} />
-<<<<<<< HEAD
-          <Route path="/visi-misi" element={<VisiMisi />} />
-=======
         <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/student-data" element={<StudentData />} />
         <Route path="/artikel" element={<ArtikelPage />} />
         <Route path="/artikel/:slug" element={<DetailArtikel />} />
         <Route path="/struktur" element={<Struktur />} />
 
->>>>>>> 13c8e188ad0bf358123221fef75d1031e5c24bfd
 
         {/* Not Found */}
         <Route path="*" element={<Navigate to="/" />} />

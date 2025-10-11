@@ -51,6 +51,13 @@ export const MajorsApi = {
     delete : (id) => apiClient.delete(`/majors/${id}`),
     restore: (id) => apiClient.post(`majors/${id}/restore`)
 }
+export const CategoryApi = {
+    get : (params) => apiClient.get('/categories', { params }),
+    getById : (id) => apiClient.get(`/categories/${id}`),
+    create : (data) => apiClient.post('/categories', data, {headers: {'Content-Type': 'multipart/form-data'}}),
+    update : (id, data) => apiClient.post(`/categories/${id}?_method=PUT`, data),
+    delete : (id) => apiClient.delete(`/categories/${id}`),
+}
 
 export const PartnersApi = {
     get : (params) => apiClient.get('/partners', { params }),
