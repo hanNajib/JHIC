@@ -24,7 +24,7 @@ const Jurusan = () => {
   const [selectedImage, setSelectedImage] = useState(null)
 
   const handleEdit = (majorId) => {
-    navigate(`/jurusan/edit/${majorId}`);
+    navigate(`/admin/jurusan/edit/${majorId}`);
   };
 
   const handleDelete = (major) => {
@@ -57,7 +57,7 @@ const Jurusan = () => {
   };
 
   const handleAddMajor = () => {
-    navigate('/jurusan/tambah');
+    navigate('/admin/jurusan/tambah');
   };
 
   const handleRefresh = async () => {

@@ -128,15 +128,14 @@ function Router() {
           <Route path="mapel/edit/:id" element={<EditMapel />} />
 
           {/* Admin Jurusan */}
-          <Route path="admin-jurusan" element={<UserJurusan />} />
-          <Route path="admin-jurusan/tambah" element={<TambahUserJurusan />} />
-          <Route path="admin-jurusan/edit/:id" element={<EditUserJurusan />} />
+          <Route path="data-user" element={<UserJurusan />} />
+          <Route path="data-user/tambah" element={<TambahUserJurusan />} />
+          <Route path="data-user/edit/:id" element={<EditUserJurusan />} />
 
           {/* Jurusan */}
           <Route path="jurusan" element={<Jurusan />} />
           <Route path="jurusan/tambah" element={<TambahJurusan />} />
           <Route path="jurusan/edit/:id" element={<EditJurusan />} />
-          <Route path="jurusan/jurusantrash" element={<JurusanTrash />} />
 
           {/* Struktur Organisasi */}
           <Route path="strukturorganisasi" element={<StrukturOrganisasi />} />

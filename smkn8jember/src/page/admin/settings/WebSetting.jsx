@@ -293,7 +293,7 @@ const WebSetting = () => {
               Deskripsi About
             </h2>
             <Editor
-              apiKey="gksk49zqwpk9h7k8ukutvzmu9k30ygclmz4lk81cgwpqy8uw"
+              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
               value={formData.deskripsi_about || ""}
               onEditorChange={(content) => handleInputChange("deskripsi_about", content)}
               init={{
@@ -314,7 +314,7 @@ const WebSetting = () => {
               Kata Sambutan Kepala Sekolah
             </h2>
             <Editor
-              apiKey="gksk49zqwpk9h7k8ukutvzmu9k30ygclmz4lk81cgwpqy8uw"
+              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
               value={formData.kata_sambutan || ""}
               onEditorChange={(content) => handleInputChange("kata_sambutan", content)}
               init={{
@@ -335,7 +335,7 @@ const WebSetting = () => {
               Visi
             </h2>
             <Editor
-              apiKey="gksk49zqwpk9h7k8ukutvzmu9k30ygclmz4lk81cgwpqy8uw"
+              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
               value={formData.visi || ""}
               onEditorChange={(content) => handleInputChange("visi", content)}
               init={{
@@ -355,7 +355,7 @@ const WebSetting = () => {
               Misi
             </h2>
             <Editor
-              apiKey="gksk49zqwpk9h7k8ukutvzmu9k30ygclmz4lk81cgwpqy8uw"
+              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
               value={formData.misi || ""}
               onEditorChange={(content) => handleInputChange("misi", content)}
               init={{

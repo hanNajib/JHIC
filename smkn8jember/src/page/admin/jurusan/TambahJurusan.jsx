@@ -48,7 +48,6 @@ const TambahJurusan = () => {
 
   const [preview, setPreview] = useState(null);
 
-  // ambil value description dari TinyMCE
   const descriptionValue = watch("description");
 
   const handleFileChange = (e) => {
