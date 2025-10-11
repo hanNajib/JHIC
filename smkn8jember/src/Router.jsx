@@ -11,6 +11,9 @@ import Announcement from "./page/public/Announcement";
 import Gallery from "./page/public/Gallery";
 import DetailArtikel from "./page/public/DetailArtikel";
 import MajorDetail from "./page/public/MajorDetail";
+import Articles from "./page/Articles";
+import StudentData from "./page/StudentData";
+
 // Admin - Dashboard
 import Dashboard from "./page/admin/dashboard/Dashboard";
 // Admin - Artikel
@@ -65,6 +68,7 @@ import StrukturOrganisasiTrash from "./page/admin/struktur/StrukturOrganisasiTra
 // Admin - Settings
 import TambahJabatan from "./page/admin/settings/TambahJabatan";
 import WebSetting from "./page/admin/settings/WebSetting";
+import VisiMisi from "./page/VisiMisi";
 
 function Router() {
   return (
@@ -107,6 +111,7 @@ function Router() {
           
           {/* Siswa */}
           <Route path="siswa" element={<Siswa />} />
+          
           
           {/* Fasilitas */}
           <Route path="fasilitas" element={<Fasilitas />} />
@@ -153,6 +158,7 @@ function Router() {
         <Route path="/student-data" element={<StudentData />} />
         <Route path="/major/detail" element={<MajorDetail />} />
         <Route path="/detail" element={<DetailArtikel />} />
+          <Route path="/visi-misi" element={<VisiMisi />} />
 
         {/* Not Found */}
         <Route path="*" element={<Navigate to="/" />} />

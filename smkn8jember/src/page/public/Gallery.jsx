@@ -2,15 +2,9 @@ import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
-<<<<<<< HEAD:smkn8jember/src/page/Gallery.jsx
-import { GALLERY_CATEGORIES, SAMPLE_GALLERY } from "../constants/schoolData";
-import { Button, GalleryCard } from "../components/ui";
-import { useGallery } from "../hooks/useSchool";
-=======
 import { GALLERY_CATEGORIES, SAMPLE_GALLERY } from "../../constants/schoolData";
-import { GalleryCard } from "../../components/ui";
+import { Button, GalleryCard } from "../../components/ui";
 import { useGallery } from "../../hooks/useSchool";
->>>>>>> 408ee2609637cf86c991e38f7fb32122ae408c11:smkn8jember/src/page/public/Gallery.jsx
 const Gallery = () => {
   const [sort, setSort] = useState("terbaru");
   const [category, setCategory] = useState("");
