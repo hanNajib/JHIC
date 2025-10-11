@@ -12,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   if(!loading && user) {
-    navigate('/dashboard');
+    navigate('/admin/dashboard');
   }
 
   const handleChange = (e) => {
@@ -31,7 +31,7 @@ const Login = () => {
         title: 'Login Berhasil',
         icon: 'success',
       }).then(() => {
-        navigate('/dashboard');
+        navigate('/admin/dashboard');
       });
     } else {
       Swal.fire({

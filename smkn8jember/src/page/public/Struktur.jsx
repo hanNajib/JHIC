@@ -1,0 +1,156 @@
+import React from 'react'
+import Navbar from '../../components/Navbar'
+import Footer from '../../components/Footer'
+import { Icon } from '../../components/ui'
+import { FaChalkboardTeacher } from 'react-icons/fa'
+
+function Struktur() {
+    
+  return (
+    <>
+        <Navbar/>
+        <section
+            className="flex flex-col items-center justify-center py-20 relative text-center"
+            style={{
+            backgroundImage: "url('/assets/images/struktur.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            }}
+        >
+            <div className="absolute inset-0 w-full h-full bg-orange-500 opacity-40 pointer-events-none z-0"></div>
+
+            <div className="relative z-10 max-w-3xl">
+            <h1 className="font-poppins font-bold text-white text-4xl md:text-6xl mb-4">
+                Struktur Sekolah
+            </h1>
+            <p className="font-poppins hidden md:block text-white text-lg md:text-xl leading-relaxed">
+                Struktur organisasi sekolah yang solid dan terorganisir dengan baik untuk mendukung penyelenggaraan pendidikan yang berkualitas.
+            </p>
+            </div>
+        </section>
+
+        <section className="flex flex-col px-6 md:px-16 pt-12">
+            <div className="w-full flex justify-center items-center pb-6">
+                <div className="w-full md:w-3/5 lg:w-1/4 bg-[#F8F9FA] p-5 border-[1.5px] border-[#D0CFCF] shadow-md rounded-2xl flex flex-col items-center justify-center gap-2">
+                    <img src="assets/images/dewa.png" alt="" className='w-32 h-32 object-cover object-center rounded-full shadow-md' />
+                    <h1 className='font-poppins font-bold text-[#242424] text-xl'>Gathan Fairuz</h1>
+                    <p className='font-poppins font-semibold text-[#ff6000]'>Kepala Sekolah</p>
+                </div>
+            </div>
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-between items-center gap-6">
+                <div className="w-full bg-[#F8F9FA] p-5 border-[1.5px] border-[#D0CFCF] shadow-md rounded-2xl flex flex-col items-center justify-center gap-2">
+                    <img src="assets/images/dewa.png" alt="" className='w-32 h-32 object-cover object-center rounded-full shadow-md' />
+                    <h1 className='font-poppins font-bold text-[#242424] text-xl'>Gathan Fairuz</h1>
+                    <p className='font-poppins font-semibold text-[#ff6000]'>Kepala Sekolah</p>
+                </div>
+                <div className="w-full bg-[#F8F9FA] p-5 border-[1.5px] border-[#D0CFCF] shadow-md rounded-2xl flex flex-col items-center justify-center gap-2">
+                    <img src="assets/images/dewa.png" alt="" className='w-32 h-32 object-cover object-center rounded-full shadow-md' />
+                    <h1 className='font-poppins font-bold text-[#242424] text-xl'>Gathan Fairuz</h1>
+                    <p className='font-poppins font-semibold text-[#ff6000]'>Kepala Sekolah</p>
+                </div>
+                <div className="w-full bg-[#F8F9FA] p-5 border-[1.5px] border-[#D0CFCF] shadow-md rounded-2xl flex flex-col items-center justify-center gap-2">
+                    <img src="assets/images/dewa.png" alt="" className='w-32 h-32 object-cover object-center rounded-full shadow-md' />
+                    <h1 className='font-poppins font-bold text-[#242424] text-xl'>Gathan Fairuz</h1>
+                    <p className='font-poppins font-semibold text-[#ff6000]'>Kepala Sekolah</p>
+                </div>
+                <div className="w-full bg-[#F8F9FA] p-5 border-[1.5px] border-[#D0CFCF] shadow-md rounded-2xl flex flex-col items-center justify-center gap-2">
+                    <img src="assets/images/dewa.png" alt="" className='w-32 h-32 object-cover object-center rounded-full shadow-md' />
+                    <h1 className='font-poppins font-bold text-[#242424] text-xl'>Gathan Fairuz</h1>
+                    <p className='font-poppins font-semibold text-[#ff6000]'>Kepala Sekolah</p>
+                </div>
+            </div>
+        </section>
+
+        <section className="flex flex-col px-6 md:px-16 pt-14">
+            <h1 className='text-center font-bold font-poppins text-[#242424] text-2xl md:text-3xl'>Koordinator Bidang </h1>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-center place-items-center w-full pt-8">
+
+                <div className="flex flex-col bg-[#EEEEEE] shadow-md rounded-lg w-full p-10 gap-2">
+                    <h1 className='font-poppins font-bold text-xl text-[#242424] flex gap-2 items-center'><Icon name="FaAnglesRight" size={24} color='#ff6000'/>Koordinator BK</h1>
+                    <p className='text-lg text-[#495057] font-bold'>Ir.H.Gathan Fairuz I</p>
+                </div>
+                <div className="flex flex-col bg-[#EEEEEE] shadow-md rounded-lg w-full p-10 gap-2">
+                    <h1 className='font-poppins font-bold text-xl text-[#242424] flex gap-2 items-center'><Icon name="FaAnglesRight" size={24} color='#ff6000'/>Koordinator BK</h1>
+                    <p className='text-lg text-[#495057] font-bold'>Ir.H.Gathan Fairuz I</p>
+                </div>
+                <div className="flex flex-col bg-[#EEEEEE] shadow-md rounded-lg w-full p-10 gap-2">
+                    <h1 className='font-poppins font-bold text-xl text-[#242424] flex gap-2 items-center'><Icon name="FaAnglesRight" size={24} color='#ff6000'/>Koordinator BK</h1>
+                    <p className='text-lg text-[#495057] font-bold'>Ir.H.Gathan Fairuz I</p>
+                </div>
+                <div className="flex flex-col bg-[#EEEEEE] shadow-md rounded-lg w-full p-10 gap-2">
+                    <h1 className='font-poppins font-bold text-xl text-[#242424] flex gap-2 items-center'><Icon name="FaAnglesRight" size={24} color='#ff6000'/>Koordinator BK</h1>
+                    <p className='text-lg text-[#495057] font-bold'>Ir.H.Gathan Fairuz I</p>
+                </div>
+                <div className="flex flex-col bg-[#EEEEEE] shadow-md rounded-lg w-full p-10 gap-2">
+                    <h1 className='font-poppins font-bold text-xl text-[#242424] flex gap-2 items-center'><Icon name="FaAnglesRight" size={24} color='#ff6000'/>Koordinator BK</h1>
+                    <p className='text-lg text-[#495057] font-bold'>Ir.H.Gathan Fairuz I</p>
+                </div>
+                <div className="flex flex-col bg-[#EEEEEE] shadow-md rounded-lg w-full p-10 gap-2">
+                    <h1 className='font-poppins font-bold text-xl text-[#242424] flex gap-2 items-center'><Icon name="FaAnglesRight" size={24} color='#ff6000'/>Koordinator BK</h1>
+                    <p className='text-lg text-[#495057] font-bold'>Ir.H.Gathan Fairuz I</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section className="w-full flex flex-col lg:flex-row px-6 md:px-16 pt-14 pb-12 items-stretch gap-12">
+
+            <div className="w-full lg:w-1/2 flex flex-col items-center justify-start bg-[#f780001f] px-6 md:px-8 py-8 rounded-xl shadow-md">
+                <h1 className='font-bold font-poppins text-[#242424] text-2xl md:text-3xl'>Komite Sekolah</h1>
+                <div className="flex flex-col pt-6 w-full gap-4">
+
+                    <div className="flex flex-col bg-[#F8F9FA] shadow-sm rounded-md items-center justify-center py-5 gap-1">
+                        <h1 className='font-bold font-poppins text-[#212529] text-xl'>Ir.H.Gathan Fairuz I</h1>
+                        <p className='font-poppins text-md text-[#ff6000] font-medium'>Ketua Komite</p>
+                    </div>
+                    <div className="flex flex-col bg-[#F8F9FA] shadow-sm rounded-md items-center justify-center py-5 gap-1">
+                        <h1 className='font-bold font-poppins text-[#212529] text-xl'>Ir.H.Gathan Fairuz I</h1>
+                        <p className='font-poppins text-md text-[#ff6000] font-medium'>Ketua Komite</p>
+                    </div>
+                    <div className="flex flex-col bg-[#F8F9FA] shadow-sm rounded-md items-center justify-center py-5 gap-1">
+                        <h1 className='font-bold font-poppins text-[#212529] text-xl'>Ir.H.Gathan Fairuz I</h1>
+                        <p className='font-poppins text-md text-[#ff6000] font-medium'>Ketua Komite</p>
+                    </div>
+                    <div className="flex flex-col bg-[#F8F9FA] shadow-sm rounded-md items-center justify-center py-5 gap-1">
+                        <h1 className='font-bold font-poppins text-[#212529] text-xl'>Ir.H.Gathan Fairuz I</h1>
+                        <p className='font-poppins text-md text-[#ff6000] font-medium'>Ketua Komite</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div className="w-full lg:w-1/2 flex flex-col items-center justify-start bg-[#f780001f] px-6 md:px-8 py-8 rounded-xl shadow-md">
+                <h1 className='font-bold font-poppins text-[#242424] text-2xl md:text-3xl'>Jumlah Tenaga Kerja</h1>
+                <div className="grid grid-cols-2 pt-6 w-full gap-4 items-stretch">
+                    <div className="bg-[#ebb96896] flex flex-col justify-center items-center p-8 rounded-xl">
+                        <span className='bg-[#ff6000] p-4 rounded-full shadow'><Icon name="FaChalkboardTeacher" size={32} color='white'/></span>
+                        <h1 className='font-poppins font-bold text-4xl text-[#242424] pt-2'>45</h1>
+                        <p className='font-poppins text-[#495057] font-medium '>Guru</p>
+                    </div>
+                    <div className="bg-[#b7d1ec] flex flex-col justify-center items-center p-8 rounded-xl">
+                        <span className='bg-[#53a3ff] p-4 rounded-full shadow'><Icon name="BsPersonVcard" size={32} color='white'/></span>
+                        <h1 className='font-poppins font-bold text-4xl text-[#242424] pt-2'>45</h1>
+                        <p className='font-poppins text-[#495057] font-medium '>Staf</p>
+                    </div>
+                    <div className="bg-[#abf2a2] flex flex-col justify-center items-center p-8 rounded-xl">
+                        <span className='bg-[#60c83a] p-4 rounded-full shadow'><Icon name="FaTools" size={32} color='white'/></span>
+                        <h1 className='font-poppins font-bold text-4xl text-[#242424] pt-2'>45</h1>
+                        <p className='font-poppins text-[#495057] font-medium '>Teknisi</p>
+                    </div>
+                    <div className="bg-[#ebb96896] flex flex-col justify-center items-center p-8 rounded-xl">
+                        <span className='bg-[#ff6000] p-4 rounded-full shadow'><Icon name="FaPersonMilitaryPointing" size={32} color='white'/></span>
+                        <h1 className='font-poppins font-bold text-4xl text-[#242424] pt-2'>45</h1>
+                        <p className='font-poppins text-[#495057] font-medium '>Satpam</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <Footer/>
+    </>
+  )
+  
+}
+
+export default Struktur
