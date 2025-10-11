@@ -267,7 +267,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               isOpen={isOpen}
             />
             <NavItem
-              to="/admin/admin-jurusan"
+              to="/admin/data-user"
               icon={LuUserPlus}
               label="Data User"
               isOpen={isOpen}

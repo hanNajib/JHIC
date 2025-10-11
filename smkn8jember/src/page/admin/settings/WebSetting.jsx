@@ -1,446 +1,517 @@
-import { IoIosArrowBack } from "react-icons/io";
-import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import { useWebSettings, useUpdateWebSettings } from "../../../hooks/api/useWebSettings";
+import { Loading } from "../../../components/ui";
+import Swal from "sweetalert2";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoCloudUploadOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const WebSetting = () => {
-  const id = 1;
-  const [websetting, setWebSetting] = useState([]);
-  // console.log(websetting);
-
-  useEffect(() => {
-    fetch("/websetting.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const found = data.find((a) => a.id === parseInt(id));
-        setWebSetting(found || null);
-      });
-  }, [id]);
-
+  const navigate = useNavigate();
+  const { data: webSettings, isLoading } = useWebSettings();
+  const updateWebSettings = useUpdateWebSettings();
+  
+  const [formData, setFormData] = useState({});
   const [previewLogo, setPreviewLogo] = useState("");
   const [previewHero, setPreviewHero] = useState("");
-  console.log(previewLogo);
+
+  useEffect(() => {
+    if (webSettings?.data) {
+      const initialData = {};
+      webSettings.data.forEach((setting) => {
+        initialData[setting.title] = setting.value;
+      });
+      setFormData(initialData);
+    }
+  }, [webSettings]);
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
-    if (file) setPreviewLogo(URL.createObjectURL(file));
+    if (file) {
+      setPreviewLogo(URL.createObjectURL(file));
+      handleInputChange("logo_sekolah", file);
+    }
   };
 
   const handleHeroChange = (e) => {
     const file = e.target.files[0];
-    if (file) setPreviewHero(URL.createObjectURL(file));
+    if (file) {
+      setPreviewHero(URL.createObjectURL(file));
+      handleInputChange("hero_image", file);
+    }
   };
 
-  return (
-    <div className="flex justify-center gap-5 ">
-      <form className="flex flex-col gap-5 w-full">
-        <div className="flex justify-center flex-col lg:flex-row items-start gap-5">
-          {/* GENERAL SETTING */}
-          <div className="flex flex-col gap-4 bg-white w-full p-5 rounded-lg">
-            <h1 className="text-3xl font-bold text-gray-800">
-              General Setting
-            </h1>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      await updateWebSettings.mutateAsync(formData);
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil!",
+        text: "Pengaturan website berhasil diperbarui",
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal!",
+        text: error.response?.data?.message || "Terjadi kesalahan saat memperbarui pengaturan",
+      });
+    }
+  };
 
-            {/* titleHeroSection */}
+  if (isLoading) {
+    return <Loading variant="spinner" size="large" fullScreen />;
+  }
+
+  return (
+    <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-orange-500 cursor-pointer text-3xl lg:text-4xl text-center p-2 rounded-lg text-white hover:bg-orange-600 transition-colors"
+        >
+          <IoIosArrowBack />
+        </button>
+        <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
+          Pengaturan Website
+        </h1>
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+
+        <div className="flex justify-center flex-col lg:flex-row items-start gap-5">
+          {/* INFORMASI UMUM */}
+          <div className="flex flex-col gap-4 bg-gray-50 w-full p-5 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
+              Informasi Umum
+            </h2>
+
+            {/* Judul Halaman */}
             <div className="flex flex-col">
               <label
-                htmlFor="titleHeroSection"
-                className="font-bold text-gray-800"
+                htmlFor="judul_halaman"
+                className="font-bold text-gray-800 mb-1"
               >
-                Title Hero Section
+                Judul Halaman
               </label>
               <input
                 type="text"
-                id="titleHeroSection"
-                value={websetting.titleHeroSection}
-                onChange={(e) =>
-                  setWebSetting({
-                    ...websetting,
-                    titleHeroSection: e.target.value,
-                  })
-                }
-                placeholder="Masukkan nama websetting"
-                className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
+                id="judul_halaman"
+                value={formData.judul_halaman || ""}
+                onChange={(e) => handleInputChange("judul_halaman", e.target.value)}
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="Masukkan judul halaman"
               />
             </div>
 
-            {/* Konten Hero Section TinyMCE */}
-            <div>
-              <label className="block mb-1 font-semibold text-gray-800">
-                Deskripsi Hero Section
+            {/* Deskripsi Halaman */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="deskripsi_halaman"
+                className="font-bold text-gray-800 mb-1"
+              >
+                Deskripsi Halaman
               </label>
-              <Editor
-                apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
-                value={websetting.descHeroSection}
-                onEditorChange={(newContent) =>
-                  setWebSetting({
-                    ...websetting,
-                    descHeroSection: newContent,
-                  })
-                }
-                init={{
-                  height: 300,
-                  menubar: false,
-                  plugins: "lists link table code",
-                  toolbar:
-                    "undo redo | bold italic | bullist numlist | link | code",
-                }}
+              <textarea
+                id="deskripsi_halaman"
+                value={formData.deskripsi_halaman || ""}
+                onChange={(e) => handleInputChange("deskripsi_halaman", e.target.value)}
+                rows="4"
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="Masukkan deskripsi halaman"
               />
             </div>
 
-            {/* Konten Footer TinyMCE */}
-            <div>
-              <label className="block mb-1 font-semibold text-gray-800">
+            {/* Deskripsi Footer */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="deskripsi_footer"
+                className="font-bold text-gray-800 mb-1"
+              >
                 Deskripsi Footer
               </label>
-              <Editor
-                apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
-                value={websetting.descFooter}
-                onEditorChange={(newContent) =>
-                  setWebSetting({
-                    ...websetting,
-                    descFooter: newContent,
-                  })
-                }
-                init={{
-                  height: 300,
-                  menubar: false,
-                  plugins: "lists link table code",
-                  toolbar:
-                    "undo redo | bold italic | bullist numlist | link | code",
-                }}
+              <textarea
+                id="deskripsi_footer"
+                value={formData.deskripsi_footer || ""}
+                onChange={(e) => handleInputChange("deskripsi_footer", e.target.value)}
+                rows="3"
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="Masukkan deskripsi footer"
               />
             </div>
 
-            {/* Konten About TinyMCE */}
-            <div>
-              <label className="block mb-1 font-semibold text-gray-800">
-                Deskripsi About
+            {/* Tahun Berdiri */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="tahun_berdiri"
+                className="font-bold text-gray-800 mb-1"
+              >
+                Tahun Berdiri
               </label>
-              <Editor
-                apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
-                value={websetting.descAbout}
-                onEditorChange={(newContent) =>
-                  setWebSetting({
-                    ...websetting,
-                    descAbout: newContent,
-                  })
-                }
-                init={{
-                  height: 300,
-                  menubar: false,
-                  plugins: "lists link table code",
-                  toolbar:
-                    "undo redo | bold italic | bullist numlist | link | code",
-                }}
+              <input
+                type="text"
+                id="tahun_berdiri"
+                value={formData.tahun_berdiri || ""}
+                onChange={(e) => handleInputChange("tahun_berdiri", e.target.value)}
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="Masukkan tahun berdiri"
               />
-            </div>
-
-            {/* Konten Kata Sambutan TinyMCE */}
-            <div>
-              <label className="block mb-1 font-semibold text-gray-800">
-                Kata Sambutan
-              </label>
-              <Editor
-                apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
-                value={websetting.kataSambutan}
-                onEditorChange={(newContent) =>
-                  setWebSetting({
-                    ...websetting,
-                    kataSambutan: newContent,
-                  })
-                }
-                init={{
-                  height: 300,
-                  menubar: false,
-                  plugins: "lists link table code",
-                  toolbar:
-                    "undo redo | bold italic | bullist numlist | link | code",
-                }}
-              />
-            </div>
-
-            {/* Grid Input */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* Jumlah Siswa */}
-              <div className="flex flex-col">
-                <label
-                  htmlFor="jumlahsiswa"
-                  className="font-bold text-gray-800"
-                >
-                  Jumlah Siswa
-                </label>
-                <input
-                  type="text"
-                  id="jumlahsiswa"
-                  value={websetting.jumlahSiswa}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      jumlahSiswa: e.target.value,
-                    })
-                  }
-                  placeholder="Berapa Jumlah Siswa"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
-              </div>
-
-              {/* Jumlah Guru */}
-              <div className="flex flex-col">
-                <label htmlFor="jumlahguru" className="font-bold text-gray-800">
-                  Jumlah Guru
-                </label>
-                <input
-                  type="text"
-                  id="jumlahguru"
-                  value={websetting.jumlahGuru}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      jumlahGuru: e.target.value,
-                    })
-                  }
-                  placeholder="Masukkan jumlah guru"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
-              </div>
-
-              {/* Tahun Berdiri */}
-              <div className="flex flex-col">
-                <label
-                  htmlFor="tahunBerdiri"
-                  className="font-bold text-gray-800"
-                >
-                  Tahun Berdiri
-                </label>
-                <input
-                  type="text"
-                  id="tahunBerdiri"
-                  value={websetting.tahunBerdiri}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      tahunBerdiri: e.target.value,
-                    })
-                  }
-                  placeholder="Masukkan tahun berdiri"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
-              </div>
-
-              {/* Tingkat Kesuksesan */}
-              <div className="flex flex-col">
-                <label htmlFor="sukses" className="font-bold text-gray-800">
-                  Tingkat Kesuksesan
-                </label>
-                <input
-                  type="text"
-                  id="sukses"
-                  value={websetting.sukses}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      sukses: e.target.value,
-                    })
-                  }
-                  placeholder="Masukkan tingkat kesuksesan"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
-              </div>
             </div>
           </div>
 
-          {/* IMAGE SETTING */}
-          <div className="w-full flex flex-col gap-5">
-            <div className="flex flex-col gap-4 bg-white p-5 rounded-lg">
-              <h1 className="text-3xl font-bold text-gray-800">
-                Image Setting
-              </h1>
+          {/* KONTAK & SOSIAL MEDIA */}
+          <div className="flex flex-col gap-4 bg-gray-50 w-full p-5 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
+              Kontak & Sosial Media
+            </h2>
 
-              {/* Upload Gambar */}
-              <div className="w-full">
-                <label className="block font-semibold mb-2">Logo</label>
+            {/* Email */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="email"
+                className="font-bold text-gray-800 mb-1"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={formData.email || ""}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="Masukkan email"
+              />
+            </div>
+
+            {/* Telepon */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="telepon"
+                className="font-bold text-gray-800 mb-1"
+              >
+                Telepon
+              </label>
+              <input
+                type="text"
+                id="telepon"
+                value={formData.telepon || ""}
+                onChange={(e) => handleInputChange("telepon", e.target.value)}
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="Masukkan nomor telepon"
+              />
+            </div>
+
+            {/* Alamat */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="alamat"
+                className="font-bold text-gray-800 mb-1"
+              >
+                Alamat
+              </label>
+              <textarea
+                id="alamat"
+                value={formData.alamat || ""}
+                onChange={(e) => handleInputChange("alamat", e.target.value)}
+                rows="3"
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="Masukkan alamat lengkap"
+              />
+            </div>
+
+            {/* YouTube */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="youtube_link"
+                className="font-bold text-gray-800 mb-1"
+              >
+                Link YouTube
+              </label>
+              <input
+                type="url"
+                id="youtube_link"
+                value={formData.youtube_link || ""}
+                onChange={(e) => handleInputChange("youtube_link", e.target.value)}
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="https://youtube.com/..."
+              />
+            </div>
+
+            {/* Facebook */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="facebook_link"
+                className="font-bold text-gray-800 mb-1"
+              >
+                Link Facebook
+              </label>
+              <input
+                type="url"
+                id="facebook_link"
+                value={formData.facebook_link || ""}
+                onChange={(e) => handleInputChange("facebook_link", e.target.value)}
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="https://facebook.com/..."
+              />
+            </div>
+
+            {/* Instagram */}
+            <div className="flex flex-col">
+              <label
+                htmlFor="instagram_link"
+                className="font-bold text-gray-800 mb-1"
+              >
+                Link Instagram
+              </label>
+              <input
+                type="url"
+                id="instagram_link"
+                value={formData.instagram_link || ""}
+                onChange={(e) => handleInputChange("instagram_link", e.target.value)}
+                className="w-full px-3 py-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:border-orange-500 focus:ring-orange-500"
+                placeholder="https://instagram.com/..."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* KONTEN EDITOR */}
+        <div className="flex flex-col gap-5">
+          {/* Deskripsi About */}
+          <div className="flex flex-col gap-4 bg-gray-50 w-full p-5 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
+              Deskripsi About
+            </h2>
+            <Editor
+              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+              value={formData.deskripsi_about || ""}
+              onEditorChange={(content) => handleInputChange("deskripsi_about", content)}
+              init={{
+                height: 300,
+                menubar: false,
+                plugins: "lists link table code",
+                toolbar:
+                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                content_style:
+                  "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
+              }}
+            />
+          </div>
+
+          {/* Kata Sambutan */}
+          <div className="flex flex-col gap-4 bg-gray-50 w-full p-5 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
+              Kata Sambutan Kepala Sekolah
+            </h2>
+            <Editor
+              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+              value={formData.kata_sambutan || ""}
+              onEditorChange={(content) => handleInputChange("kata_sambutan", content)}
+              init={{
+                height: 300,
+                menubar: false,
+                plugins: "lists link table code",
+                toolbar:
+                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                content_style:
+                  "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
+              }}
+            />
+          </div>
+
+          {/* Visi */}
+          <div className="flex flex-col gap-4 bg-gray-50 w-full p-5 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
+              Visi
+            </h2>
+            <Editor
+              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+              value={formData.visi || ""}
+              onEditorChange={(content) => handleInputChange("visi", content)}
+              init={{
+                height: 300,
+                menubar: false,
+                plugins: "lists link table code",
+                toolbar:
+                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                content_style:
+                  "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
+              }}
+            />
+          </div>
+
+          <div className="flex flex-col gap-4 bg-gray-50 w-full p-5 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
+              Misi
+            </h2>
+            <Editor
+              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+              value={formData.misi || ""}
+              onEditorChange={(content) => handleInputChange("misi", content)}
+              init={{
+                height: 300,
+                menubar: false,
+                plugins: "lists link table code",
+                toolbar:
+                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                content_style:
+                  "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
+              }}
+            />
+          </div>
+
+          {/* Logo & Hero Images */}
+          <div className="flex flex-col lg:flex-row gap-5">
+            {/* Logo Sekolah */}
+            <div className="flex flex-col gap-4 bg-gray-50 w-full p-5 rounded-lg border border-gray-200">
+              <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
+                Logo Sekolah
+              </h2>
+              <div className="flex flex-col">
                 <label
-                  htmlFor="upload"
-                  className="flex flex-col items-center justify-center w-full h-fit border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50"
+                  htmlFor="logo_sekolah"
+                  className="font-bold text-gray-800 mb-2"
                 >
-                  {previewLogo ? (
-                    <img
-                      src={previewLogo}
-                      alt="ok"
-                      className="h-full object-contain rounded-lg"
-                    />
+                  Upload Logo
+                </label>
+                <label
+                  htmlFor="logo_sekolah"
+                  className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                    previewLogo || formData.logo_sekolah
+                      ? "border-orange-300 bg-orange-50"
+                      : "border-gray-300 bg-white hover:bg-gray-50"
+                  }`}
+                >
+                  {previewLogo || formData.logo_sekolah ? (
+                    <div className="relative p-4">
+                      <img
+                        src={previewLogo || formData.logo_sekolah}
+                        alt="Preview Logo"
+                        className="h-48 w-48 object-contain rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPreviewLogo("");
+                          handleInputChange("logo_sekolah", null);
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
                   ) : (
-                    <img src={websetting.logo} alt="ok" />
+                    <div className="py-10 flex flex-col items-center justify-center">
+                      <IoCloudUploadOutline className="text-6xl text-gray-400 mb-2" />
+                      <p className="text-gray-600 font-medium mb-1">
+                        Klik untuk pilih logo
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Format: PNG, JPEG, JPG
+                      </p>
+                    </div>
                   )}
                   <input
-                    id="upload"
                     type="file"
+                    id="logo_sekolah"
                     accept="image/*"
-                    className="hidden"
                     onChange={handleLogoChange}
-                  />
-                </label>
-              </div>
-              {/* Upload Gambar */}
-              <div className="w-full">
-                <label className="block font-semibold mb-2">
-                  Gambar Hero Section
-                </label>
-                <label
-                  htmlFor="upload"
-                  className="flex flex-col items-center justify-center w-full h-fit border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50"
-                >
-                  {previewHero ? (
-                    <img
-                      src={previewHero}
-                      alt="Preview"
-                      className="h-full object-contain rounded-lg"
-                    />
-                  ) : (
-                    <img src={websetting.gambarHeroSection} alt="" />
-                  )}
-                  <input
-                    id="upload"
-                    type="file"
-                    accept="image/*"
                     className="hidden"
-                    onChange={handleHeroChange}
                   />
                 </label>
               </div>
             </div>
 
-            {/* LINK SETTING */}
-            <div className="flex flex-col gap-4 bg-white p-5 rounded-lg">
-              <h1 className="text-3xl font-bold text-gray-800">Link Setting</h1>
-
-              {/* Link YT */}
+            {/* Hero Image */}
+            <div className="flex flex-col gap-4 bg-gray-50 w-full p-5 rounded-lg border border-gray-200">
+              <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
+                Hero Image
+              </h2>
               <div className="flex flex-col">
-                <label htmlFor="linkYT" className="font-bold text-gray-800">
-                  Link Youtube
+                <label
+                  htmlFor="hero_image"
+                  className="font-bold text-gray-800 mb-2"
+                >
+                  Upload Hero Image
                 </label>
-                <input
-                  type="text"
-                  id="linkYT"
-                  value={websetting.linkYT}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      linkYT: e.target.value,
-                    })
-                  }
-                  placeholder="Masukkan link YouTube"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
-              </div>
-
-              {/* Link IG */}
-              <div className="flex flex-col">
-                <label htmlFor="linkIG" className="font-bold text-gray-800">
-                  Link Instagram
+                <label
+                  htmlFor="hero_image"
+                  className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                    previewHero || formData.hero_image
+                      ? "border-orange-300 bg-orange-50"
+                      : "border-gray-300 bg-white hover:bg-gray-50"
+                  }`}
+                >
+                  {previewHero || formData.hero_image ? (
+                    <div className="relative p-4">
+                      <img
+                        src={previewHero || formData.hero_image}
+                        alt="Preview Hero"
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPreviewHero("");
+                          handleInputChange("hero_image", null);
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="py-10 flex flex-col items-center justify-center">
+                      <IoCloudUploadOutline className="text-6xl text-gray-400 mb-2" />
+                      <p className="text-gray-600 font-medium mb-1">
+                        Klik untuk pilih hero image
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Format: PNG, JPEG, JPG
+                      </p>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    id="hero_image"
+                    accept="image/*"
+                    onChange={handleHeroChange}
+                    className="hidden"
+                  />
                 </label>
-                <input
-                  type="text"
-                  id="linkIG"
-                  value={websetting.linkIG}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      linkIG: e.target.value,
-                    })
-                  }
-                  placeholder="Masukkan link Instagram"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
-              </div>
-
-              {/* Link FB */}
-              <div className="flex flex-col">
-                <label htmlFor="linkFB" className="font-bold text-gray-800">
-                  Link Facebook
-                </label>
-                <input
-                  type="text"
-                  id="linkFB"
-                  value={websetting.linkFB}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      linkFB: e.target.value,
-                    })
-                  }
-                  placeholder="Masukkan link Facebook"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
-              </div>
-
-              {/* Email */}
-              <div className="flex flex-col">
-                <label htmlFor="email" className="font-bold text-gray-800">
-                  Email
-                </label>
-                <input
-                  type="text"
-                  id="email"
-                  value={websetting.email}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      email: e.target.value,
-                    })
-                  }
-                  placeholder="Masukkan email"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
-              </div>
-
-              {/* NoHp */}
-              <div className="flex flex-col">
-                <label htmlFor="nohp" className="font-bold text-gray-800">
-                  NoHp
-                </label>
-                <input
-                  type="text"
-                  id="nohp"
-                  value={websetting.nohp}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      nohp: e.target.value,
-                    })
-                  }
-                  placeholder="Masukkan NoHp"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
-              </div>
-
-              {/* Lokasi */}
-              <div className="flex flex-col">
-                <label htmlFor="lokasi" className="font-bold text-gray-800">
-                  Lokasi
-                </label>
-                <input
-                  type="text"
-                  id="lokasi"
-                  value={websetting.lokasi}
-                  onChange={(e) =>
-                    setWebSetting({
-                      ...websetting,
-                      lokasi: e.target.value,
-                    })
-                  }
-                  placeholder="Masukkan lokasi"
-                  className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                />
               </div>
             </div>
           </div>
         </div>
-        <div className="flex justify-end">
-          <button className="bg-orange-500 text-white font-semibold py-1 text-base w-fit px-4 rounded-4xl hover:bg-orange-600">
-          Simpan Perubahan
-        </button>
+
+        {/* Tombol Aksi */}
+        <div className="flex gap-3 justify-end mt-6">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            disabled={updateWebSettings.isPending}
+            className="px-8 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          >
+            {updateWebSettings.isPending ? "Menyimpan..." : "Simpan Perubahan"}
+          </button>
         </div>
       </form>
     </div>
