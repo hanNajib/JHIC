@@ -4,28 +4,28 @@
     "nama": "Erion Prayoga Husnul, S.Pd., M.Pd.",
     "jabatan": "Guru",
     "mapel": "Matematika",
-    "foto": "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/p1/995/2024/04/24/Screenshot_20240424-164834-2003395297.png"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 2,
     "nama": "Alisa Maulinda Sari, S.Pd.",
     "jabatan": "Guru",
     "mapel": "PPKN",
-    "foto": "https://web.rupa.ai/wp-content/uploads/2023/07/Aruna_A_stylish_woman_dressed_in_a_comfortable_white_t-shirt_st_acc913b2-edda-4bc2-8510-c6cac05b8dcc.png"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 3,
     "nama": "Ryan Danu, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Bahasa Inggris",
-    "foto": "https://cdn.medcom.id/dynamic/content/2024/12/11/1733993/qyHuMDs18j.jpg?w=640"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 4,
     "nama": "Anisa Hermawan, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Sejarah",
-    "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTy-8_2g9-5ynfdVschu1AlgrXCP1JOF9-fazvGUR9TqX1agU78yI8shIE2iyjoi2Ry9M&usqp=CAU"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 5,
@@ -39,132 +39,132 @@
     "nama": "Yonna Elinardo, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Matematika",
-    "foto": "https://images.pexels.com/photos/1181341/pexels-photo-1181341.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 7,
     "nama": "Bambang Hartanto, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Sejarah",
-    "foto": "https://images.pexels.com/photos/356079/pexels-photo-356079.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 8,
     "nama": "Renald Ariyanto, S.Pd.",
     "jabatan": "Guru",
     "mapel": "PPKN",
-    "foto": "https://images.pexels.com/photos/3825527/pexels-photo-3825527.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 9,
     "nama": "Hamawan Aris, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Agama",
-    "foto": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 10,
     "nama": "Hendro Kurniawan P.K.D., S.Pd.",
     "jabatan": "Guru",
     "mapel": "Seni Budaya",
-    "foto": "https://images.pexels.com/photos/164631/pexels-photo-164631.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 11,
     "nama": "Rengky Maulana, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Bahasa Inggris",
-    "foto": "https://images.pexels.com/photos/3183172/pexels-photo-3183172.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 12,
     "nama": "Wisnu Arum, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Agama",
-    "foto": "https://images.pexels.com/photos/3182781/pexels-photo-3182781.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 13,
     "nama": "Alika Yasmin, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Kimia",
-    "foto": "https://images.pexels.com/photos/39584/medical-hospital-healthcare-medicine.jpg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 14,
     "nama": "Budi Santoso Ari Kurniawan, M.Pd.",
     "jabatan": "Kepala Sekolah",
     "mapel": "-",
-    "foto": "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 15,
     "nama": "Siti Aminah, S.Pd.",
     "jabatan": "Wakil Kepala Sekolah",
     "mapel": "Bahasa Indonesia",
-    "foto": "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 16,
     "nama": "Agus Pratama, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Matematika",
-    "foto": "https://images.pexels.com/photos/1181352/pexels-photo-1181352.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 17,
     "nama": "Dewi Lestari, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Bahasa Inggris",
-    "foto": "https://images.pexels.com/photos/3183171/pexels-photo-3183171.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 18,
     "nama": "Hendra Wijaya, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Fisika",
-    "foto": "https://images.pexels.com/photos/356079/pexels-photo-356079.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 19,
     "nama": "Nurul Hidayah, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Kimia",
-    "foto": "https://images.pexels.com/photos/39584/medical-hospital-healthcare-medicine.jpg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 20,
     "nama": "Rizki Kurniawan, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Biologi",
-    "foto": "https://images.pexels.com/photos/3825527/pexels-photo-3825527.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 21,
     "nama": "Sri Wahyuni, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Sejarah",
-    "foto": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 22,
     "nama": "Arif Setiawan, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Geografi",
-    "foto": "https://images.pexels.com/photos/3184460/pexels-photo-3184460.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 23,
     "nama": "Mega Putri, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Seni Budaya",
-    "foto": "https://images.pexels.com/photos/164631/pexels-photo-164631.jpeg"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 24,
     "nama": "Lintang Purwanti, S.Pd.",
     "jabatan": "Guru",
     "mapel": "Bahasa Jepang",
-    "foto": "https://images.pexels.com/photos/1181341/pexels-photo-1181341.jpeg"
+    "foto": "/image/fasil.jpg"
   }
 ]

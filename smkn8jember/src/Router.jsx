@@ -61,7 +61,8 @@ function Router() {
         <Route path="/" element={<HomePage />} />
 
         {/* ADMIN ROUTES */}
-        <Route path="/" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+        {/* <Route path="/" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}> */}
+        <Route path="/" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="artikel" element={<Artikel />} />
           <Route path="artikelUser" element={<ArtikelUser />} />

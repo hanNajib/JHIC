@@ -14,6 +14,7 @@ const StrukturOrganisasi = () => {
 
   // Search & Filter
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("Active");
 
   useEffect(() => {
     fetch("/guru.json")
@@ -27,9 +28,7 @@ const StrukturOrganisasi = () => {
     return matchSearch;
   });
 
-  // Hitung total halaman
   const jumlahHalaman = Math.ceil(struktur.length / jumlahPage);
-  // Tentukan data awal & akhir per halaman
   const arrayTerakhir = halamanKe * jumlahPage;
   const arrayAwal = arrayTerakhir - jumlahPage;
   const dataHasil = filteredStruktur.slice(arrayAwal, arrayTerakhir);
@@ -46,53 +45,55 @@ const StrukturOrganisasi = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title */}
-      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-        Struktur Organisasi
-      </h1>
-
-      {/*  FILTER SECTION  */}
+    <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
+      {/*  filters */}
       <FilterAdmin
-        showKategori={false} //ini menandakan kategori disembunyikan
+        filterKategori={status}
+        setFilterKategori={(value) => {
+          setFilterKategori(value);
+          setHalamanKe(1);
+        }}
         search={search}
         setSearch={(value) => {
           setSearch(value);
           setHalamanKe(1);
         }}
         handleReset={handleReset}
-        linkTambah="/dataguru/tambah"
-        titleTambah="Tambah Guru"
+        titleHalaman="Data Struktur Organisasi"
+        descHalaman="Kelola data jabatan-jabatan struktur organisasi"
+        linkTambah="/strukturorganisasi/tambah"
+        titleBTN="Tambah Jabatan"
+        kategoriList={["Active", "Non-Active"]}
       />
 
       {/* tabel */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white ">
-          <thead className="bg-orange-500 border-2 border-gray-200">
+          <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th className="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 text-left text-white min-w-full">
                 No
               </th>
-              <th className="py-2 px-4 border text-left text-white min-w-38">
+              <th className="py-2 px-4 text-left text-white min-w-38">
                 Jabatan
               </th>
-              <th className="py-2 px-4 border text-left text-white min-w-50">
+              <th className="py-2 px-4 text-left text-white min-w-50">
                 Pengisi
               </th>
-              <th className="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 text-left text-white min-w-full">
                 Aksi
               </th>
             </tr>
           </thead>
           <tbody>
             {dataHasil.map((a, _i) => (
-              <tr key={a.id} className="hover:bg-gray-50 text-[14px]">
-                <td className="py-2 px-4 border-b border-gray-400">
+              <tr key={a.id} className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
+                <td className="py-2 px-4">
                   {_i + 1 + arrayAwal}
                 </td>
-                <td className="py-2 border-b border-gray-400">{a.jabatan}</td>
-                <td className="py-2 border-b border-gray-400">{a.nama}</td>
-                <td className="py-2 px-4 border-b border-gray-400 text-white ">
+                <td className="py-2">{a.jabatan}</td>
+                <td className="py-2">{a.nama}</td>
+                <td className="py-2 px-4 text-white ">
                   <div className="flex gap-2 justify-center ">
                     <a
                       href={`/strukturorganisasi/edit/${a.id}`}

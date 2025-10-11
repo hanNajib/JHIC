@@ -19,6 +19,7 @@ const Fasilitas = () => {
 
   // Search & Filter
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("Semua");
 
   useEffect(() => {
     fetch("/fasilitas.json")
@@ -49,62 +50,64 @@ const Fasilitas = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title */}
-      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-        Fasilitas
-      </h1>
-
-      {/*  FILTER SECTION  */}
+    <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
+      {/*  filters */}
       <FilterAdmin
-        showKategori={false} //ini menandakan kategori disembunyikan
+        filterKategori={status}
+        setFilterKategori={(value) => {
+          setStatus(value);
+          setHalamanKe(1);
+        }}
         search={search}
         setSearch={(value) => {
           setSearch(value);
           setHalamanKe(1);
         }}
         handleReset={handleReset}
+        titleHalaman="Data Fasilitas"
+        descHalaman="Kelola data fasilitas"
         linkTambah="/fasilitas/tambah"
-        titleTambah="Tambah Fasilitas"
+        titleBTN="Tambah Fasilitas"
+        kategoriList={["Active", "Nonactive"]}
       />
 
       {/* tabel */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white ">
-          <thead className="bg-orange-500 border-2 border-gray-200">
+          <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th className="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 text-left text-white min-w-full">
                 No
               </th>
-              <th className="py-2 px-4 border text-left text-white min-w-26">
+              <th className="py-2 px-4 text-left text-white min-w-26">
                 Nama
               </th>
-              <th className="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 text-left text-white min-w-full">
                 Total
               </th>
-              <th className="py-2 px-4 border text-left text-white min-w-96">
+              <th className="py-2 px-4 text-left text-white min-w-96">
                 Deskripsi
               </th>
-              <th className="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 text-left text-white min-w-full">
                 Foto
               </th>
-              <th className="py-2 px-4 border text-left text-white min-w-full">
+              <th className="py-2 px-4 text-left text-white min-w-full">
                 Aksi
               </th>
             </tr>
           </thead>
           <tbody>
             {dataHasil.map((a, _i) => (
-              <tr className="hover:bg-gray-50 text-[14px]">
-                <td className="py-2 px-4 border-b border-gray-400">{_i + 1}</td>
-                <td className="py-2  border-b border-gray-400 ">{a.nama}</td>
-                <td className="py-2 px-4 border-b border-gray-400">
+              <tr className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
+                <td className="py-2 px-4">{_i + 1}</td>
+                <td className="py-2  ">{a.nama}</td>
+                <td className="py-2 px-4">
                   {a.total}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-400">
+                <td className="py-2 px-4">
                   {a.deskripsi}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-400">
+                <td className="py-2 px-4">
                   <button
                     onClick={() => setSelectedImage(a.foto)}
                     className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
@@ -113,7 +116,7 @@ const Fasilitas = () => {
                     {a.foto}
                   </button>
                 </td>
-                <td className="py-2 px-4 border-b border-gray-400 text-white ">
+                <td className="py-2 px-4 text-white ">
                   <div className="flex gap-2 justify-center ">
                     <a
                       href={`/fasilitas/edit/${a.id}`}
