@@ -31,4 +31,13 @@ class SchoolSettingsController extends Controller
 
         return $this->updated($setting, 'Setting updated successfully');
     }
+
+    public function getByTitle($title) {
+        $setting = SchoolSetting::whereSetting($title)->first();
+        if(!$setting) {
+            return $this->notFound('Setting not found');
+        }
+
+        return $this->success($setting);
+    }
 }

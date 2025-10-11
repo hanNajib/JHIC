@@ -22,6 +22,7 @@ export const AdminApi = {
 export const WebSettingsApi = {
     getSettings: () => apiClient.get('/settings'),
     updateSetting: (title, data) => apiClient.post(`/settings/${title}?_method=PUT`, data),
+    getByTitle: (title) => apiClient.get(`/settings/${title}`),
 }
 
 

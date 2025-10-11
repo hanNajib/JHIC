@@ -6,5 +6,9 @@ export const QUERY_KEYS = {
     MAJORS : {
         LIST: 'majors',
         DETAIL: 'majorDetail',
-    }
+    },
+    WEB_SETTINGS: {
+        LIST: 'webSettings',
+        DETAIL: 'webSettingDetail',
+    },
 }

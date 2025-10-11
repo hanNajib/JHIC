@@ -113,9 +113,12 @@ Route::middleware('web')->group(function () {
         Route::put('/{id}', [CategoryController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [CategoryController::class, 'delete'])->middleware('auth:sanctum');
     });
-
-
-
+    
+    Route::prefix('settings')->group(function () {
+        Route::get('/', [SchoolSettingsController::class, 'index']);
+        Route::get('/{title}', [SchoolSettingsController::class, 'getByTitle']);
+        Route::put('/{title}', [SchoolSettingsController::class, 'update'])->middleware(['auth:sanctum', 'role:superadmin']);
+    });
 
     // ----------------------------------
     // ---------- SUPERADMIN ROUTES ----------
@@ -130,10 +133,7 @@ Route::middleware('web')->group(function () {
             Route::delete('/{id}', [AdminController::class, 'delete']);
             Route::post('/{id}/restore', [AdminController::class, 'restore']);
         });
-
-        Route::prefix('settings')->group(function () {
-            Route::get('/', [SchoolSettingsController::class, 'index']);
-            Route::put('/{title}', [SchoolSettingsController::class, 'update']);
-        });
     });
+
+
 });

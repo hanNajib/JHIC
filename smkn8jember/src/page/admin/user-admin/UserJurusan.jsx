@@ -23,7 +23,7 @@ const UserJurusan = () => {
   const navigate = useNavigate();
 
   const handleEdit = (adminId) => {
-    navigate(`/admin-jurusan/edit/${adminId}`);
+    navigate(`/admin/admin-jurusan/edit/${adminId}`);
   };
 
   const handleDelete = (admin) => {
@@ -59,7 +59,7 @@ const UserJurusan = () => {
   };
 
   const handleAddAdmin = () => {
-    navigate('/admin-jurusan/tambah');
+    navigate('/admin/admin-jurusan/tambah');
   };
 
   const handleRefresh = async () => {
