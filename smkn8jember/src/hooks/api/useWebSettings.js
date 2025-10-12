@@ -21,7 +21,7 @@ export const useWebSettingByTitle = (title, options = {}) => {
 export const useUpdateWebSettings = (options = {}) => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (data) => webSettingsService.updateSettings(data),
+        mutationFn: ({ title, data }) => webSettingsService.updateSettings(title, data),
         onSuccess: () => {
             queryClient.invalidateQueries([QUERY_KEYS.WEB_SETTINGS]);
         },

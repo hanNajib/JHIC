@@ -128,7 +128,7 @@ const TambahJurusan = () => {
               menubar: false,
               plugins: "lists link table code",
               toolbar:
-                "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
               content_style:
                 "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
             }}

@@ -10,7 +10,7 @@ class SchoolSetting extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'value'];
+    protected $fillable = ['title', 'type', 'value'];
 
     public $availableSettings = [
         'judul_halaman',

@@ -1,113 +1,219 @@
 import { IoIosArrowBack } from "react-icons/io";
-import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Drop from "../../../components/ui/DropdownSelect";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMajors } from "../../../hooks/api/useMajor";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useUpdateSubject, useSubject } from "../../../hooks/api/useSubject";
+import { Loading } from "../../../components/ui";
+import Swal from "sweetalert2";
+
+const schema = yup.object().shape({
+  name: yup.string().required("Nama Mata Pelajaran wajib diisi"),
+  description: yup.string().required("Deskripsi Mata Pelajaran wajib diisi"),
+  major_id: yup.string().required("Jurusan wajib diisi"),
+});
 
 const EditMapel = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // ambil id dari URL
-  const [mapel, setMapel] = useState({}); // pakai object, bukan array
-
-  // Daftar pilihan jurusan (bisa juga ambil dari file JSON kalau mau dinamis)
-  const jurusanOptions = [
-    "Rekayasa Perangkat Lunak",
-    "Desain Grafis Komunikasi",
-    "Teknik Komputer dan Jaringan",
-  ];
-
-  // Ambil data mapel dari file JSON
-  useEffect(() => {
-    fetch("/mapel.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const found = data.find((a) => a.id === parseInt(id));
-        if (found) setMapel(found);
+  const { id } = useParams();
+  const { data: majors } = useMajors();
+  const { data: subject, isLoading: subjectLoading } = useSubject(id);
+  
+  const updateSubject = useUpdateSubject(id, {
+    onSuccess: () => {
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Mata pelajaran berhasil diperbarui",
+        icon: "success",
+      }).then(() => {
+        navigate(-1);
       });
-  }, [id]);
+    },
+    onError: (error) => {
+      Swal.fire({
+        title: "Gagal!",
+        text: error.response?.data?.message || "Terjadi kesalahan saat memperbarui mata pelajaran",
+        icon: "error",
+      });
+    }
+  });
 
-  // Saat klik tombol simpan
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({
-      mapel: mapel.mapel,
-      jurusan: mapel.jurusan,
-      deskripsi: mapel.deskripsi,
-    });
-    alert("Data siap dikirim ke backend (lihat console)");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    setValue,
+    watch,
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: subject?.name || "",
+      description: subject?.description || "",
+      major_id: subject?.major_id?.toString() || "",
+    },
+  });
+
+  const [preview, setPreview] = useState(null);
+  const descriptionValue = watch("description");
+
+  useEffect(() => {
+    if (subject?.data) {
+      const subjectData = subject.data;
+      setValue("name", subjectData.name || "");
+      setValue("description", subjectData.description || "");
+      setValue("major_id", subjectData.major_id?.toString() || "");
+    }
+  }, [subject, setValue]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setValue("image", file);
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
+    }
   };
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("major_id", data.major_id);
+      formData.append("_method", "PUT");
+
+      await updateSubject.mutateAsync(formData);
+    } catch (error) {
+      console.error("Error updating subject:", error);
+    }
+  };
+
+  const handleReset = () => {
+    if (subject?.data) {
+      const subjectData = subject.data;
+      setValue("name", subjectData.name || "");
+      setValue("description", subjectData.description || "");
+      setValue("major_id", subjectData.major_id?.toString() || "");
+    }
+    setPreview(null);
+  };
+
+  if (subjectLoading) {
+    return <Loading variant="spinner" size="lg" />;
+  }
+
+  if (!subject) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-gray-700 mb-2">Data tidak ditemukan</h2>
+          <p className="text-gray-500 mb-4">Mata pelajaran yang Anda cari tidak ditemukan.</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+          >
+            Kembali
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
-      {/* Judul halaman */}
-      <div className="flex items-center w-screen gap-3">
+      <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 text-3xl lg:text-4xl text-center p-1 rounded-4xl text-white"
+          className="bg-orange-500 cursor-pointer text-3xl lg:text-4xl text-center p-2 rounded-lg text-white hover:bg-orange-600 transition-colors"
         >
           <IoIosArrowBack />
         </button>
         <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-          Edit Data Mapel
+          Edit Mata Pelajaran
         </h1>
       </div>
 
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-        {/* Nama Mapel */}
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
         <div className="flex flex-col">
-          <label htmlFor="mapel" className="font-bold text-gray-800">
-            Mapel
+          <label htmlFor="name" className="font-bold text-gray-800">
+            Nama Mata Pelajaran <span className="text-red-500">*</span>
           </label>
           <input
+            id="name"
             type="text"
-            id="mapel"
-            value={mapel.mapel || ""}
-            onChange={(e) => setMapel({ ...mapel, mapel: e.target.value })}
-            placeholder="Masukkan Mapel Umum Jurusan"
-            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
+            {...register("name")}
+            placeholder="Masukkan Nama Mata Pelajaran"
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
+              errors.name
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+            }`}
           />
+          {errors.name && (
+            <span className="text-red-500 text-sm mt-1">{errors.name.message}</span>
+          )}
         </div>
 
-        {/* Dropdown Jurusan */}
-        <Drop
-          label="Jurusan"
-          name="jurusan"
-          options={jurusanOptions}        
-          value={mapel.jurusan || ""}      
-          onChange={(e) =>
-            setMapel({ ...mapel, jurusan: e.target.value })
-          }
-          showPlaceholder={false}
-        />
-
-        {/* Deskripsi */}
         <div className="flex flex-col">
-          <label htmlFor="deskripsi" className="font-bold text-gray-800">
-            Deskripsi
+          <label htmlFor="description" className="font-bold text-gray-800">
+            Deskripsi <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            id="deskripsi"
-            value={mapel.deskripsi || ""}
-            onChange={(e) => setMapel({ ...mapel, deskripsi: e.target.value })}
-            placeholder="Masukkan Deskripsi Singkat"
-            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
+          <textarea
+            id="description"
+            {...register("description")}
+            value={descriptionValue}
+            onChange={(e) => setValue("description", e.target.value)}
+            placeholder="Masukkan Deskripsi Mata Pelajaran"
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 h-32 ${
+              errors.description
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+            }`}
           />
+          {errors.description && (
+            <span className="text-red-500 text-sm mt-1">{errors.description.message}</span>
+          )}
         </div>
 
-        {/* Tombol Simpan dan Reset */}
-        <div className="flex gap-3 justify-end">
-          <button
-            type="submit"
-            className="bg-orange-500 text-white font-semibold py-1 text-sm md:text-base w-24 rounded-4xl hover:bg-orange-600"
+        <div className="flex flex-col">
+          <label className="font-bold text-gray-800 mb-2">Jurusan <span className="text-red-500">*</span></label>
+          <select
+            {...register("major_id")}
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
+              errors.major_id
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+            }`}
           >
-            Save
-          </button>
+            <option value="">Pilih Jurusan</option>
+            {majors && majors.map((major) => (
+              <option key={major.id} value={major.id}>{major.name}</option>
+            ))}
+          </select>
+          {errors.major_id && (
+            <span className="text-red-500 text-sm mt-1">{errors.major_id.message}</span>
+          )}
+        </div>
+
+        <div className="flex gap-3 justify-end mt-6">
           <button
             type="button"
-            onClick={() => window.location.reload()}
-            className="py-1 w-24 text-orange-500 text-sm md:text-base font-bold border-[1.9px] border-orange-500 rounded-4xl hover:bg-orange-500 hover:text-white transition duration-300"
+            onClick={handleReset}
+            className="py-2 px-6 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300"
+            disabled={isSubmitting}
           >
             Reset
+          </button>
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting || updateSubject.isPending}
+          >
+            {isSubmitting || updateSubject.isPending ? "Memperbarui..." : "Perbarui"}
           </button>
         </div>
       </form>

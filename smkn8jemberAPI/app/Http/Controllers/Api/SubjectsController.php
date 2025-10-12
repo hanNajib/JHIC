@@ -8,10 +8,14 @@ use Illuminate\Http\Request;
 
 class SubjectsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $subjects = Subject::all();
-        return $this->success($subjects, 'Subjects retrieved successfully');
+        $subjects = Subject::applyFilters(
+            $request,
+            ['name', 'description'],
+            ['major_id']
+        );
+        return $this->cursorPaginated($subjects, 'Subjects retrieved successfully');
     }
 
     public function create(Request $request)
@@ -22,14 +26,14 @@ class SubjectsController extends Controller
             'major_id' => 'required|exists:majors,id',
         ]);
 
-        $createData = $request->only(['name', 'descrtiption', 'major_id']);
+        $createData = $request->only(['name', 'description', 'major_id']);
         $subjects = Subject::create($createData);
         return $this->created($subjects, 'Subject created successfully');
     }
 
     public function show($id)
     {
-        $subjects = Subject::fin($id);
+        $subjects = Subject::find($id);
         if (!$subjects) {
             return $this->notFound('Subject not found');
         }
@@ -41,7 +45,7 @@ class SubjectsController extends Controller
         $request->validate([
             'name' => 'sometimes|string',
             'description' => 'sometimes|nullable|string',
-            'major_id' => 'sometimes|exits:majors,id',
+            'major_id' => 'sometimes|exists:majors,id',
         ]);
 
         $subjects = Subject::find($id);

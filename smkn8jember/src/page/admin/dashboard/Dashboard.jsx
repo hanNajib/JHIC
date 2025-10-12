@@ -2,9 +2,9 @@ import React from "react";
 import { GrArticle } from "react-icons/gr";
 
 const Dashboard = () => {
+
   return (
     <div className="flex flex-col gap-10 ">
-      {/* title halaman */}
       <div className="flex flex-col gap-2">
         <h1 className="font-bold text-2xl md:text-4xl font-poppins text-gray-900">
           Selamat Datang di Admin, Eskalaber Jaya
@@ -14,7 +14,6 @@ const Dashboard = () => {
         </h4>
       </div>
 
-      {/* cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {[1, 2, 3, 4].map((i) => (
           <div

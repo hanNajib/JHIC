@@ -85,11 +85,12 @@ export const GalleryApi = {
 }
 
 export const SubjectApi = {
-    get : (params) => apiClient.get('/subjects', { params }),
-    getById : (id) => apiClient.get(`/subjects/${id}`),
-    create : (data) => apiClient.post('/subjects', data),
-    update : (id, data) => apiClient.post(`/subjects/${id}?_method=PUT`, data),
-    delete : (id) => apiClient.delete(`/subjects/${id}`),
+    get : (params) => apiClient.get('/subject', { params }),
+    getById : (id) => apiClient.get(`/subject/${id}`),
+    create : (data) => apiClient.post('/subject', data),
+    update : (id, data) => apiClient.post(`/subject/${id}?_method=PUT`, data),
+    delete : (id) => apiClient.delete(`/subject/${id}`),
+    restore: (id) => apiClient.post(`/subject/${id}/restore`)
 }
 
 export const ArticleApi = {

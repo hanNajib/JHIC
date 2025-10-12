@@ -87,7 +87,7 @@ const UserJurusan = () => {
     <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
       <div className="flex justify-between flex-col lg:flex-row gap-4">
         <div>
-          <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">Data Admin</h1>
+          <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">Data User</h1>
           <p className="text-gray-600 mt-1">Kelola data administrator</p>
         </div>
 

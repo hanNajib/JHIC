@@ -11,4 +11,8 @@ export const QUERY_KEYS = {
         LIST: 'webSettings',
         DETAIL: 'webSettingDetail',
     },
+    SUBJECTS: {
+        LIST: 'subjects',
+        DETAIL: 'subjectDetail'
+    }
 }

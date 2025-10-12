@@ -2,10 +2,8 @@ import React from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { AnnouncementCard, Button, Icon, Section } from "../../components/ui";
-import { useAnnouncements } from "../../hooks/useSchool";
 
 const Announcement = ({ className = "" }) => {
-  const { announcements, isLoading } = useAnnouncements();
   return (
     <>
       <Navbar />

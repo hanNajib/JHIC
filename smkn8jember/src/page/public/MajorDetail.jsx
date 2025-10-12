@@ -8,7 +8,6 @@ import {
   MdWeb,
 } from "react-icons/md";
 import { AiOutlineMobile } from "react-icons/ai";
-import { useArticles } from "../../hooks/useSchool";
 import { ArticleCard } from "../../components/ui";
 const MajorDetail = () => {
   const sliderRef = useRef(null);

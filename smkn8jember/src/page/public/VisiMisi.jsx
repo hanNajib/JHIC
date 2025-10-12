@@ -1,5 +1,3 @@
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
 import {
   FaBookReader,
   FaEye,
@@ -9,8 +7,13 @@ import {
   FaUserTie,
 } from "react-icons/fa";
 import { TbMoonStars } from "react-icons/tb";
+import DefaultLayout from "../../components/layout/DefaultLayout";
+import parse from "html-react-parser";
+import { useWebSettingByTitle } from "../../hooks/api/useWebSettings";
 
 const VisiMisi = () => {
+  const {data: visi} = useWebSettingByTitle('visi');
+  const {data: misi} = useWebSettingByTitle('misi');
   const nilai = [
     {
       icon: <TbMoonStars className="text-3xl text-[#F77F00]" />,
@@ -44,8 +47,7 @@ const VisiMisi = () => {
     },
   ];
   return (
-    <>
-      <Navbar />
+    <DefaultLayout>
       <section
         className="flex flex-col items-center justify-center py-20 relative text-center"
         style={{
@@ -75,9 +77,7 @@ const VisiMisi = () => {
             </div>
             <h2 className="font-bold text-2xl mb-4">Visi</h2>
             <p className="text-gray-700 leading-relaxed italic max-w-md">
-              “Terwujudnya lulusan yang berprofil Pelajar Pancasila sehingga
-              mampu bersaing di dunia kerja dan Perguruan Tinggi, serta tumbuh
-              jiwa wirausaha”
+              {parse(visi?.data.value || "tes")}
             </p>
           </div>
 
@@ -151,8 +151,7 @@ const VisiMisi = () => {
           ))}
         </div>
       </section>
-      <Footer />
-    </>
+    </DefaultLayout>
   );
 };
 

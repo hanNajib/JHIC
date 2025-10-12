@@ -13,6 +13,7 @@ const WebSetting = () => {
   const updateWebSettings = useUpdateWebSettings();
   
   const [formData, setFormData] = useState({});
+  const [originalData, setOriginalData] = useState({}); // Track original data
   const [previewLogo, setPreviewLogo] = useState("");
   const [previewHero, setPreviewHero] = useState("");
 
@@ -23,8 +24,18 @@ const WebSetting = () => {
         initialData[setting.title] = setting.value;
       });
       setFormData(initialData);
+      setOriginalData(initialData); 
     }
   }, [webSettings]);
+
+  const hasChanges = () => {
+    return Object.entries(formData).some(([title, value]) => {
+      if (!value) return false;
+      if (value instanceof File) return true;
+      if (typeof value === 'string' && value.startsWith('http')) return false;
+      return value !== originalData[title];
+    });
+  };
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -53,23 +64,67 @@ const WebSetting = () => {
     e.preventDefault();
     
     try {
-      await updateWebSettings.mutateAsync(formData);
+      // Filter hanya field yang berubah
+      const changedFields = Object.entries(formData).filter(([title, value]) => {
+        // Skip jika value kosong
+        if (!value) return false;
+        
+        // Jika value adalah File (gambar baru di-upload), pasti berubah
+        if (value instanceof File) return true;
+        
+        // Skip jika value adalah URL http (gambar existing tidak diubah)
+        if (typeof value === 'string' && value.startsWith('http')) return false;
+        
+        // Bandingkan dengan original data
+        // Jika value berbeda dengan original, berarti ada perubahan
+        return value !== originalData[title];
+      });
+
+      // Jika tidak ada perubahan, tampilkan pesan dan return
+      if (changedFields.length === 0) {
+        Swal.fire({
+          icon: "info",
+          title: "Tidak Ada Perubahan",
+          text: "Tidak ada data yang diubah",
+        });
+        return;
+      }
+
+      // Map changed fields ke promises untuk update API
+      const updatePromises = changedFields.map(([title, value]) => {
+        if (value instanceof File) {
+          const data = new FormData();
+          data.append('value', value);
+          return updateWebSettings.mutateAsync({ title, data });
+        }
+        return updateWebSettings.mutateAsync({ 
+          title, 
+          data: { value } 
+        });
+      });
+
+      await Promise.all(updatePromises);
+      
+      // Update originalData setelah sukses update
+      setOriginalData({ ...formData });
+      
       Swal.fire({
         icon: "success",
         title: "Berhasil!",
-        text: "Pengaturan website berhasil diperbarui",
+        text: `${changedFields.length} pengaturan berhasil diperbarui`,
       });
     } catch (error) {
+      console.error('Error updating settings:', error);
       Swal.fire({
         icon: "error",
         title: "Gagal!",
-        text: error.response?.data?.message || "Terjadi kesalahan saat memperbarui pengaturan",
+        text: error?.response?.data?.message || error?.message || "Terjadi kesalahan saat memperbarui pengaturan",
       });
     }
   };
 
   if (isLoading) {
-    return <Loading variant="spinner" size="large" fullScreen />;
+    return <Loading variant="spinner" size="large" />;
   }
 
   return (
@@ -301,7 +356,7 @@ const WebSetting = () => {
                 menubar: false,
                 plugins: "lists link table code",
                 toolbar:
-                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
                 content_style:
                   "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
               }}
@@ -322,7 +377,7 @@ const WebSetting = () => {
                 menubar: false,
                 plugins: "lists link table code",
                 toolbar:
-                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
                 content_style:
                   "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
               }}
@@ -343,7 +398,7 @@ const WebSetting = () => {
                 menubar: false,
                 plugins: "lists link table code",
                 toolbar:
-                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
                 content_style:
                   "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
               }}
@@ -363,7 +418,7 @@ const WebSetting = () => {
                 menubar: false,
                 plugins: "lists link table code",
                 toolbar:
-                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
                 content_style:
                   "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
               }}
@@ -507,7 +562,7 @@ const WebSetting = () => {
           </button>
           <button
             type="submit"
-            disabled={updateWebSettings.isPending}
+            disabled={updateWebSettings.isPending || !hasChanges()}
             className="px-8 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
             {updateWebSettings.isPending ? "Menyimpan..." : "Simpan Perubahan"}

@@ -1,10 +1,64 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Section, Button, GalleryCard } from '../ui';
-import { useGallery } from '../../hooks/useSchool';
 import { GALLERY_CATEGORIES } from '../../constants/schoolData';
 
+// Data sampel galeri
+const sampleGalleries = [
+  {
+    id: 1,
+    title: "Lomba Kompetensi Siswa 2024",
+    image: "/assets/images/gallery-1.jpg",
+    category: "prestasi",
+    date: "2024-03-15"
+  },
+  {
+    id: 2,
+    title: "Workshop Teknologi",
+    image: "/assets/images/gallery-2.jpg",
+    category: "kegiatan",
+    date: "2024-03-10"
+  },
+  {
+    id: 3,
+    title: "Kunjungan Industri",
+    image: "/assets/images/gallery-3.jpg",
+    category: "kunjungan",
+    date: "2024-03-05"
+  },
+  {
+    id: 4,
+    title: "Laboratorium Komputer",
+    image: "/assets/images/gallery-4.jpg",
+    category: "fasilitas",
+    date: "2024-03-01"
+  },
+  {
+    id: 5,
+    title: "Upacara Bendera",
+    image: "/assets/images/gallery-5.jpg",
+    category: "kegiatan",
+    date: "2024-02-26"
+  },
+  {
+    id: 6,
+    title: "Juara Olimpiade",
+    image: "/assets/images/gallery-6.jpg",
+    category: "prestasi",
+    date: "2024-02-20"
+  }
+];
+
 const GallerySection = ({ className = '' }) => {
-  const { filteredGallery, activeFilter, setFilter } = useGallery();
+  const [activeFilter, setActiveFilter] = useState('all');
+  
+  const galleries = sampleGalleries;
+  
+  const filteredGallery = useMemo(() => {
+    if (activeFilter === 'all') return galleries;
+    return galleries.filter(item => item.category === activeFilter);
+  }, [galleries, activeFilter]);
+  
+  const setFilter = (filterId) => setActiveFilter(filterId);
 
   return (
     <Section 

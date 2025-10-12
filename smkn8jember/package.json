@@ -16,6 +16,7 @@
     "@tinymce/tinymce-react": "^6.3.0",
     "axios": "^1.12.2",
     "gsap": "^3.13.0",
+    "html-react-parser": "^5.2.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.64.0",
