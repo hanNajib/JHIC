@@ -17,4 +17,7 @@ class Gallery extends Model
     {
         return $this->morphToMany(Category::class, 'categorizable');
     }
+    public function getCreatedAtAttribute($value) {
+        return date("Y-m-d", strtotime($value));
+    }
 }

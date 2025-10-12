@@ -94,7 +94,7 @@ export const ChanceCarrierApi = {
 export const GalleryApi = {
     get : (params) => apiClient.get('/gallery', { params }),
     getById : (id) => apiClient.get(`/gallery/${id}`),
-    create : (data) => apiClient.post('/gallery', data),
+    create : (data) => apiClient.post('/gallery', data, {headers: {'Content-Type': 'multipart/form-data'}}),
     update : (id, data) => apiClient.post(`/gallery/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/gallery/${id}`),
     restore: (id) => apiClient.post(`gallery/${id}/restore`)
