@@ -1,39 +1,38 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '../../constants/queryKeys';
-import * as adminService from '../../api/services/admin/UserService';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "../../constants/queryKeys";
+import * as announcementService from "../../api/services/admin/AnnouncementService";
+export const useAnnouncements = (filters = {}, options = {}) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST, filters],
+    queryFn: async () => {
+      const response = await announcementService.get(filters);
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+};
 
-export const useAdmins = (filters = {}, options = {}) => {
-    return useQuery({
-        queryKey: [QUERY_KEYS.ADMINS.LIST, filters],
-        queryFn: async () => {
-            const response = await adminService.get(filters);
-            return response.data;
-        },
-        staleTime: 5 * 60 * 1000,
-        ...options
-    })
-} 
+export const useAnnouncement = (id, options = {}) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ANNOUNCEMENT.DETAIL, id],
+    queryFn: async () => {
+      const response = await announcementService.getById(id);
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+};
 
-export const useAdmin = (id, options = {}) => {
-    return useQuery({
-        queryKey: [QUERY_KEYS.ADMINS.DETAIL, id],
-        queryFn: async () => {
-            const response = await adminService.getById(id);
-            return response.data;
-        },
-        staleTime: 5 * 60 * 1000,
-        ...options
-    })
-}
-
-export const useCreateUser = (options = {}) => {
+export const useCreateAnnouncement = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => adminService.create(data),
+        mutationFn: (data) => announcementService.create(data),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST],
                 exact: false 
             });
             
@@ -47,17 +46,17 @@ export const useCreateUser = (options = {}) => {
             }
         }
     })
-}
+};
 
-export const useUpdateUser = (id, options = {}) => {
+export const useUpdateAnnouncement = (id, options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => adminService.update(id, data),
+        mutationFn: (data) => announcementService.update(id, data),
         onSuccess: async (data, variables, context) => {
-            await queryClient.invalidateQueries([QUERY_KEYS.ADMINS.DETAIL, id]);
+            await queryClient.invalidateQueries([QUERY_KEYS.ANNOUNCEMENT.DETAIL, id]);
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST],
                 exact: false 
             });
             
@@ -71,16 +70,16 @@ export const useUpdateUser = (id, options = {}) => {
             }
         }
     })
-}
+};
 
-export const useDeleteUser = (options = {}) => {
+export const useDeleteAnnouncement = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (id) => adminService.deleteUser(id),
+        mutationFn: (id) => announcementService.deleteData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST],
                 exact: false 
             });
             
@@ -94,16 +93,16 @@ export const useDeleteUser = (options = {}) => {
             }
         }
     })
-}
+};
 
-export const useRestoreUser = (options = {}) => {
+export const useRestoreAnnouncement = (options = {}) => {
     const queryClient = useQueryClient();
-
+    
     return useMutation({
-        mutationFn: (id) => adminService.restoreUser(id),
+        mutationFn: (id) => announcementService.restoreData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST],
                 exact: false 
             });
             
@@ -117,6 +116,4 @@ export const useRestoreUser = (options = {}) => {
             }
         }
     })
-}
-
-
+};

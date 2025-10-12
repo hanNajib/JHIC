@@ -1,49 +1,67 @@
 import { useState } from "react";
 import { FaRegEdit, FaSearch } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
+import { CiImageOn } from "react-icons/ci";
 import { BiRefresh } from "react-icons/bi";
 import { IoMdAdd } from "react-icons/io";
-import { CiImageOn } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useDeleteSubject, useRestoreSubject, useSubjects } from "../../../hooks/api/useSubject";
+import { ImageModal } from "../../../components/ui";
+import { useCategories, useDeleteCategory } from "../../../hooks/api/useCategory";
 
-const Mapel = () => {
-  const navigate = useNavigate();
+const Kategori = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [trashed, setTrashed] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  
-  const { data: subjects, refetch, isFetching, error } = useSubjects({
+  const { data: category, error, refetch, isFetching } = useCategories({
     s: debouncedSearchTerm,
     trashed: trashed,
   });
-  
-  const deleteSubject = useDeleteSubject({
-    onSuccess: () => Swal.fire("Terhapus!", "Mata Pelajaran telah dihapus.", "success"),
-    onError: () => Swal.fire("Error!", "Gagal menghapus mata pelajaran.", "error")
-  });
-  
-  const restoreSubject = useRestoreSubject({
-    onSuccess: () => Swal.fire("Diaktifkan!", "Mata Pelajaran telah diaktifkan.", "success"),
-    onError: () => Swal.fire("Error!", "Gagal mengaktifkan mata pelajaran.", "error")
-  });
+  const deleteCategory = useDeleteCategory();
+  const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState(null)
 
-  const confirmAction = (title, text, action) => {
-    Swal.fire({
-      title, text, icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: title.includes("hapus") ? "Hapus" : "Aktifkan",
-      cancelButtonText: "Batal"
-    }).then(result => result.isConfirmed && action());
+  const handleEdit = (majorId) => {
+    navigate(`/admin/jurusan/edit/${majorId}`);
   };
 
-  const handleEdit = (id) => navigate(`/admin/mapel/edit/${id}`);
-  const handleDelete = (subject) => confirmAction("Yakin ingin menghapus?", `Mata Pelajaran: ${subject.name}`, () => deleteSubject.mutate(subject.id));
-  const handleRestore = (subject) => confirmAction("Yakin ingin mengaktifkan?", `Mata Pelajaran: ${subject.name}`, () => restoreSubject.mutate(subject.id));
-  const handleAdd = () => navigate('/admin/mapel/tambah');
-  const handleRefresh = () => refetch();
+  const handleDelete = (category) => {
+    Swal.fire({
+      title: "Yakin ingin menghapus?",
+      text: `Jurusan: ${category.name}`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Hapus",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteCategory.mutate(category.id);
+        Swal.fire("Terhapus!", "Jurusan telah dihapus.", "success");
+      }
+    });
+  };
+
+  const handleRestore = (category) => {
+    Swal.fire({
+      title: "Yakin ingin mengaktifkan?",
+      text: `Jurusan: ${category.name}`,
+      icon: "warning",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        restoreMajor.mutate(category.id)
+        Swal.fire("Diaktifkan!", "Admin telah diaktifkan.", "success");
+      }
+    });
+  };
+
+  const handleAddCategory = () => {
+    navigate('/admin/kategori/tambah');
+  };
+
+  const handleRefresh = async () => {
+    refetch();
+  };
 
   if (error) {
     return (
@@ -66,8 +84,8 @@ const Mapel = () => {
     <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
       <div className="flex justify-between flex-col lg:flex-row gap-4">
         <div>
-          <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">Mata Pelajaran Jurusan</h1>
-          <p className="text-gray-600 mt-1">Kelola data mata pelajaran jurusan</p>
+          <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">Data Kategori</h1>
+          <p className="text-gray-600 mt-1">Kelola data kategory</p>
         </div>
 
         <div className="flex gap-2">
@@ -80,11 +98,11 @@ const Mapel = () => {
           </button>
 
           <button
-            onClick={handleAdd}
+            onClick={() => handleAddCategory()}
             className="flex justify-center items-center gap-2 px-4 py-2 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300 w-fit"
           >
             <IoMdAdd className="text-lg" />
-            <span>Tambah Data</span>
+            <span>Tambah Kategori</span>
           </button>
         </div>
       </div>
@@ -94,7 +112,7 @@ const Mapel = () => {
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Cari berdasarkan Nama atau Deskripsi..."
+            placeholder="Cari berdasarkan nama atau deskripsi..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -126,56 +144,55 @@ const Mapel = () => {
             <tr>
               <th className="py-3 px-4 text-left text-white font-semibold w-16">No</th>
               <th className="py-3 px-4 text-left text-white font-semibold w-32">Nama</th>
-              <th className="py-3 px-4 text-left text-white font-semibold w-48">Deskripsi</th>
-              <th className="py-3 px-4 text-left text-white font-semibold w-24">Jurusan</th>
+              <th className="py-3 px-4 text-left text-white font-semibold w-48">Tipe</th>
+              <th className="py-3 px-4 text-left text-white font-semibold w-48">Warna</th>
               <th className="py-3 px-4 text-center text-white font-semibold w-24">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            {subjects && subjects.length > 0 ? (
-              subjects.map((subject, index) => (
-                <tr key={subject.id} className="hover:bg-gray-50 transition-colors duration-150">
+            {category && category.length > 0 ? (
+              category.map((category, index) => (
+                <tr key={category.id} className="hover:bg-gray-50 transition-colors duration-150">
                   <td className="py-3 px-4 border-b border-gray-200 text-sm font-medium text-gray-900 w-16">
                     {index + 1}
                   </td>
                   <td className="py-3 px-4 border-b border-gray-200 w-32">
                     <div className="text-sm font-medium text-gray-900 truncate">
-                      {subject.name}
+                      {category.name}
                     </div>
                   </td>
-                  <td className="py-3 px-4 border-b border-gray-200 text-sm text-gray-900 w-48">
-                    <div className="truncate" title={subject.email}>
-                      {subject.description || '-'}
-                    </div>
+                  <td className="py-3 px-4 border-b border-gray-200 w-96 max-w-96">
+                    <div className="text-sm text-gray-900 prose prose-sm max-w-none overflow-ellipsis line-clamp-2"
+                      dangerouslySetInnerHTML={{ __html: category.type }}
+                    />
                   </td>
-                  <td className="py-3 px-4 border-b border-gray-200 text-sm text-gray-900 w-48">
-                    <div className="truncate" title={subject.email}>
-                      {subject.major.name || '-'}
-                    </div>
+                  <td className="py-2 px-4 border-b border-gray-400">
+                    <div className="text-sm text-gray-900 prose prose-sm max-w-none overflow-ellipsis line-clamp-2"
+                      dangerouslySetInnerHTML={{ __html: category.color }}
+                    />
                   </td>
-
                   <td className="py-3 px-4 border-b border-gray-200 text-center w-24">
                     <div className="flex gap-1 justify-center">
                       {
-                        subject.deleted_at === null && (
+                        category.deleted_at === null && (
                           <button
-                            onClick={() => handleEdit(subject.id)}
+                            onClick={() => handleEdit(category.id)}
                             className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
-                            title="Edit Admin"
+                            title="Edit Data"
                           >
                             <FaRegEdit className="text-xs" />
                           </button>
                         )
                       }
                       <button
-                        onClick={() => subject.deleted_at === null ? handleDelete(subject) : handleRestore(subject)}
-                        className={`${subject.deleted_at === null
+                        onClick={() => category.deleted_at === null ? handleDelete(category) : handleRestore(category)}
+                        className={`${category.deleted_at === null
                           ? 'bg-red-500 hover:bg-red-600'
                           : 'bg-green-500 hover:bg-green-600'
                           } text-white p-2 rounded transition duration-200`}
-                        title={subject.deleted_at === null ? 'Hapus' : 'Aktifkan'}
+                        title={category.deleted_at === null ? 'Hapus' : 'Aktifkan'}
                       >
-                        {subject.deleted_at === null ? <MdDeleteOutline className="text-xs" /> : <BiRefresh className="text-xs" />}
+                        {category.deleted_at === null ? <MdDeleteOutline className="text-xs" /> : <BiRefresh className="text-xs" />}
                       </button>
                     </div>
                   </td>
@@ -186,8 +203,7 @@ const Mapel = () => {
                 <td colSpan="8" className="py-8 px-4 text-center text-gray-500">
                   <div className="flex flex-col items-center">
                     <CiImageOn className="text-4xl text-gray-300 mb-2" />
-                    <p className="text-lg font-medium">Tidak ada data ditemukan</p>
-                    <p className="text-sm">Belum ada data yang terdaftar dalam sistem</p>
+                    <p className="text-lg font-medium">Tidak ada data Jurusan</p>
                   </div>
                 </td>
               </tr>
@@ -195,8 +211,10 @@ const Mapel = () => {
           </tbody>
         </table>
       </div>
+
+    
     </div>
   );
 };
 
-export default Mapel;
+export default Kategori;

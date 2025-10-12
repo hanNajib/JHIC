@@ -31,10 +31,21 @@ export const useCreateSubject = (options = {}) => {
 
     return useMutation({
         mutationFn: (data) => subjectService.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.SUBJECTS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.SUBJECTS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -43,11 +54,22 @@ export const useUpdateSubject = (id, options = {}) => {
 
     return useMutation({
         mutationFn: (data) => subjectService.update(id, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.SUBJECTS.DETAIL, id]);
-            queryClient.invalidateQueries([QUERY_KEYS.SUBJECTS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries([QUERY_KEYS.SUBJECTS.DETAIL, id]);
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.SUBJECTS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -56,10 +78,21 @@ export const useDeleteSubject = (options = {}) => {
 
     return useMutation({
         mutationFn: (id) => subjectService.deleteData(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.SUBJECTS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.SUBJECTS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -68,10 +101,21 @@ export const useRestoreSubject = (options = {}) => {
 
     return useMutation({
         mutationFn: (id) => subjectService.restoreData(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.SUBJECTS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.SUBJECTS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 

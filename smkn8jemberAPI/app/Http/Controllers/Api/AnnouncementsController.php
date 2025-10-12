@@ -90,4 +90,13 @@ class AnnouncementsController extends Controller
 
         return $this->deleted('Announcement deleted successfully');
     }
+
+    public function restore($id){
+        $announcement = Announcement::withTrashed()->find($id);
+        if (!$announcement) {
+            return $this->notFound("Announcement not found");
+        }
+        $announcement->restore();
+        return $this->statusMessage("Announcement restored successfully");
+    }
 }

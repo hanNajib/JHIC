@@ -73,6 +73,9 @@ import Teacher from "./page/public/Teacher";
 import Employee from "./page/public/Employee";
 import Facilitas from "./page/public/Facilitas";
 import Extracurricular from "./page/public/Extracurricular";
+import Kategori from "./page/admin/kategori/Kategori";
+import TambahKategori from "./page/admin/kategori/TambahKategori";
+import EditKategori from "./page/admin/kategori/EditKategori";
 
 function Router() {
   return (
@@ -140,6 +143,11 @@ function Router() {
           <Route path="jurusan" element={<Jurusan />} />
           <Route path="jurusan/tambah" element={<TambahJurusan />} />
           <Route path="jurusan/edit/:id" element={<EditJurusan />} />
+
+          {/* Kategori */}
+          <Route path="kategori" element={<Kategori />} />
+          <Route path="kategori/tambah" element={<TambahKategori />} />
+          <Route path="kategori/edit/:id" element={<EditKategori />} />
 
           {/* Struktur Organisasi */}
           <Route path="strukturorganisasi" element={<StrukturOrganisasi />} />

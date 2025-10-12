@@ -10,6 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama jurusan wajib diisi"),
+  short_name: yup.string().required("Singkatan jurusan wajib diisi"),
   description: yup.string().required("Deskripsi jurusan wajib diisi"),
   image: yup
     .mixed()
@@ -41,6 +42,7 @@ const TambahJurusan = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
+      short_name: "",
       description: "",
       image: null,
     },
@@ -63,6 +65,7 @@ const TambahJurusan = () => {
   const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append("name", data.name);
+    formData.append("short_name", data.short_name);
     formData.append("description", data.description);
     formData.append("image", data.image);
 
@@ -111,6 +114,25 @@ const TambahJurusan = () => {
           />
           {errors.name && (
             <span className="text-red-500 text-sm mt-1">{errors.name.message}</span>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <label htmlFor="short_name" className="font-bold text-gray-800">
+            Nama Singkatan Jurusan <span className="text-red-500">*</span>
+          </label>
+          <input
+            id="short_name"
+            type="text"
+            {...register("short_name")}
+            placeholder="Masukkan Nama Jurusan"
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
+              errors.short_name
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+            }`}
+          />
+          {errors.short_name && (
+            <span className="text-red-500 text-sm mt-1">{errors.short_name.message}</span>
           )}
         </div>
 

@@ -75,7 +75,7 @@ const AnnouncementsSection = ({ className = '' }) => {
         </div>
 
         <div className="flex justify-center items-center w-full py-3 md:py-0 md:pt-5">
-          <Button>
+          <Button onClick={() => window.location.href = '/announcement'}>
             Lihat Semua Pengumuman
           </Button>
         </div>

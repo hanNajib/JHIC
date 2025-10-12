@@ -33,7 +33,9 @@ export const AnnouncementApi = {
     create : (data) => apiClient.post('/announcements', data),
     update : (id, data) => apiClient.post(`/announcements/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/announcements/${id}`),
+    restore: (id) => apiClient.post(`announcements/${id}/restore`)
 }
+
 
 export const FacilityApi = {
     get : (params) => apiClient.get('/facility', { params }),
@@ -41,6 +43,7 @@ export const FacilityApi = {
     create : (data) => apiClient.post('/facility', data),
     update : (id, data) => apiClient.post(`/facility/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/facility/${id}`),
+    restore: (id) => apiClient.post(`facility/${id}/restore`)
 }
 
 export const MajorsApi = {
@@ -51,6 +54,14 @@ export const MajorsApi = {
     delete : (id) => apiClient.delete(`/majors/${id}`),
     restore: (id) => apiClient.post(`majors/${id}/restore`)
 }
+export const CategoryApi = {
+    get : (params) => apiClient.get('/categories', { params }),
+    getById : (id) => apiClient.get(`/categories/${id}`),
+    create : (data) => apiClient.post('/categories', data, {headers: {'Content-Type': 'multipart/form-data'}}),
+    update : (id, data) => apiClient.post(`/categories/${id}?_method=PUT`, data),
+    delete : (id) => apiClient.delete(`/categories/${id}`),
+    restore: (id) => apiClient.post(`categories/${id}/restore`)
+}
 
 export const PartnersApi = {
     get : (params) => apiClient.get('/partners', { params }),
@@ -58,6 +69,7 @@ export const PartnersApi = {
     create : (data) => apiClient.post('/partners', data),
     update : (id, data) => apiClient.post(`/partners/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/partners/${id}`),
+    restore: (id) => apiClient.post(`partners/${id}/restore`)
 }
 
 export const ExtracurricularApi = {
@@ -66,6 +78,7 @@ export const ExtracurricularApi = {
     create : (data) => apiClient.post('/extracurricular', data),
     update : (id, data) => apiClient.post(`/extracurricular/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/extracurricular/${id}`),
+    restore: (id) => apiClient.post(`extracurricular/${id}/restore`)
 }
 
 export const ChanceCarrierApi = {
@@ -74,6 +87,8 @@ export const ChanceCarrierApi = {
     create : (data) => apiClient.post('/chance-carrier', data),
     update : (id, data) => apiClient.post(`/chance-carrier/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/chance-carrier/${id}`),
+    restore: (id) => apiClient.post(`chance-carrier/${id}/restore`)
+
 }
 
 export const GalleryApi = {
@@ -82,6 +97,7 @@ export const GalleryApi = {
     create : (data) => apiClient.post('/gallery', data),
     update : (id, data) => apiClient.post(`/gallery/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/gallery/${id}`),
+    restore: (id) => apiClient.post(`gallery/${id}/restore`)
 }
 
 export const SubjectApi = {
@@ -99,5 +115,7 @@ export const ArticleApi = {
     create : (data) => apiClient.post('/articles', data),
     update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/articles/${id}`),
+    restore: (id) => apiClient.post(`articles/${id}/restore`)
+    
 }
 

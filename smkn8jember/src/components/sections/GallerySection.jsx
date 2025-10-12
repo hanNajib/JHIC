@@ -93,7 +93,7 @@ const GallerySection = ({ className = '' }) => {
       </div>
 
       <div className="flex justify-center items-center w-full pt-5">
-        <Button className=' cursor-pointer'>
+        <Button onClick={ () => window.location.href = '/gallery'} className=' cursor-pointer'>
           Lihat Semua Galeri
         </Button>
       </div>

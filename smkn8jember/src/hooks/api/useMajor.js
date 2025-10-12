@@ -31,10 +31,21 @@ export const useCreateMajor = (options = {}) => {
 
     return useMutation({
         mutationFn: (data) => majorService.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.MAJORS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.MAJORS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -43,11 +54,22 @@ export const useUpdateMajor = (id, options = {}) => {
 
     return useMutation({
         mutationFn: (data) => majorService.update(id, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.MAJORS.DETAIL, id]);
-            queryClient.invalidateQueries([QUERY_KEYS.MAJORS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries([QUERY_KEYS.MAJORS.DETAIL, id]);
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.MAJORS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -56,10 +78,21 @@ export const useDeleteMajor = (options = {}) => {
 
     return useMutation({
         mutationFn: (id) => majorService.deleteData(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.MAJORS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.MAJORS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -68,10 +101,21 @@ export const useRestoreMajor = (options = {}) => {
 
     return useMutation({
         mutationFn: (id) => majorService.restoreData(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.MAJORS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.MAJORS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 

@@ -1,39 +1,38 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '../../constants/queryKeys';
-import * as adminService from '../../api/services/admin/UserService';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "../../constants/queryKeys";
+import * as galleryService from "../../api/services/admin/GalleryService";
+export const useGalleries = (filters = {}, options = {}) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GALLERY.LIST, filters],
+    queryFn: async () => {
+      const response = await galleryService.get(filters);
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+};
 
-export const useAdmins = (filters = {}, options = {}) => {
-    return useQuery({
-        queryKey: [QUERY_KEYS.ADMINS.LIST, filters],
-        queryFn: async () => {
-            const response = await adminService.get(filters);
-            return response.data;
-        },
-        staleTime: 5 * 60 * 1000,
-        ...options
-    })
-} 
+export const useGallery = (id, options = {}) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GALLERY.DETAIL, id],
+    queryFn: async () => {
+      const response = await galleryService.getById(id);
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+};
 
-export const useAdmin = (id, options = {}) => {
-    return useQuery({
-        queryKey: [QUERY_KEYS.ADMINS.DETAIL, id],
-        queryFn: async () => {
-            const response = await adminService.getById(id);
-            return response.data;
-        },
-        staleTime: 5 * 60 * 1000,
-        ...options
-    })
-}
-
-export const useCreateUser = (options = {}) => {
+export const useCreateGallery = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => adminService.create(data),
+        mutationFn: (data) => galleryService.create(data),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.GALLERY.LIST],
                 exact: false 
             });
             
@@ -47,17 +46,17 @@ export const useCreateUser = (options = {}) => {
             }
         }
     })
-}
+};
 
-export const useUpdateUser = (id, options = {}) => {
+export const useUpdateGallery = (id, options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => adminService.update(id, data),
+        mutationFn: (data) => galleryService.update(id, data),
         onSuccess: async (data, variables, context) => {
-            await queryClient.invalidateQueries([QUERY_KEYS.ADMINS.DETAIL, id]);
+            await queryClient.invalidateQueries([QUERY_KEYS.GALLERY.DETAIL, id]);
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.GALLERY.LIST],
                 exact: false 
             });
             
@@ -71,16 +70,16 @@ export const useUpdateUser = (id, options = {}) => {
             }
         }
     })
-}
+};
 
-export const useDeleteUser = (options = {}) => {
+export const useDeleteGallery = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (id) => adminService.deleteUser(id),
+        mutationFn: (id) => galleryService.deleteData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.GALLERY.LIST],
                 exact: false 
             });
             
@@ -94,16 +93,16 @@ export const useDeleteUser = (options = {}) => {
             }
         }
     })
-}
+};
 
-export const useRestoreUser = (options = {}) => {
+export const useRestoreGallery = (options = {}) => {
     const queryClient = useQueryClient();
-
+    
     return useMutation({
-        mutationFn: (id) => adminService.restoreUser(id),
+        mutationFn: (id) => galleryService.restoreData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.GALLERY.LIST],
                 exact: false 
             });
             
@@ -117,6 +116,4 @@ export const useRestoreUser = (options = {}) => {
             }
         }
     })
-}
-
-
+};

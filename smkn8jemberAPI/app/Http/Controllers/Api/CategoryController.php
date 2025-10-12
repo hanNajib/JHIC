@@ -32,11 +32,15 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'type' => 'required|string|max:255',
             'name' => 'required|string|unique:categories,name|max:255',
-            'color' => 'nullable|string|regex:/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/',
+            'color' => 'nullable|string|max:7',
         ]);
 
-        $category = Category::create($validated);
-        return $this->created($category, 'Category created successfully');
+        try {
+            $category = Category::create($validated);
+            return $this->created($category, 'Category created successfully');
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -49,11 +53,15 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'type' => 'sometimes|required|string|max:255',
             'name' => 'sometimes|required|string|unique:categories,name,' . $id . '|max:255',
-            'color' => 'nullable|string|regex:/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/',
+            'color' => 'nullable|string|max:7',
         ]);
 
-        $category->update($validated);
-        return $this->success($category, 'Category updated successfully');
+        try {
+            $category->update($validated);
+            return $this->success($category, 'Category updated successfully');
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 400);
+        }
     }
 
     public function delete($id)
@@ -65,6 +73,16 @@ class CategoryController extends Controller
 
         $category->delete();
         return $this->success(null, 'Category deleted successfully');
+    }
+
+    public function restore($id)
+    {
+        $category = Category::withTrashed()->find($id);
+        if (!$category) {
+            return $this->notFound("Category not found");
+        }
+        $category->restore();
+        return $this->statusMessage("Category restored successfully");
     }
 
 }
