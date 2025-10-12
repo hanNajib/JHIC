@@ -53,6 +53,7 @@ import Employee from "./page/Employee";
 import MajorDetail from "./page/MajorDetail";
 import DetailArtikel from "./page/DetailArtikel";
 import ProtectedRoute from "./ProtectedRoute";
+import Profile from "./page/Profile";
 
 function Router() {
   return (
@@ -115,6 +116,7 @@ function Router() {
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/major/detail" element={<MajorDetail />} />
 
         <Route path="/login" element={<Login/>} />
