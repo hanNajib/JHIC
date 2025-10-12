@@ -20,7 +20,7 @@ const DefaultLayout = ({ children }) => {
                     {children}
                 </main>
 
-                <Footer deskripsiFooter={data ? data.data : []} />
+                <Footer data={data?.data} />
             </div>
         </LoadingTransition>
     )

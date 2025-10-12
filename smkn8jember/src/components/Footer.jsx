@@ -6,10 +6,9 @@ import { IoMdPin } from "react-icons/io";
 import { FaPhone } from "react-icons/fa6";
 import { FaClock } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
-import { useWebSettingByTitle } from "../hooks/api/useWebSettings";
 import parse from "html-react-parser"
 
-const Footer = ({data = {}}) => {
+const Footer = ({data}) => {
     return (
         <>
         <div className="flex flex-col bg-[#212529] p-8 md:p-20 w-full justify-center items-center">
@@ -18,7 +17,7 @@ const Footer = ({data = {}}) => {
 
                 <div className="flex flex-col gap-4 w-auto">
                     <h1 className="font-poppins font-bold text-[#ff6000] text-xl">SMK Negeri 8 Jember</h1>
-                    <p className="font-poppins text-[#A0A0A0] text-sm">{parse("tes")}</p>
+                    <p className="font-poppins text-[#A0A0A0] text-sm">{data ? parse(data?.find(item => item.title === "deskripsi_footer")?.value) : "Sekolah Menengah Kejuruan yang berkomitmen menghasilkan lulusan berkualitas dan siap kerja di era digital."}</p>
                     <div className="flex items-center gap-2">
                         <a href=""><FaYoutube className="text-white bg-[#ff6000] text-[2rem] p-2 rounded-full"/></a>
                         <a href=""><FaInstagram className="text-white bg-[#ff6000] text-[2rem] p-2 rounded-full"/></a>

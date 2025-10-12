@@ -47,13 +47,8 @@ const Artikel = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
-      {/* Header Title */}
-      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-        Artikel
-      </h1>
-
-      {/*  FILTER SECTION  */}
+    <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
+      {/*  filters */}
       <FilterAdmin
         filterKategori={filterKategori}
         setFilterKategori={(value) => {
@@ -66,26 +61,24 @@ const Artikel = () => {
           setHalamanKe(1);
         }}
         handleReset={handleReset}
+        titleHalaman="Data Artikel"
+        descHalaman="Kelola data artikel"
         linkTambah="/artikel/tambah"
-        titleTambah="Tambah Artikel"
-        kategoriList={["RPL", "Prestasi", "Karya", "Edukasi"]} //custom kategori
+        titleBTN="Tambah Artikel"
+        kategoriList={["RPL", "Prestasi", "Karya", "Edukasi"]}
       />
 
-      {/* TABLE  */}
-      <div className="overflow-x-auto">
-        <table className="min-w-fit lg:min-w-full bg-white">
-          <thead className="bg-orange-500 border-2 border-gray-200">
+      {/* tebel  */}
+      <div className="overflow-x-auto shadow-lg rounded-lg relative">
+        <table className="min-w-full bg-white">
+          <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th className="py-2 px-4 border text-left text-white">No</th>
-              <th className="py-2 px-4 border text-left text-white min-w-56">
-                Judul
-              </th>
-              <th className="py-2 px-4 border text-left text-white">
-                Kategori
-              </th>
-              <th className="py-2 px-4 border text-left text-white">Tanggal</th>
-              <th className="py-2 px-4 border text-left text-white">Foto</th>
-              <th className="py-2 px-4 border text-left text-white">Aksi</th>
+              <th className="py-2 px-4 text-left text-white">No</th>
+              <th className="py-2 px-4 text-left text-white min-w-56">Judul</th>
+              <th className="py-2 px-4 text-left text-white">Kategori</th>
+              <th className="py-2 px-4 text-left text-white">Tanggal</th>
+              <th className="py-2 px-4 text-left text-white">Foto</th>
+              <th className="py-2 px-4 text-left text-white">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -97,11 +90,11 @@ const Artikel = () => {
                 <td className="py-2 px-4">{arrayAwal + i + 1}</td>
                 <td className="py-2 px-4">{a.judul}</td>
                 <td className="py-2 px-4">
-                  <div className="grid grid-cols-2 gap-2 w-32">
+                  <div className="grid grid-cols-2 gap-1 items-start w-fit">
                     {a.kategori.map((kate, k) => (
                       <div
                         key={k}
-                        className="bg-orange-500 px-2.5 w-fit rounded-2xl text-sm text-white"
+                        className="bg-orange-300/30 border border-orange-500 px-2 py-[1px] w-fit rounded-2xl text-sm text-orange-500"
                       >
                         {kate}
                       </div>

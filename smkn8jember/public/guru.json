@@ -1,72 +1,170 @@
 [
   {
     "id": 1,
-    "nama": "Budi Santoso Ari Kurniawan",
-    "jabatan": "Kepala Sekolah",
-    "mapel": "-",
-    "foto": "/image/logosmk.png"
+    "nama": "Erion Prayoga Husnul, S.Pd., M.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Matematika",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 2,
-    "nama": "Siti Aminah",
-    "jabatan": "Wakil Kepala Sekolah",
-    "mapel": "Bahasa Indonesia",
-    "foto": "siti_aminah.jpg"
+    "nama": "Alisa Maulinda Sari, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "PPKN",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 3,
-    "nama": "Agus Pratama",
+    "nama": "Ryan Danu, S.Pd.",
     "jabatan": "Guru",
-    "mapel": "Matematika",
-    "foto": "agus_pratama.jpg"
+    "mapel": "Bahasa Inggris",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 4,
-    "nama": "Dewi Lestari",
+    "nama": "Anisa Hermawan, S.Pd.",
     "jabatan": "Guru",
-    "mapel": "Bahasa Inggris",
-    "foto": "dewi_lestari.jpg"
+    "mapel": "Sejarah",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 5,
-    "nama": "Hendra Wijaya",
+    "nama": "Arisa Subando, S.Pd.",
     "jabatan": "Guru",
-    "mapel": "Fisika",
-    "foto": "hendra_wijaya.jpg"
+    "mapel": "Bahasa Indonesia",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 6,
-    "nama": "Nurul Hidayah",
+    "nama": "Yonna Elinardo, S.Pd.",
     "jabatan": "Guru",
-    "mapel": "Kimia",
-    "foto": "nurul_hidayah.jpg"
+    "mapel": "Matematika",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 7,
-    "nama": "Rizki Kurniawan",
+    "nama": "Bambang Hartanto, S.Pd.",
     "jabatan": "Guru",
-    "mapel": "Biologi",
-    "foto": "rizki_kurniawan.jpg"
+    "mapel": "Sejarah",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 8,
-    "nama": "Sri Wahyuni",
+    "nama": "Renald Ariyanto, S.Pd.",
     "jabatan": "Guru",
-    "mapel": "Sejarah",
-    "foto": "sri_wahyuni.jpg"
+    "mapel": "PPKN",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 9,
-    "nama": "Arif Setiawan",
+    "nama": "Hamawan Aris, S.Pd.",
     "jabatan": "Guru",
-    "mapel": "Geografi",
-    "foto": "arif_setiawan.jpg"
+    "mapel": "Agama",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 10,
-    "nama": "Mega Putri",
+    "nama": "Hendro Kurniawan P.K.D., S.Pd.",
     "jabatan": "Guru",
     "mapel": "Seni Budaya",
-    "foto": "mega_putri.jpg"
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 11,
+    "nama": "Rengky Maulana, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Bahasa Inggris",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 12,
+    "nama": "Wisnu Arum, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Agama",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 13,
+    "nama": "Alika Yasmin, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Kimia",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 14,
+    "nama": "Budi Santoso Ari Kurniawan, M.Pd.",
+    "jabatan": "Kepala Sekolah",
+    "mapel": "-",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 15,
+    "nama": "Siti Aminah, S.Pd.",
+    "jabatan": "Wakil Kepala Sekolah",
+    "mapel": "Bahasa Indonesia",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 16,
+    "nama": "Agus Pratama, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Matematika",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 17,
+    "nama": "Dewi Lestari, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Bahasa Inggris",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 18,
+    "nama": "Hendra Wijaya, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Fisika",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 19,
+    "nama": "Nurul Hidayah, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Kimia",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 20,
+    "nama": "Rizki Kurniawan, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Biologi",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 21,
+    "nama": "Sri Wahyuni, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Sejarah",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 22,
+    "nama": "Arif Setiawan, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Geografi",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 23,
+    "nama": "Mega Putri, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Seni Budaya",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 24,
+    "nama": "Lintang Purwanti, S.Pd.",
+    "jabatan": "Guru",
+    "mapel": "Bahasa Jepang",
+    "foto": "/image/fasil.jpg"
   }
 ]

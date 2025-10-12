@@ -52,12 +52,8 @@ const Gambar = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title */}
-      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-        Gambar
-      </h1>
-
+    <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
+      {/*  filters */}
       <FilterAdmin
         filterKategori={filterKategori}
         setFilterKategori={(value) => {
@@ -70,42 +66,44 @@ const Gambar = () => {
           setHalamanKe(1);
         }}
         handleReset={handleReset}
+        titleHalaman="Data Gambar"
+        descHalaman="Kelola data gambar"
         linkTambah="/gambar/tambah"
-        titleTambah="Tambah Gambar"
-        kategoriList={["RPL", "Prestasi", "Karya", "Edukasi"]} //custom kategori
+        titleBTN="Tambah Gambar"
+        kategoriList={["RPL", "Prestasi", "Karya", "Edukasi"]}
       />
 
       {/* tabel */}
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto shadow-lg rounded-lg relative">
         <table class="min-w-full bg-white ">
-          <thead class="bg-orange-500 border-2 border-gray-200">
+          <thead class="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th class="py-2 px-4 border text-left text-white">No</th>
-              <th class="py-2 px-4 border text-left text-white min-w-56">
+              <th class="py-2 px-4 text-left text-white">No</th>
+              <th class="py-2 px-4 text-left text-white min-w-56">
                 Judul
               </th>
-              <th class="py-2 px-4 border text-left text-white">Kategori</th>
-              <th class="py-2 px-4 border text-left text-white">Tanggal</th>
-              <th class="py-2 px-4 border text-left text-white">Foto</th>
-              <th class="py-2 px-4 border text-left text-white">Aksi</th>
+              <th class="py-2 px-4 text-left text-white">Kategori</th>
+              <th class="py-2 px-4 text-left text-white">Tanggal</th>
+              <th class="py-2 px-4 text-left text-white">Foto</th>
+              <th class="py-2 px-4 text-left text-white">Aksi</th>
             </tr>
           </thead>
           <tbody>
             {dataHasil.map((a, _i) => (
-              <tr class="hover:bg-gray-50 text-[14px]">
-                <td class="py-2 px-4 border-b border-gray-400">
+              <tr class="hover:bg-gray-50 text-[14px] border-b border-gray-300">
+                <td class="py-2 px-4">
                   {_i + 1 + arrayAwal}
                 </td>
-                <td class="py-2  border-b border-gray-400 ">{a.judul}</td>
-                <td class="py-2 px-4 border-b border-gray-400">
+                <td class="py-2  ">{a.judul}</td>
+                <td class="py-2 px-4">
                   <div className="flex gap-2">
-                    <div className="bg-orange-500 px-2 rounded-2xl text-white">
+                    <div className="bg-orange-300/30 border border-orange-500 px-2 py-[1px] w-fit rounded-2xl text-sm text-orange-500">
                       {a.kategori}
                     </div>
                   </div>
                 </td>
-                <td class="py-2 px-4 border-b border-gray-400">{a.tanggal}</td>
-                <td class="py-2 px-4 border-b border-gray-400">
+                <td class="py-2 px-4">{a.tanggal}</td>
+                <td class="py-2 px-4">
                   <button
                     onClick={() => setSelectedImage(a.image)} // buka modal
                     className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
@@ -114,7 +112,7 @@ const Gambar = () => {
                     {a.image}
                   </button>
                 </td>
-                <td class="py-2 px-4 border-b border-gray-400 text-white ">
+                <td class="py-2 px-4 text-white ">
                   <div className="flex gap-2 justify-center ">
                     <a
                       href={`/gambar/edit/${a.id}`}

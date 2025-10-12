@@ -69,6 +69,10 @@ import StudentData from "./page/public/StudentData";
 import Struktur from "./page/public/Struktur";
 import DetailArtikel from "./page/public/DetailArtikel";
 import ArtikelPage from "./page/public/Artikel";
+import Teacher from "./page/public/Teacher";
+import Employee from "./page/public/Employee";
+import Facilitas from "./page/public/Facilitas";
+import Extracurricular from "./page/public/Extracurricular";
 
 function Router() {
   return (
@@ -150,6 +154,10 @@ function Router() {
 
         {/* Public Routes */}
         <Route path="/history" element={<History />} />
+        <Route path="/teacher" element={<Teacher />} />
+        <Route path="/employee" element={<Employee />} />
+        <Route path="/facilitas" element={<Facilitas />} />
+        <Route path="/extracurricular" element={<Extracurricular />} />
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
@@ -166,7 +174,7 @@ function Router() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
-  );
+  );  
 }
 
 export default Router;
