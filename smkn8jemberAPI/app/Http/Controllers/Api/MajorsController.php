@@ -62,18 +62,18 @@ class MajorsController extends Controller
         if (!$major) {
             return $this->notFound('Major not found');
         }
-        
+
         $updateData = $request->only(['name', 'description']);
-        
+
         if ($request->hasFile('image')) {
             if ($major->OriginalImagePath()) {
                 Storage::disk('public')->delete($major->OriginalImagePath());
             }
-            
+
             $imagePath = $request->file('image')->store('majors', 'public');
             $updateData['image'] = $imagePath;
         }
-        
+
         $major->update($updateData);
 
         return $this->updated($major, 'Major updated successfully');
@@ -93,15 +93,12 @@ class MajorsController extends Controller
         return $this->deleted('Major deleted successfully');
     }
 
-    public function restore($id) {
+    public function restore($id){
         $major = Major::withTrashed()->find($id);
         if (!$major) {
-            return $this->notFound('Major not found');
-        }
-        if (!$major->trashed()) {
-            return $this->badRequest('Major is not deleted');
+            return $this->notFound("Major not found");
         }
         $major->restore();
-        return $this->success($major, 'Major restored successfully');
+        return $this->statusMessage("Major restored successfully");
     }
 }

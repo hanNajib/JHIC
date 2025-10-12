@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../../constants/queryKeys";
-import * as categoryService from "../../api/services/admin/CategoryService"
+import * as categoryService from "../../api/services/admin/CategoryService";
 export const useCategories = (filters = {}, options = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.CATEGORIES.LIST, filters],
@@ -15,7 +15,7 @@ export const useCategories = (filters = {}, options = {}) => {
 
 export const useCategory = (id, options = {}) => {
   return useQuery({
-    queryKey: [QUERY_KEYS.MAJORS.DETAIL, id],
+    queryKey: [QUERY_KEYS.CATEGORIES.DETAIL, id],
     queryFn: async () => {
       const response = await categoryService.getById(id);
       return response.data;
@@ -31,7 +31,7 @@ export const useCreateCategory = (options = {}) => {
   return useMutation({
     mutationFn: (data) => categoryService.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries([QUERY_KEYS.MAJORS.LIST]);
+      queryClient.invalidateQueries([QUERY_KEYS.CATEGORIES.LIST]);
     },
     ...options,
   });
@@ -43,8 +43,8 @@ export const useUpdateCategory = (id, options = {}) => {
   return useMutation({
     mutationFn: (data) => categoryService.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries([QUERY_KEYS.MAJORS.DETAIL, id]);
-      queryClient.invalidateQueries([QUERY_KEYS.MAJORS.LIST]);
+      queryClient.invalidateQueries([QUERY_KEYS.CATEGORIES.DETAIL, id]);
+      queryClient.invalidateQueries([QUERY_KEYS.CATEGORIES.LIST]);
     },
     ...options,
   });
@@ -56,7 +56,18 @@ export const useDeleteCategory = (options = {}) => {
   return useMutation({
     mutationFn: (id) => categoryService.deleteData(id),
     onSuccess: () => {
-      queryClient.invalidateQueries([QUERY_KEYS.MAJORS.LIST]);
+      queryClient.invalidateQueries([QUERY_KEYS.CATEGORIES.LIST]);
+    },
+    ...options,
+  });
+};
+
+export const useRestoreCategory = (options = {}) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => categoryService.restoreData(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEYS.CATEGORIES.LIST]);
     },
     ...options,
   });

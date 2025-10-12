@@ -67,4 +67,14 @@ class CategoryController extends Controller
         return $this->success(null, 'Category deleted successfully');
     }
 
+    public function restore($id)
+    {
+        $category = Category::withTrashed()->find($id);
+        if (!$category) {
+            return $this->notFound("Category not found");
+        }
+        $category->restore();
+        return $this->statusMessage("Category restored successfully");
+    }
+
 }

@@ -54,13 +54,24 @@ class SubjectsController extends Controller
         return $this->success($subjects, 'Subject updated successfully');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $subjects = Subject::find($id);
-        if(!$subjects){
+        if (!$subjects) {
             return $this->notFound('Subject not found');
         } else {
             $subjects->delete();
-            return $this->statusMessage( 'Subject deleted successfully');
+            return $this->statusMessage('Subject deleted successfully');
         }
+    }
+
+    public function restore($id)
+    {
+        $subjects = Subject::withTrashed()->find($id);
+        if (!$subjects) {
+            return $this->notFound("Subject not found");
+        }
+        $subjects->restore();
+        return $this->statusMessage("Subject restored successfully");
     }
 }

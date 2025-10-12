@@ -8,10 +8,14 @@ use Illuminate\Http\Request;
 
 class GalleryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $gallery = Gallery::all();
-        return $this->success($gallery, 'Gallery rertieved successfully');
+         $gallery = Gallery::applyFilters(
+            $request,
+            ['title', 'description'],
+            []
+        );
+        return $this->cursorPaginated($gallery, 'Gallery retrieved successfully');
     }
 
     public function create(Request $request)
@@ -72,5 +76,14 @@ class GalleryController extends Controller
         }
         $gallery->delete();
         return $this->statusMessage( 'Gallery deleted successfully');
+    }
+
+    public function restore($id){
+        $gallery = Gallery::withTrashed()->find($id);
+        if (!$gallery) {
+            return $this->notFound("Gallery not found");
+        }
+        $gallery->restore();
+        return $this->statusMessage("Gallery restored successfully");
     }
 }

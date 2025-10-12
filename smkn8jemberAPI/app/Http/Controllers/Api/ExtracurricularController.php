@@ -12,9 +12,13 @@ class ExtracurricularController extends Controller
 {
     use ApiResponse;
 
-    public function index() {
-        $data = Extracurricular::all();
-        return $this->success($data, 'Extracurriculars retrieved successfully');
+    public function index(Request $request) {
+      $extracurricular = Extracurricular::applyFilters(
+            $request,
+            ['name', 'mentor_name', 'description'],
+            []
+        );
+        return $this->cursorPaginated($extracurricular, 'Extarculicular retrieved successfully');
     }
 
     public function create(Request $request) {
@@ -89,5 +93,14 @@ class ExtracurricularController extends Controller
         $extracurricular->delete();
 
         return $this->deleted('Extracurricular deleted successfully');
+    }
+
+    public function restore($id){
+        $extracurricular = Extracurricular::withTrashed()->find($id);
+        if (!$extracurricular) {
+            return $this->notFound("Extracurricular not found");
+        }
+        $extracurricular->restore();
+        return $this->statusMessage("Extracurricular restored successfully");
     }
 }

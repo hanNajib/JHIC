@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\MajorsController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\SchoolDataController;
 use App\Http\Controllers\Api\SchoolSettingsController;
+use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\SubjectsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +56,7 @@ Route::middleware('web')->group(function () {
         Route::put('/{id}', [MajorsController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [MajorsController::class, 'delete'])->middleware('auth:sanctum');
         Route::post('/{id}/restore', [MajorsController::class, 'restore'])->middleware('auth:sanctum');
+
     });
 
     Route::prefix('partners')->group(function () {
@@ -63,6 +65,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [PartnersController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [PartnersController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [PartnersController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [PartnersController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('extracurriculars')->group(function () {
@@ -71,6 +74,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [ExtracurricularController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [ExtracurricularController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [ExtracurricularController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [ExtracurricularController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('chance-carriers')->group(function () {
@@ -79,6 +83,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [ChanceCarrierController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [ChanceCarrierController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [ChanceCarrierController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [ChanceCarrierController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('gallery')->group(function () {
@@ -87,6 +92,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [GalleryController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [GalleryController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [GalleryController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [GalleryController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('subject')->group(function () {
@@ -95,6 +101,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [SubjectsController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [SubjectsController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [SubjectsController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [SubjectsController::class, 'restore'])->middleware('auth:sanctum');
     });
 
 
@@ -104,6 +111,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [ArticleController::class, 'store'])->middleware('auth:sanctum');
         Route::put('/{id}', [ArticleController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [ArticleController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [ArticleController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('categories')->group(function () {
@@ -112,8 +120,18 @@ Route::middleware('web')->group(function () {
         Route::post('/', [CategoryController::class, 'store'])->middleware('auth:sanctum');
         Route::put('/{id}', [CategoryController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [CategoryController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [CategoryController::class, 'restore'])->middleware('auth:sanctum');
     });
-    
+
+    Route::prefix('staff')->group(function () {
+        Route::get('/', [StaffController::class, 'index']);
+        Route::get('/{id}', [StaffController::class, 'show']);
+        Route::post('/', [StaffController::class, 'create'])->middleware('auth:sanctum');
+        Route::put('/{id}', [StaffController::class, 'update'])->middleware('auth:sanctum');
+        Route::delete('/{id}', [StaffController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [StaffController::class, 'restore'])->middleware('auth:sanctum');
+    });
+
     Route::prefix('settings')->group(function () {
         Route::get('/', [SchoolSettingsController::class, 'index']);
         Route::get('/{title}', [SchoolSettingsController::class, 'getByTitle']);

@@ -11,10 +11,14 @@ use Illuminate\Support\Facades\Storage;
 class FacilityController extends Controller
 {
     use ApiResponse;
-    public function index()
+    public function index(Request $request)
     {
-        $facility = Facility::all();
-        return $this->success($facility, 'Facilities retrieved successfully');
+         $facility = Facility::applyFilters(
+            $request,
+            ['name', 'description', 'room_total'],
+            []
+        );
+        return $this->cursorPaginated($facility, 'Facility retrieved successfully');
     }
 
     public function create(Request $request)
@@ -64,12 +68,12 @@ class FacilityController extends Controller
         ]);
 
         $updateData = $request->only(['name', 'description', 'room_total']);
-        
+
         if ($request->hasFile('image')) {
             if ($facility->OriginalImagePath()) {
                 Storage::disk('public')->delete($facility->OriginalImagePath());
             }
-            
+
             $imagePath = $request->file('image')->store('facilities', 'public');
             $updateData['image'] = $imagePath;
         }
@@ -92,5 +96,14 @@ class FacilityController extends Controller
 
         $facility->delete();
         return $this->deleted('Facility deleted successfully');
+    }
+
+    public function restore($id){
+        $facility = Facility::withTrashed()->find($id);
+        if (!$facility) {
+            return $this->notFound("Facility not found");
+        }
+        $facility->restore();
+        return $this->statusMessage("Facility restored successfully");
     }
 }
