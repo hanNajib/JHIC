@@ -66,7 +66,7 @@ export const CategoryApi = {
 export const PartnersApi = {
     get : (params) => apiClient.get('/partners', { params }),
     getById : (id) => apiClient.get(`/partners/${id}`),
-    create : (data) => apiClient.post('/partners', data),
+    create : (data) => apiClient.post('/partners', data,{headers: {'Content-Type': 'multipart/form-data'}}),
     update : (id, data) => apiClient.post(`/partners/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/partners/${id}`),
     restore: (id) => apiClient.post(`partners/${id}/restore`)

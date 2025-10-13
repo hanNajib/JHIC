@@ -2,7 +2,7 @@
 // components/Sidebar/index.jsx
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaBars, FaRegUser, FaChevronDown, FaRegListAlt } from "react-icons/fa";
+import { FaBars, FaRegUser, FaChevronDown, FaRegListAlt, FaRegHandshake } from "react-icons/fa";
 import {
   MdOutlineDashboard,
   MdOutlineSettings,
@@ -276,6 +276,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               to="/admin/jurusan"
               icon={MdOutlineCategory}
               label="Jurusan"
+              isOpen={isOpen}
+            />
+            <NavItem
+              to="/admin/partner"
+              icon={FaRegHandshake}
+              label="Partner"
               isOpen={isOpen}
             />
             <NavItem

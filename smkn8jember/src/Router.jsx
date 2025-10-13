@@ -76,6 +76,9 @@ import Extracurricular from "./page/public/Extracurricular";
 import Kategori from "./page/admin/kategori/Kategori";
 import TambahKategori from "./page/admin/kategori/TambahKategori";
 import EditKategori from "./page/admin/kategori/EditKategori";
+import Partner from "./page/admin/partner/Partner";
+import TambahPartner from "./page/admin/partner/TambahPartner";
+import EditPartner from "./page/admin/partner/EditPartner";
 
 function Router() {
   return (
@@ -149,6 +152,11 @@ function Router() {
           <Route path="kategori/tambah" element={<TambahKategori />} />
           <Route path="kategori/edit/:id" element={<EditKategori />} />
 
+          {/* partner */}
+          <Route path="partner" element={<Partner />} />
+          <Route path="partner/tambah" element={<TambahPartner />} />
+          <Route path="partner/edit/:id" element={<EditPartner />} />
+
           {/* Struktur Organisasi */}
           <Route path="strukturorganisasi" element={<StrukturOrganisasi />} />
           <Route path="strukturorganisasi/tambah" element={<TambahJabatan />} />
@@ -169,7 +177,7 @@ function Router() {
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
-        <Route path="/major/detail" element={<MajorDetail />} />
+        <Route path="/major/:id" element={<MajorDetail />} />
         <Route path="/detail" element={<DetailArtikel />} />
         <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/student-data" element={<StudentData />} />
