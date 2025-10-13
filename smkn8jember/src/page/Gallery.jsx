@@ -7,6 +7,7 @@ import GalleryCard from "../components/ui/GalleryCard";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoCalendarClearOutline } from "react-icons/io5";
+import GalleryPopUp from "../components/ui/GalleryPopUp";
 
 const Gallery = () => {
   const [sort, setSort] = useState("terbaru");
@@ -82,7 +83,7 @@ const Gallery = () => {
       {/* Gallery Grid */}
       <section className="bg-white py-10">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-16">
-          {SAMPLE_GALLERY.map((image, index) => (
+          {SAMPLE_GALLERY.map((image) => (
             <GalleryCard
               key={image.id}
               image={image}
@@ -92,54 +93,7 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Popup Modal */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            className="fixed inset-0 bg-black/40 flex justify-center items-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {/* isi popup */}
-            <motion.div
-              className="bg-white rounded-lg shadow-xl max-w-3xl w-full sm:w-[90%] p-4"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
-            >
-              <div className="text-end">
-                <button
-                  onClick={handleClosePopup}
-                  className="text-gray-700 transition-all text-end hover:text-red-500 text-2xl font-bold"
-                >
-                  <RiCloseLargeLine />
-                </button>
-              </div>
-
-              <img
-                src={selectedImage.image}
-                alt={selectedImage.title}
-                className="w-full h-[350px] object-cover rounded-sm mb-4"
-              />
-
-              <div className="flex flex-col justify-center gap-1">
-                <h3 className="bg-orange-500 text-white font-medium text-sm px-3 py-0.5 w-fit rounded-4xl">Prestasi</h3>
-                <h2 className="text-2xl font-bold text-gray-800 text-start">
-                  {selectedImage.title}
-                </h2>
-                <p className="font-medium text-lg text-gray-700">Kompetisi Kelas Bersih, Lomba Antar Sekolah tingkat kabupaten</p>
-                <div className="flex items-center text-sm gap-2 text-gray-700">
-                  <IoCalendarClearOutline className="font-bold"/>
-                  <p> 5 Juli 2024</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <GalleryPopUp image={selectedImage} onClose={handleClosePopup} />
 
       <Footer />
     </>

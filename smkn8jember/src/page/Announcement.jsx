@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { AnnouncementCard, Button, Icon, Section } from "../components/ui";
 import { useAnnouncements } from "../hooks/useSchool";
+import PengumumanPopUp from "../components/ui/PengumumanPopUp";
 const Announcement = ({ className = "" }) => {
   const { announcements, isLoading } = useAnnouncements();
+
+  const [selectedPengumuman, setSelectedPengumuman] = useState(null);
+
+  const handleOpenPopup = (isi) => {
+    setSelectedPengumuman(isi);
+  };
+
+  const handleClosePopup = () => {
+    setSelectedPengumuman(null);
+  };
+
   return (
     <>
       <Navbar />
@@ -31,11 +43,12 @@ const Announcement = ({ className = "" }) => {
 
       <section className="bg-white py-8">
         <div className="w-full max-w-6xl mx-auto px-6 md:px-16">
-          <div className="flex overflow-x-auto  flex-col gap-4 md:gap-6 w-full">
+          <div className="flex overflow-x-auto  flex-col gap-4 md:gap-6 w-full cursor-pointer">
             {announcements.map((announcement) => (
               <AnnouncementCard
                 key={announcement.id}
                 announcement={announcement}
+                onClick={() => handleOpenPopup(announcement)}
               />
             ))}
           </div>
@@ -47,6 +60,12 @@ const Announcement = ({ className = "" }) => {
           <Button>Tampilkan Lebih Banyak Pengumuman</Button>
         </div>
       </div>
+
+      <PengumumanPopUp
+        pengumuman={selectedPengumuman}
+        onClose={handleClosePopup}
+      />
+
       <Footer />
     </>
   );
