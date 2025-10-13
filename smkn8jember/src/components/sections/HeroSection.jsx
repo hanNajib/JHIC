@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '../ui';
 import { FaArrowDown } from "react-icons/fa";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
+import { IoCompassOutline } from "react-icons/io5";
 
 const HeroSection = ({ className = '' }) => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -12,6 +14,7 @@ const HeroSection = ({ className = '' }) => {
   const questions = [
     { q: "Apa jurusan yang ada di SMKN 8 Jember?", a: "Kami memiliki beberapa jurusan seperti TKR, TSM, RPL, DKV, TKJ, APT, dan ATPH." },
     { q: "Siapa nama cowo terganteng di SMKN 8 Jember?", a: "Tentu saja mas Gathan dari 12 RPL 1😎." },
+    { q: "Apa nama tim IT paling kece di SMKN 8 Jember?", a: "Tentu saja Mie Ayam 4 Porsi🍜😎." },
     { q: "Dimana lokasi SMKN 8 Jember?", a: "Sekolah kami beralamat di sebelah puskesmas semboro." },
     { q: "Bagaimana cara mendaftar?", a: "Pendaftaran bisa dilakukan melalui jalur PPDB online sesuai jadwal Dinas Pendidikan Jawa Timur." }
   ];
@@ -68,7 +71,7 @@ const HeroSection = ({ className = '' }) => {
         backgroundSize: "cover", 
         backgroundPosition: "center" 
       }} 
-      className={`h-screen flex lg:items-center ${className}`}
+      className={`h-screen flex lg:items-center relative ${className}`}
     >
       <div className="bg-gradient-to-r from-[#39302c9a] to-transparent w-full h-screen absolute"></div>
       
@@ -91,17 +94,47 @@ const HeroSection = ({ className = '' }) => {
             Baca Selengkapnya
           </Button>
           <Button variant="secondary">
-            Baca Selengkapnya
+            Pengumuman Terbaru
           </Button>
         </div>
 
-        {/* Tombol buka chatbot */}
-        <div className="mt-5">
-          <Button onClick={() => setIsChatOpen(true)}>
-            Chatbot
-          </Button>
-        </div>
+
+        
       </div>
+
+      <div className="absolute flex md:flex-col md:right-14 bottom-10 gap-3 justify-center lg:justify-end w-full lg:w-auto">
+
+        {/* Tombol Chat */}
+        <div className="relative flex items-center justify-end rounded-full overflow-hidden group">
+          <div className="bg-white flex items-center justify-end rounded-full">
+            <Button
+              className="z-10 w-16 h-16 flex items-center justify-center bg-[#ff6000] text-white rounded-full cursor-pointer"
+              onClick={() => setIsChatOpen(true)}
+            >
+              <IoChatboxEllipsesOutline className='text-2xl' />
+            </Button>
+            <div className="pr-8 pl-5 font-poppins text-[#ff6000] font-semibold hidden group-hover:lg:flex group-active:lg:flex transition-all duration-200">
+              Tanya Seputar SMKN 8 Jember!
+            </div>
+          </div>
+        </div>
+
+        {/* Tombol Jelajahi */}
+        <div className="relative flex items-center justify-end rounded-full overflow-hidden group">
+          <div className="bg-white flex items-center justify-end rounded-full">
+            <Button
+              className="z-10 w-16 h-16 flex items-center justify-center bg-[#ff6000] text-white rounded-full cursor-pointer"
+            >
+              <IoCompassOutline className='text-2xl' />
+            </Button>
+            <div className="pr-8 pl-5 font-poppins text-[#ff6000] font-semibold hidden group-hover:lg:flex group-active:lg:flex transition-all duration-200">
+              Jelajahi SMKN 8 Jember!
+            </div>
+          </div>
+        </div>
+
+      </div>
+
 
       {/* Modal chatbot */}
       {isChatOpen && (
