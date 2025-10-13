@@ -16,11 +16,13 @@ export const AdminApi = {
     create : (data) => apiClient.post('/admins', data),
     update : (id, data) => apiClient.post(`/admins/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/admins/${id}`),
+    restore: (id) => apiClient.post(`/admins/${id}/restore`)
 } 
 
 export const WebSettingsApi = {
     getSettings: () => apiClient.get('/settings'),
     updateSetting: (title, data) => apiClient.post(`/settings/${title}?_method=PUT`, data),
+    getByTitle: (title) => apiClient.get(`/settings/${title}`),
 }
 
 
@@ -31,7 +33,9 @@ export const AnnouncementApi = {
     create : (data) => apiClient.post('/announcements', data),
     update : (id, data) => apiClient.post(`/announcements/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/announcements/${id}`),
+    restore: (id) => apiClient.post(`announcements/${id}/restore`)
 }
+
 
 export const FacilityApi = {
     get : (params) => apiClient.get('/facility', { params }),
@@ -39,14 +43,24 @@ export const FacilityApi = {
     create : (data) => apiClient.post('/facility', data),
     update : (id, data) => apiClient.post(`/facility/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/facility/${id}`),
+    restore: (id) => apiClient.post(`facility/${id}/restore`)
 }
 
 export const MajorsApi = {
     get : (params) => apiClient.get('/majors', { params }),
     getById : (id) => apiClient.get(`/majors/${id}`),
-    create : (data) => apiClient.post('/majors', data),
+    create : (data) => apiClient.post('/majors', data, {headers: {'Content-Type': 'multipart/form-data'}}),
     update : (id, data) => apiClient.post(`/majors/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/majors/${id}`),
+    restore: (id) => apiClient.post(`majors/${id}/restore`)
+}
+export const CategoryApi = {
+    get : (params) => apiClient.get('/categories', { params }),
+    getById : (id) => apiClient.get(`/categories/${id}`),
+    create : (data) => apiClient.post('/categories', data, {headers: {'Content-Type': 'multipart/form-data'}}),
+    update : (id, data) => apiClient.post(`/categories/${id}?_method=PUT`, data),
+    delete : (id) => apiClient.delete(`/categories/${id}`),
+    restore: (id) => apiClient.post(`categories/${id}/restore`)
 }
 
 export const PartnersApi = {
@@ -55,6 +69,7 @@ export const PartnersApi = {
     create : (data) => apiClient.post('/partners', data),
     update : (id, data) => apiClient.post(`/partners/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/partners/${id}`),
+    restore: (id) => apiClient.post(`partners/${id}/restore`)
 }
 
 export const ExtracurricularApi = {
@@ -63,6 +78,7 @@ export const ExtracurricularApi = {
     create : (data) => apiClient.post('/extracurricular', data),
     update : (id, data) => apiClient.post(`/extracurricular/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/extracurricular/${id}`),
+    restore: (id) => apiClient.post(`extracurricular/${id}/restore`)
 }
 
 export const ChanceCarrierApi = {
@@ -71,6 +87,8 @@ export const ChanceCarrierApi = {
     create : (data) => apiClient.post('/chance-carrier', data),
     update : (id, data) => apiClient.post(`/chance-carrier/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/chance-carrier/${id}`),
+    restore: (id) => apiClient.post(`chance-carrier/${id}/restore`)
+
 }
 
 export const GalleryApi = {
@@ -79,14 +97,16 @@ export const GalleryApi = {
     create : (data) => apiClient.post('/gallery', data),
     update : (id, data) => apiClient.post(`/gallery/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/gallery/${id}`),
+    restore: (id) => apiClient.post(`gallery/${id}/restore`)
 }
 
 export const SubjectApi = {
-    get : (params) => apiClient.get('/subjects', { params }),
-    getById : (id) => apiClient.get(`/subjects/${id}`),
-    create : (data) => apiClient.post('/subjects', data),
-    update : (id, data) => apiClient.post(`/subjects/${id}?_method=PUT`, data),
-    delete : (id) => apiClient.delete(`/subjects/${id}`),
+    get : (params) => apiClient.get('/subject', { params }),
+    getById : (id) => apiClient.get(`/subject/${id}`),
+    create : (data) => apiClient.post('/subject', data),
+    update : (id, data) => apiClient.post(`/subject/${id}?_method=PUT`, data),
+    delete : (id) => apiClient.delete(`/subject/${id}`),
+    restore: (id) => apiClient.post(`/subject/${id}/restore`)
 }
 
 export const ArticleApi = {
@@ -95,5 +115,7 @@ export const ArticleApi = {
     create : (data) => apiClient.post('/articles', data),
     update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/articles/${id}`),
+    restore: (id) => apiClient.post(`articles/${id}/restore`)
+    
 }
 

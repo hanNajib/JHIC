@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\HasCursorPagination;
 use App\Traits\HasImageUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Major extends Model
 {
-    use SoftDeletes, HasImageUrl;
+    use SoftDeletes, HasImageUrl, HasCursorPagination;
 
-    protected $fillable = ['name', 'description', 'image'];
+    protected $fillable = ['name', 'description', 'short_name', 'image'];
 
     public function partners()
     {

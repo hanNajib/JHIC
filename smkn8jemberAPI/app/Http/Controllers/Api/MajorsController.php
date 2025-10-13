@@ -10,22 +10,26 @@ use Illuminate\Support\Facades\Storage;
 
 class MajorsController extends Controller
 {
-    use ApiResponse;
-    public function index()
+    public function index(Request $request)
     {
-        $major = Major::all();
-        return $this->success($major, 'Majors retrieved successfully');
+        $major = Major::applyFilters(
+            $request,
+            ['name', 'description', 'short_name'],
+            []
+        );
+        return $this->cursorPaginated($major, 'Majors retrieved successfully');
     }
 
     public function create(Request $request)
     {
         $request->validate([
             'name' => 'required|string|unique:majors,name',
+            'short_name' => 'required|string|unique:majors,short_name',
             'description' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $createData = $request->only(['name', 'description']);
+        $createData = $request->only(['name', 'description', 'short_name']);
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('majors', 'public');
@@ -50,6 +54,7 @@ class MajorsController extends Controller
     {
         $request->validate([
             'name' => 'sometimes|string|unique:majors,name,' . $id,
+            'short_name' => 'sometimes|string|unique:majors,short_name,' . $id,
             'description' => 'sometimes|string',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -58,18 +63,18 @@ class MajorsController extends Controller
         if (!$major) {
             return $this->notFound('Major not found');
         }
-        
-        $updateData = $request->only(['name', 'description']);
-        
+
+        $updateData = $request->only(['name', 'short_name', 'description']);
+
         if ($request->hasFile('image')) {
             if ($major->OriginalImagePath()) {
                 Storage::disk('public')->delete($major->OriginalImagePath());
             }
-            
+
             $imagePath = $request->file('image')->store('majors', 'public');
             $updateData['image'] = $imagePath;
         }
-        
+
         $major->update($updateData);
 
         return $this->updated($major, 'Major updated successfully');
@@ -87,5 +92,14 @@ class MajorsController extends Controller
         }
         $major->delete();
         return $this->deleted('Major deleted successfully');
+    }
+
+    public function restore($id){
+        $major = Major::withTrashed()->find($id);
+        if (!$major) {
+            return $this->notFound("Major not found");
+        }
+        $major->restore();
+        return $this->statusMessage("Major restored successfully");
     }
 }

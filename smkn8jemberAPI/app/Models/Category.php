@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\HasCursorPagination;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasCursorPagination;
 
     protected $fillable = ['type', 'name', 'color'];
-    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+    // protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 
     public function articles()
     {
@@ -29,27 +30,52 @@ class Category extends Model
 
     public function setColorAttribute($value)
     {
-        if (!$value) {
+        if (empty($value)) {
             $this->attributes['color'] = null;
             return;
         }
 
-        if (strpos($value, '#') !== 0) {
+        $value = trim((string)$value);
+        
+        if (empty($value)) {
+            $this->attributes['color'] = null;
+            return;
+        }
+
+        if (!str_starts_with($value, '#')) {
             $value = '#' . $value;
         }
 
         $value = strtolower($value);
 
-        if (!preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})$/', $value)) {
-            throw new \InvalidArgumentException("Invalid hex color value: {$value}");
+        if (!$this->isValidHexColor($value)) {
+            throw new \InvalidArgumentException("Invalid hex color format: {$value}. Expected format: #RGB or #RRGGBB");
         }
 
         if (strlen($value) === 4) {
-            $value = '#' . $value[1] . $value[1]
-                . $value[2] . $value[2]
-                . $value[3] . $value[3];
+            $value = '#' . 
+                str_repeat($value[1], 2) . 
+                str_repeat($value[2], 2) . 
+                str_repeat($value[3], 2);
         }
 
         $this->attributes['color'] = $value;
+    }
+
+    /**
+     * Validasi hex color yang aman tanpa regex bermasalah
+     */
+    private function isValidHexColor($value)
+    {
+        if (!in_array(strlen($value), [4, 7])) {
+            return false;
+        }
+
+        if (!str_starts_with($value, '#')) {
+            return false;
+        }
+
+        $hex = substr($value, 1);
+        return ctype_xdigit($hex);
     }
 }

@@ -18,7 +18,7 @@ const ArticleCard = ({ article, className = '' }) => {
             />
 
             <div className="flex flex-wrap w-full gap-2 relative px-5 py-6">
-                {article.tags.map((tag, index) => (
+                {article.tags?.map((tag, index) => (
                     <Badge
                         key={index}
                         variant="orange"
@@ -26,7 +26,13 @@ const ArticleCard = ({ article, className = '' }) => {
                     >
                         {tag}
                     </Badge>
-                ))}
+                )) || (
+                    article.category && (
+                        <Badge variant="orange" size="xs">
+                            {article.category}
+                        </Badge>
+                    )
+                )}
             </div>
 
             <div className="flex flex-col px-5 gap-2 relative">

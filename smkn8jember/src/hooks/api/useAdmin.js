@@ -31,10 +31,21 @@ export const useCreateUser = (options = {}) => {
 
     return useMutation({
         mutationFn: (data) => adminService.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -43,11 +54,22 @@ export const useUpdateUser = (id, options = {}) => {
 
     return useMutation({
         mutationFn: (data) => adminService.update(id, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.DETAIL, id]);
-            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries([QUERY_KEYS.ADMINS.DETAIL, id]);
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -56,12 +78,45 @@ export const useDeleteUser = (options = {}) => {
 
     return useMutation({
         mutationFn: (id) => adminService.deleteUser(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
+export const useRestoreUser = (options = {}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id) => adminService.restoreUser(id),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+}
 
 

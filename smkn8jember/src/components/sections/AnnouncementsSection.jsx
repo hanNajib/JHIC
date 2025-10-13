@@ -1,9 +1,52 @@
 import React from 'react';
 import { Section, Button, AnnouncementCard, Icon } from '../ui';
-import { useAnnouncements } from '../../hooks/useSchool';
+
+// Data sampel pengumuman
+const sampleAnnouncements = [
+  {
+    id: 1,
+    title: "Libur Semester Genap 2024",
+    date: "20 Maret 2024",
+    description: "Libur semester genap akan dimulai tanggal 25 Maret 2024. Kegiatan belajar mengajar akan kembali aktif pada tanggal 8 April 2024.",
+    type: "penting",
+    content: "Libur semester genap akan dimulai tanggal 25 Maret 2024. Kegiatan belajar mengajar akan kembali aktif pada tanggal 8 April 2024."
+  },
+  {
+    id: 2,
+    title: "Pendaftaran Ekstrakulikuler",
+    date: "18 Maret 2024",
+    description: "Pendaftaran ekstrakulikuler dibuka hingga 30 Maret 2024. Tersedia berbagai pilihan ekskul menarik.",
+    type: "info",
+    content: "Pendaftaran ekstrakulikuler dibuka hingga 30 Maret 2024. Tersedia berbagai pilihan ekskul menarik."
+  },
+  {
+    id: 3,
+    title: "Ujian Tengah Semester",
+    date: "15 Maret 2024",
+    description: "UTS akan dilaksanakan mulai tanggal 1 April 2024. Harap mempersiapkan diri dengan baik.",
+    type: "penting",
+    content: "UTS akan dilaksanakan mulai tanggal 1 April 2024. Harap mempersiapkan diri dengan baik."
+  },
+  {
+    id: 4,
+    title: "Workshop Industri",
+    date: "10 Maret 2024",
+    description: "Workshop kerjasama dengan industri pada 5 April 2024 di aula sekolah.",
+    type: "info",
+    content: "Workshop kerjasama dengan industri pada 5 April 2024 di aula sekolah."
+  },
+  {
+    id: 5,
+    title: "Pembayaran SPP",
+    date: "5 Maret 2024",
+    description: "Batas akhir pembayaran SPP tanggal 10 setiap bulan. Mohon dibayarkan tepat waktu.",
+    type: "penting",
+    content: "Batas akhir pembayaran SPP tanggal 10 setiap bulan. Mohon dibayarkan tepat waktu."
+  }
+];
 
 const AnnouncementsSection = ({ className = '' }) => {
-  const { announcements, isLoading } = useAnnouncements();
+  const announcements = sampleAnnouncements;
 
   return (
     <Section 
@@ -32,7 +75,7 @@ const AnnouncementsSection = ({ className = '' }) => {
         </div>
 
         <div className="flex justify-center items-center w-full py-3 md:py-0 md:pt-5">
-          <Button>
+          <Button onClick={() => window.location.href = '/announcement'}>
             Lihat Semua Pengumuman
           </Button>
         </div>

@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\HasCursorPagination;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Subject extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasCursorPagination;
 
     protected $fillable = ['name', 'description', 'major_id'];
+    public $with = ['major'];
 
     public function major()
     {

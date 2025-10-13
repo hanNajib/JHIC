@@ -88,6 +88,26 @@ export const SCHOOL_PROGRAMS = [
   }
 ];
 
+export const ARTICLE_CATEGORIES = [
+  { id: 'all', label: 'Semua Artikel' },
+  { id: 'rpl', label: 'RPL' },
+  { id: 'tkj', label: 'TKJ' },
+  { id: 'dkv', label: 'DKV' },
+  { id: 'tkr', label: 'TKR' },
+  { id: 'tsm', label: 'TSM' },
+  { id: 'atph', label: 'ATPH' },
+  { id: 'apt', label: 'APT' },
+  { id: 'prestasi', label: 'Prestasi' },
+  { id: 'event', label: 'Event' },
+  { id: 'karya-siswa', label: 'Karya Siswa' },
+  { id: 'ekstrakurikuler', label: 'Ekstrakurikuler' },
+  { id: 'kunjungan', label: 'Kunjungan' },
+  { id: 'teaching-factory', label: 'Teaching Factory' },
+  { id: 'keagamaan', label: 'Keagamaan' },
+  { id: 'edukasi', label: 'Edukasi' },
+];
+
+
 export const SAMPLE_ARTICLES = [
   {
     id: 1,

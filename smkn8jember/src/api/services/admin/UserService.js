@@ -44,3 +44,12 @@ export const deleteUser = async (id) => {
         throw error;
     }
 };
+
+export const restoreUser = async (id) => {
+    try {
+        const response = await AdminApi.restore(id);
+        return response.data;
+    } catch(error) {
+        throw error;
+    }
+}

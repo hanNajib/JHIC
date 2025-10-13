@@ -56,4 +56,5 @@ class AuthController extends Controller
     public function me(Request $request) {
         return $this->success($request->user(), 'User retrieved successfully');
     }
+    
 }

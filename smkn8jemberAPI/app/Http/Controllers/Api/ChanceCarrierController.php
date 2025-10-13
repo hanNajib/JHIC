@@ -15,6 +15,7 @@ class ChanceCarrierController extends Controller
     public function index() {
         $data = ChanceCarrier::all();
         return $this->success($data, 'Chance carriers retrieved successfully');
+
     }
 
     public function create(Request $request) {
@@ -89,5 +90,14 @@ class ChanceCarrierController extends Controller
         $chanceCarrier->delete();
 
         return $this->deleted('Chance carrier deleted successfully');
+    }
+
+    public function restore($id){
+        $chanceCarrier = ChanceCarrier::withTrashed()->find($id);
+        if (!$chanceCarrier) {
+            return $this->notFound("Chance carrier not found");
+        }
+        $chanceCarrier->restore();
+        return $this->statusMessage("Chance carrier restored successfully");
     }
 }

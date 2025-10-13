@@ -40,10 +40,12 @@ class SchoolSettingsSeeder extends Seeder
             ],
             [
                 'title' => 'logo_sekolah',
+                'type' => 'image',
                 'value' => 'default-logo.png',
             ],
             [
                 'title' => 'hero_image',
+                'type' => 'image',
                 'value' => 'default-hero.jpg',
             ],
             [

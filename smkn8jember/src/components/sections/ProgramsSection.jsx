@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Section, Button, ProgramCard } from '../ui';
-import { useSchoolPrograms } from '../../hooks/useSchool';
+import { useMajors } from '../../hooks/api/useMajor';
 
 const ProgramsSection = ({ className = '' }) => {
-  const { visiblePrograms, isExpanded, toggleExpanded } = useSchoolPrograms();
+  const { data: majorsData } = useMajors();
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  const programs = majorsData?.data || [];
+  const visiblePrograms = isExpanded ? programs : programs.slice(0, 3);
+  const toggleExpanded = () => setIsExpanded(!isExpanded);
 
   return (
     <Section 

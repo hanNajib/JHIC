@@ -68,4 +68,13 @@ class AdminController extends Controller
         $admin->delete();
         return $this->success(null, 'Admin deleted successfully');
     }
+
+    public function restore($id) {
+       $admin = User::withTrashed()->find($id);
+       if(!$admin) {
+        return $this->notFound("Admin not found");
+       }
+       $admin->restore();
+       return $this->statusMessage("Admin restored successfully");
+    }
 }

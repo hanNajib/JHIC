@@ -1,15 +1,45 @@
 import React from 'react';
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Section, Button, StatCard } from '../ui';
-import { useAbout } from '../../hooks/useSchool';
+import parse from 'html-react-parser';
 
-const AboutSection = ({ className = '' }) => {
-  const { stats, isExpanded, toggleExpanded } = useAbout();
+const stats = [
+  {
+    id: 'students',
+    icon: 'LuBookText',
+    value: '2,500+',
+    label: 'Siswa - Siswi',
+    color: '#3C4A78'
+  },
+  {
+    id: 'teachers',
+    icon: 'FaChalkboardTeacher',
+    value: '90+',
+    label: 'Guru',
+    color: '#3C4A78'
+  },
+  {
+    id: 'alumni',
+    icon: 'PiStudentBold',
+    value: '20,000+',
+    label: 'Lulusan Potensial',
+    color: '#3C4A78'
+  },
+  {
+    id: 'years',
+    icon: 'LuHousePlus',
+    value: '17+',
+    label: 'Tahun Berdiri',
+    color: '#3C4A78'
+  }
+];
 
+const AboutSection = ({ className = '', deskripsi="SMK Negeri 8 Jember adalah institusi pendidikan kejuruan yang berkomitmen untuk menghasilkan lulusan yang kompeten, berkarakter, dan siap menghadapi tantangan dunia kerja. Dengan pengalaman lebih dari 25 tahun, kami terus berinovasi dalam memberikan pendidikan berkualitas tinggi yang mengintegrasikan teori dan praktik. SMK Negeri 8 Jember adalah institusi pendidikan kejuruan yang berkomitmen untuk menghasilkan lulusan yang kompeten, berkarakter, dan siap menghadapi tantangan dunia kerja. Dengan pengalaman lebih dari 25 tahun, kami terus berinovasi dalam memberikan pendidikan berkualitas tinggi yang mengintegrasikan teori dan praktik." }) => {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  const toggleExpanded = () => setIsExpanded(!isExpanded);
   return (
     <Section 
       background="gray" 
-    //   title={<>Tentang <span className='text-[#ff6000]'>Kami</span></>}
       className={className}
     >
       <div className="flex flex-col lg:flex-row justify-center items-center gap-5 w-full">
@@ -18,9 +48,9 @@ const AboutSection = ({ className = '' }) => {
             <h1 className='font-poppins text-[#212529] font-bold text-3xl md:text-4xl lg:text-[3rem]'>Tentang <span className='text-[#ff6000]'>Kami</span></h1>
             <div className="w-1/2 h-1 bg-[#ff6000]"></div>
           </div>
-          <p className={`font-poppins text-[#272727] font-medium text-[14px] text-start ${isExpanded ? 'line-clamp-0' : 'line-clamp-10'}`}>
-            SMK Negeri 8 Jember adalah institusi pendidikan kejuruan yang berkomitmen untuk menghasilkan lulusan yang kompeten, berkarakter, dan siap menghadapi tantangan dunia kerja. Dengan pengalaman lebih dari 25 tahun, kami terus berinovasi dalam memberikan pendidikan berkualitas tinggi yang mengintegrasikan teori dan praktik. SMK Negeri 8 Jember adalah institusi pendidikan kejuruan yang berkomitmen untuk menghasilkan lulusan yang kompeten, berkarakter, dan siap menghadapi tantangan dunia kerja. Dengan pengalaman lebih dari 25 tahun, kami terus berinovasi dalam memberikan pendidikan berkualitas tinggi yang mengintegrasikan teori dan praktik.
-          </p>
+          <div className={`font-poppins text-[#272727] font-medium text-[14px] text-start ${isExpanded ? 'line-clamp-0' : 'line-clamp-10'}`}>
+            { parse(deskripsi) }
+          </div>
           
           <div className="flex md:hidden py-4 justify-center text-center">
             <Button 

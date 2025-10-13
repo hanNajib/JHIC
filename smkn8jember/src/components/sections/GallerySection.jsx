@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Section, Button, GalleryCard } from "../ui";
-import { useGallery } from "../../hooks/useSchool";
+import { useGallery } from "../../hooks/api/useGallery";
 import { GALLERY_CATEGORIES } from "../../constants/schoolData";
 import GalleryPopUp from "../ui/GalleryPopUp";
 
@@ -42,16 +42,7 @@ const GallerySection = ({ className = "" }) => {
         ))}
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 w-full pt-10 gap-6 items-stretch pb-4">
-        {filteredGallery.map((image, index) => (
-          <GalleryCard
-            key={image.id}
-            image={image}
-            // className={index >= 3 ? 'hidden md:flex md:flex-col md:flex-none' : ''}
-            onClick={() => handleOpenPopup(image)}
-          />
-        ))}
-      </div>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 w-full pt-10 gap-6 items-stretch pb-4"></div>
 
       <div className="flex justify-center items-center w-full pt-5">
         <Button className=" cursor-pointer">Lihat Semua Galeri</Button>
