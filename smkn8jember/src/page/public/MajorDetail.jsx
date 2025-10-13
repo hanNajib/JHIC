@@ -185,7 +185,7 @@ const MajorDetail = () => {
       <h1 className="font-bold text-2xl justify-center items-center text-center mt-3">
         Bekerja sama dan dipercaya oleh
       </h1>
-      <section className="bg-[#F7BB7D] py-16 px-6 m-8 rounded-lg overflow-hidden">
+      <section className="py-16 px-6 m-8 rounded-lg overflow-hidden">
         <div
           ref={sliderRef}
           className="flex items-center gap-16 whitespace-nowrap overflow-hidden scrollbar-hide"
@@ -198,13 +198,12 @@ const MajorDetail = () => {
                   key={`${groupIndex}-${index}`}
                   className="flex-shrink-0 flex flex-col items-center gap-3 w-32 h-32"
                 >
-                  <div className="w-28 h-28 flex items-center justify-center bg-white rounded-xl shadow-sm">
-                    <img
-                      src={logo.src}
-                      alt={logo.alt}
-                      className="object-contain w-full h-full p-3 grayscale hover:grayscale-0 transition-all duration-300"
-                    />
-                  </div>
+                  <img
+                    src={logo.src}
+                    alt={logo.alt}
+                    className="object-contain w-full h-full p-3 grayscale hover:grayscale-0 hover:scale-[1.1] transition-all duration-300"
+                  />
+                  
                   <h2 className="font-poppins font-semibold text-center text-sm">
                     {logo.alt}
                   </h2>
