@@ -146,15 +146,15 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const [openManajemen, setOpenManajemen] = useState(true);
 
   const artikelItems = [
-    { to: "/artikel", icon: PiArticleMedium, label: "Artikel Admin" },
-    { to: "/artikelUser", icon: PiArticleNyTimes, label: "Artikel User" },
+    { to: "/admin/artikel", icon: PiArticleMedium, label: "Artikel Admin" },
+    { to: "/admin/artikelUser", icon: PiArticleNyTimes, label: "Artikel User" },
   ];
 
   const manajemenItems = [
-    { to: "/dataguru", icon: LiaUserTieSolid, label: "Data Guru" },
-    { to: "/datakaryawan", icon: LuUserRoundCog, label: "Data Karyawan" },
-    { to: "/siswa", icon: LuUserRoundPen, label: "Data Siswa" },
-    { to: "/fasilitas", icon: RiBuilding2Line, label: "Data Fasilitas" },
+    { to: "/admin/dataguru", icon: LiaUserTieSolid, label: "Data Guru" },
+    { to: "/admin/datakaryawan", icon: LuUserRoundCog, label: "Data Karyawan" },
+    { to: "/admin/siswa", icon: LuUserRoundPen, label: "Data Siswa" },
+    { to: "/admin/fasilitas", icon: RiBuilding2Line, label: "Data Fasilitas" },
     {
       to: "/ekstrakulikuler",
       icon: MdOutlineSportsVolleyball,
