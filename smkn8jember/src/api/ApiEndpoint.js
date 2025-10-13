@@ -73,12 +73,12 @@ export const PartnersApi = {
 }
 
 export const ExtracurricularApi = {
-    get : (params) => apiClient.get('/extracurricular', { params }),
-    getById : (id) => apiClient.get(`/extracurricular/${id}`),
-    create : (data) => apiClient.post('/extracurricular', data),
-    update : (id, data) => apiClient.post(`/extracurricular/${id}?_method=PUT`, data),
-    delete : (id) => apiClient.delete(`/extracurricular/${id}`),
-    restore: (id) => apiClient.post(`extracurricular/${id}/restore`)
+    get : (params) => apiClient.get('/extracurriculars', { params }),
+    getById : (id) => apiClient.get(`/extracurriculars/${id}`),
+    create : (data) => apiClient.post('/extracurriculars', data,{headers: {'Content-Type': 'multipart/form-data'}}),
+    update : (id, data) => apiClient.post(`/extracurriculars/${id}?_method=PUT`, data),
+    delete : (id) => apiClient.delete(`/extracurriculars/${id}`),
+    restore: (id) => apiClient.post(`extracurriculars/${id}/restore`)
 }
 
 export const ChanceCarrierApi = {
