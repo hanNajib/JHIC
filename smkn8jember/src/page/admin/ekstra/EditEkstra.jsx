@@ -10,7 +10,6 @@ import {
   useUpdateExtarculicular,
 } from "../../../hooks/api/useExtarculicular";
 
-// ✅ Gambar tidak wajib saat edit
 const schema = yup.object().shape({
   name: yup.string().required("Nama wajib diisi"),
   mentor_name: yup.string().required("Pembimbing wajib diisi"),
@@ -38,7 +37,6 @@ const EditEkstra = () => {
   const { id } = useParams();
   const [preview, setPreview] = useState(null);
 
-  // ✅ Ambil data berdasarkan id
   const { data: ekstra, isLoading } = useExtarculicular(id);
   const updateExtraculicular = useUpdateExtarculicular(id);
 
@@ -76,6 +74,7 @@ const EditEkstra = () => {
     if (file) {
       setPreview(URL.createObjectURL(file));
       setValue("image", file);
+      
     }
   };
 const onSubmit = async (data) => {
@@ -86,10 +85,8 @@ const onSubmit = async (data) => {
     formData.append("description", data.description);
     if (data.image) formData.append("image", data.image);
 
-    // 🔥 Jalankan update
     await updateExtraculicular.mutateAsync(formData);
 
-    // ✅ SweetAlert sukses
     await Swal.fire({
       icon: "success",
       title: "Berhasil!",

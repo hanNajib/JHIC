@@ -51,7 +51,6 @@ const TambahEkstra = () => {
 
   const createExtraculicular = useCreateExtarculicular({
     onSuccess: () => {
-      // ✅ SweetAlert sukses
       Swal.fire({
         title: "Berhasil!",
         text: "Data ekstrakurikuler berhasil ditambahkan.",

@@ -8,7 +8,13 @@ import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../../components/ui/ImageModal";
 import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
-
+import {
+  useFacilities,
+  useDeleteFacility,
+} from "../../../hooks/api/useFacility";
+import { Button } from "../../../components/ui";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 const Fasilitas = () => {
   const [fasilitas, setFasilitas] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -19,18 +25,23 @@ const Fasilitas = () => {
 
   // Search & Filter
   const [search, setSearch] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(search);
   const [status, setStatus] = useState("Semua");
-
-  useEffect(() => {
-    fetch("/fasilitas.json")
-      .then((res) => res.json())
-      .then((data) => setFasilitas(data));
-  }, []);
+  const {
+    data: facility = [],
+    isFetching,
+    refetch,
+  } = useFacilities({
+    s: debouncedSearchTerm,
+  });
 
   // Filter dan search
-  const filteredFasilitas = fasilitas.filter((a) => {
-    const matchSearch = a.nama.toLowerCase().includes(search.toLowerCase());
-    return matchSearch;
+  const filteredFasilitas = facility.filter((item) => {
+    const matchStatus =
+      status === "Semua" || item.status?.toLowerCase() === status.toLowerCase();
+    const matchSearch =
+      !search || item.name.toLowerCase().includes(search.toLowerCase());
+    return matchStatus && matchSearch;
   });
 
   const jumlahHalaman = Math.ceil(fasilitas.length / jumlahPage);
@@ -38,11 +49,49 @@ const Fasilitas = () => {
   const arrayAwal = arrayTerakhir - jumlahPage;
   const dataHasil = filteredFasilitas.slice(arrayAwal, arrayTerakhir);
 
-  // ganti halaman
   const handlePageChange = (page) => {
     setHalamanKe(page);
   };
-
+  const navigate = useNavigate();
+  const handleEdit = (id) => {
+    navigate(`/admin/fasilitas/edit/${id}`);
+  };
+  const deleteFacility = useDeleteFacility();
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Yakin ingin menghapus?",
+      text: "Data yang dihapus tidak dapat dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteFacility.mutate(id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire({
+              title: "Terhapus!",
+              text: "Data berhasil dihapus.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat menghapus data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
+  };
   const handleReset = () => {
     setSearch("");
     setFilterKategori("Semua");
@@ -66,7 +115,7 @@ const Fasilitas = () => {
         handleReset={handleReset}
         titleHalaman="Data Fasilitas"
         descHalaman="Kelola data fasilitas"
-        linkTambah="/fasilitas/tambah"
+        linkTambah="admin/fasilitas/tambah"
         titleBTN="Tambah Fasilitas"
         kategoriList={["Active", "Nonactive"]}
       />
@@ -76,12 +125,8 @@ const Fasilitas = () => {
         <table className="min-w-full bg-white ">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th className="py-2 px-4 text-left text-white min-w-full">
-                No
-              </th>
-              <th className="py-2 px-4 text-left text-white min-w-26">
-                Nama
-              </th>
+              <th className="py-2 px-4 text-left text-white min-w-full">No</th>
+              <th className="py-2 px-4 text-left text-white min-w-26">Nama</th>
               <th className="py-2 px-4 text-left text-white min-w-full">
                 Total
               </th>
@@ -100,36 +145,32 @@ const Fasilitas = () => {
             {dataHasil.map((a, _i) => (
               <tr className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
                 <td className="py-2 px-4">{_i + 1}</td>
-                <td className="py-2  ">{a.nama}</td>
-                <td className="py-2 px-4">
-                  {a.total}
-                </td>
-                <td className="py-2 px-4">
-                  {a.deskripsi}
-                </td>
+                <td className="py-2  ">{a.name}</td>
+                <td className="py-2 px-4">{a.room_total}</td>
+                <td className="py-2 px-4">{a.description}</td>
                 <td className="py-2 px-4">
                   <button
-                    onClick={() => setSelectedImage(a.foto)}
+                    onClick={() => setSelectedImage(a.image)}
                     className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
                   >
                     <CiImageOn className="text-xl" />
-                    {a.foto}
+                    Lihat
                   </button>
                 </td>
                 <td className="py-2 px-4 text-white ">
                   <div className="flex gap-2 justify-center ">
-                    <a
-                      href={`/fasilitas/edit/${a.id}`}
+                    <Button
+                      onClick={() => handleEdit(a.id)}
                       className="text-center text-3xl bg-green-500 p-2 rounded-2xl shadow-lg"
                     >
                       <FaRegEdit className="text-lg" />
-                    </a>
-                    <a
-                      href=""
+                    </Button>
+                    <Button
+                      onClick={() => handleDelete(a.id)}
                       className="text-center text-3xl bg-red-500 p-2 rounded-2xl shadow-lg"
                     >
                       <MdDeleteOutline className="text-lg" />
-                    </a>
+                    </Button>
                   </div>
                 </td>
               </tr>
