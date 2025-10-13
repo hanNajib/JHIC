@@ -2,22 +2,40 @@ import { useState } from "react";
 import { FaRegEdit, FaSearch } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiImageOn } from "react-icons/ci";
-import { AdminLoading, Loading } from "../../../components/ui";
+import { AdminLoading, Loading, Button } from "../../../components/ui";
 import { useAdmins, useDeleteUser, useRestoreUser } from "../../../hooks/api/useAdmin";
 import { BiRefresh } from "react-icons/bi";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useDebounce } from "../../../hooks/useDebounce";
+import FilterAdmin from "../../../components/ui/FilterAdmin";
+import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 
 const UserJurusan = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [trashed, setTrashed] = useState(false);
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const { data: admins, error, refetch, isFetching } = useAdmins({
+  const [search, setSearch] = useState("");
+  const [cursor, setCursor] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [jumlahPage, setJumlahPage] = useState(5);
+  const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
+
+  const debouncedSearchTerm = useDebounce(search, 500);
+  
+  const {
+    data: adminResponse,
+    refetch,
+    isFetching,
+    error
+  } = useAdmins({
     s: debouncedSearchTerm,
-    trashed: trashed,
+    trashed: softDeleteFilter === "deleted",
+    cursor: cursor,
+    limit: jumlahPage,
   });
+
+  const admins = adminResponse?.data || []; 
+  const meta = adminResponse?.meta || {};
+  
   const deleteUser = useDeleteUser();
   const restoreUser = useRestoreUser();
   const navigate = useNavigate();
@@ -66,6 +84,32 @@ const UserJurusan = () => {
     refetch();
   };
 
+  const handleReset = () => {
+    setSearch("");
+    setSoftDeleteFilter("active");
+    setCursor(null);
+    setCurrentPage(1);
+  };
+
+  const handleNextPage = () => {
+    if (meta.next_cursor) {
+      setCursor(meta.next_cursor);
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (meta.previous_cursor) {
+      setCursor(meta.previous_cursor);
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  const handleFirstPage = () => {
+    setCursor(null);
+    setCurrentPage(1);
+  };
+
   if (error) {
     return (
       <div className="flex flex-col justify-center items-center gap-4 w-full h-96 bg-white rounded-lg p-5">
@@ -85,94 +129,68 @@ const UserJurusan = () => {
 
   return (
     <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
-      <div className="flex justify-between flex-col lg:flex-row gap-4">
-        <div>
-          <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">Data User</h1>
-          <p className="text-gray-600 mt-1">Kelola data administrator</p>
-        </div>
-
-        <div className="flex gap-2">
-          <button
-            onClick={handleRefresh}
-            className="flex justify-center items-center gap-2 px-4 py-2 text-gray-600 text-base font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition duration-300"
-            title="Refresh Data"
-          >
-            <BiRefresh className="text-lg" />
-          </button>
-
-          <button
-            onClick={() => handleAddAdmin()}
-            className="flex justify-center items-center gap-2 px-4 py-2 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300 w-fit"
-          >
-            <IoMdAdd className="text-lg" />
-            <span>Tambah Admin</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="flex-1 relative">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Cari berdasarkan username atau email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-          />
-        </div>
-        <select
-          value={trashed}
-          onChange={(e) => setTrashed(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-        >
-          <option value="false">Semua</option>
-          <option value="true">Nonaktif</option>
-        </select>
-      </div>
+      <FilterAdmin
+        search={search}
+        setSearch={(val) => {
+          setSearch(val);
+          setCursor(null);
+          setCurrentPage(1);
+        }}
+        handleReset={handleReset}
+        titleHalaman="Data User"
+        descHalaman="Kelola data administrator"
+        linkTambah="/admin/data-user/tambah"
+        titleBTN="Tambah Admin"
+        handleRefresh={() => refetch()}
+        
+        hasSoftDelete={true}
+        softDeleteFilter={softDeleteFilter}
+        setSoftDeleteFilter={(val) => {
+          setSoftDeleteFilter(val);
+          setCursor(null);
+          setCurrentPage(1);
+        }}
+      />
 
 
 
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
-        {isFetching && (
-          <div className="absolute inset-0 bg-white/80 z-10 flex items-center justify-center">
-            <div className="bg-white rounded-lg shadow-xl p-6 flex items-center gap-3">
-              <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-gray-700 font-medium">Memuat data...</span>
-            </div>
-          </div>
-        )}
         <table className="min-w-full bg-white">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th className="py-3 px-4 text-left text-white font-semibold w-16">No</th>
-              <th className="py-3 px-4 text-left text-white font-semibold w-32">Username</th>
-              <th className="py-3 px-4 text-left text-white font-semibold w-48">Email</th>
-              <th className="py-3 px-4 text-left text-white font-semibold w-24">Role</th>
-              <th className="py-3 px-4 text-left text-white font-semibold w-28">No. HP</th>
-              <th className="py-3 px-4 text-left text-white font-semibold w-36">Bio</th>
-              <th className="py-3 px-4 text-left text-white font-semibold w-28">Terdaftar</th>
-              <th className="py-3 px-4 text-center text-white font-semibold w-24">Aksi</th>
+              <th className="py-2 px-4 text-left text-white">No</th>
+              <th className="py-2 px-4 text-left text-white min-w-56">Username</th>
+              <th className="py-2 px-4 text-left text-white">Email</th>
+              <th className="py-2 px-4 text-left text-white">Role</th>
+              <th className="py-2 px-4 text-left text-white">No. HP</th>
+              <th className="py-2 px-4 text-left text-white">Bio</th>
+              <th className="py-2 px-4 text-left text-white">Terdaftar</th>
+              <th className="py-2 px-4 text-left text-white">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            {admins && admins.length > 0 ? (
-              admins.map((admin, index) => (
-                <tr key={admin.id} className="hover:bg-gray-50 transition-colors duration-150">
-                  <td className="py-3 px-4 border-b border-gray-200 text-sm font-medium text-gray-900 w-16">
-                    {index + 1}
-                  </td>
-                  <td className="py-3 px-4 border-b border-gray-200 w-32">
-                    <div className="text-sm font-medium text-gray-900 truncate">
-                      {admin.username}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 border-b border-gray-200 text-sm text-gray-900 w-48">
-                    <div className="truncate" title={admin.email}>
-                      {admin.email}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 border-b border-gray-200 w-24">
+            {isFetching ? (
+              <tr>
+                <td colSpan={8} className="text-center py-4 text-gray-500">
+                  Memuat data...
+                </td>
+              </tr>
+            ) : admins.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="text-center py-4 text-gray-500">
+                  Tidak ada data ditemukan.
+                </td>
+              </tr>
+            ) : (
+              admins.map((admin, i) => (
+                <tr
+                  key={admin.id}
+                  className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
+                >
+                  <td className="py-2 px-4">{i + 1}</td>
+                  <td className="py-2">{admin.username}</td>
+                  <td className="py-2 px-4">{admin.email}</td>
+                  <td className="py-2 px-4">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${admin.role === 'superadmin'
                         ? 'bg-purple-100 text-purple-800'
                         : 'bg-blue-100 text-blue-800'
@@ -180,66 +198,60 @@ const UserJurusan = () => {
                       {admin.role}
                     </span>
                   </td>
-                  <td className="py-3 px-4 border-b border-gray-200 text-sm text-gray-500 w-28">
-                    <div className="truncate">
-                      {admin.phone_number || '-'}
-                    </div>
+                  <td className="py-2 px-4">{admin.phone_number || '-'}</td>
+                  <td className="py-2 px-4">{admin.bio || '-'}</td>
+                  <td className="py-2 px-4">
+                    {admin.created_at ? new Date(admin.created_at).toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric'
+                    }) : '-'}
                   </td>
-                  <td className="py-3 px-4 border-b border-gray-200 w-36">
-                    <div className="text-xs text-gray-700 truncate" title={admin.bio}>
-                      {admin.bio || '-'}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 border-b border-gray-200 text-sm text-gray-500 w-28">
-                    <div className="truncate">
-                      {admin.created_at ? new Date(admin.created_at).toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric'
-                      }) : '-'}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 border-b border-gray-200 text-center w-24">
-                    <div className="flex gap-1 justify-center">
-                      {
-                        admin.deleted_at === null && (
-                          <button
-                            onClick={() => handleEdit(admin.id)}
-                            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
-                            title="Edit Admin"
-                          >
-                            <FaRegEdit className="text-xs" />
-                          </button>
-                        )
-                      }
+                  <td className="py-2 px-4">
+                    <div className="flex gap-2 justify-center">
+                      {admin.deleted_at === null && (
+                        <Button
+                          onClick={() => handleEdit(admin.id)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
+                        >
+                          <FaRegEdit className="text-lg" />
+                        </Button>
+                      )}
                       <button
                         onClick={() => admin.deleted_at === null ? handleDelete(admin) : handleRestore(admin)}
                         className={`${admin.deleted_at === null
-                            ? 'bg-red-500 hover:bg-red-600'
-                            : 'bg-green-500 hover:bg-green-600'
-                          } text-white p-2 rounded transition duration-200`}
-                        title={admin.deleted_at === null ? 'Hapus' : 'Aktifkan'}
+                          ? 'bg-red-500 hover:bg-red-600'
+                          : 'bg-green-500 hover:bg-green-600'
+                        } text-white p-2 rounded-2xl shadow-lg transition`}
                       >
-                        {admin.deleted_at === null ? <MdDeleteOutline className="text-xs" /> : <BiRefresh className="text-xs" />}
+                        {admin.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
                       </button>
                     </div>
                   </td>
                 </tr>
               ))
-            ) : (
-              <tr>
-                <td colSpan="8" className="py-8 px-4 text-center text-gray-500">
-                  <div className="flex flex-col items-center">
-                    <CiImageOn className="text-4xl text-gray-300 mb-2" />
-                    <p className="text-lg font-medium">Tidak ada data admin</p>
-                    <p className="text-sm">Belum ada admin yang terdaftar dalam sistem</p>
-                  </div>
-                </td>
-              </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      <PaginationAdmin
+        currentPage={1}
+        totalPages={1}
+        perPage={jumlahPage}
+        onPageChange={() => {}}
+        onPerPageChange={(value) => {
+          setJumlahPage(value);
+          setCursor(null);
+          setCurrentPage(1);
+        }}
+        hasNextPage={meta.has_more_pages}
+        hasPrevPage={!!meta.previous_cursor}
+        onNextPage={handleNextPage}
+        onPrevPage={handlePrevPage}
+        onFirstPage={handleFirstPage}
+        currentCursorPage={currentPage}
+      />
     </div>
   );
 };

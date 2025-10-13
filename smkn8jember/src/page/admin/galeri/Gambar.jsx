@@ -10,26 +10,38 @@ import { useDeleteGallery, useGalleries } from "../../../hooks/api/useGallery";
 import Swal from "sweetalert2";
 import { Button } from "../../../components/ui";
 import { useNavigate } from "react-router-dom";
+import { useCategories } from "../../../hooks/api/useCategory";
+import { getCategoryStyle } from "../../../utils/helpers";
 
 const Gambar = () => {
   const [search, setSearch] = useState("");
   const [filterKategori, setFilterKategori] = useState("Semua");
   const [selectedImage, setSelectedImage] = useState(null);
-  const [halamanKe, setHalamanKe] = useState(1);
+  const [cursor, setCursor] = useState(null);
   const [jumlahPage, setJumlahPage] = useState(5);
-  const [trashed, setTrashed] = useState(false);
+  const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const debouncedSearchTerm = useDebounce(search, 500);
   const navigate = useNavigate();
 
   const {
-    data: gallery = [],
+    data: galleryResponse,
     isFetching,
     refetch,
   } = useGalleries({
     s: debouncedSearchTerm,
-    trashed,
+    trashed: softDeleteFilter === "deleted",
+    category_name: filterKategori === "Semua" ? undefined : filterKategori,
+    limit: jumlahPage,
+    cursor: cursor,
   });
+
+  const gallery = galleryResponse?.data || [];
+  const meta = galleryResponse?.meta || {};
+
+  const { data: kategoriesResponse } = useCategories({ type: "gallery", limit: 1000 });
+  const kategori = kategoriesResponse?.data || [];
 
   const deleteGallery = useDeleteGallery();
 
@@ -73,41 +85,67 @@ const Gambar = () => {
     navigate(`/admin/gambar/edit/${id}`);
   };
 
-  const filteredData = gallery.filter((a) => {
-    const matchKategori =
-      filterKategori === "Semua" || a.kategori === filterKategori;
-    return matchKategori;
-  });
-
-  const jumlahHalaman = Math.ceil(filteredData.length / jumlahPage);
-  const indexAwal = (halamanKe - 1) * jumlahPage;
-  const dataTampil = filteredData.slice(indexAwal, indexAwal + jumlahPage);
-
   const handleReset = () => {
     setSearch("");
     setFilterKategori("Semua");
-    setHalamanKe(1);
+    setSoftDeleteFilter("active");
+    setCursor(null);
+    setCurrentPage(1);
+  };
+
+  const handleNextPage = () => {
+    if (meta.next_cursor) {
+      setCursor(meta.next_cursor);
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (meta.previous_cursor) {
+      setCursor(meta.previous_cursor);
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  const handleFirstPage = () => {
+    setCursor(null);
+    setCurrentPage(1);
   };
 
   return (
     <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
       <FilterAdmin
-        filterKategori={filterKategori}
-        setFilterKategori={(val) => {
-          setFilterKategori(val);
-          setHalamanKe(1);
-        }}
         search={search}
         setSearch={(val) => {
           setSearch(val);
-          setHalamanKe(1);
+          setCursor(null);
+          setCurrentPage(1);
         }}
         handleReset={handleReset}
-        titleHalaman="Data Gambar"
+        titleHalaman="Data Galeri"
         descHalaman="Kelola data gambar"
         linkTambah="/admin/gambar/tambah"
         titleBTN="Tambah Gambar"
-        kategoriList={["RPL", "Prestasi", "Karya", "Edukasi"]}
+        handleRefresh={() => refetch()}
+        
+        hasSoftDelete={true}
+        softDeleteFilter={softDeleteFilter}
+        setSoftDeleteFilter={(val) => {
+          setSoftDeleteFilter(val);
+          setCursor(null);
+          setCurrentPage(1);
+        }}
+        
+        filterKategori={filterKategori}
+        setFilterKategori={(val) => {
+          setFilterKategori(val);
+          setCursor(null);
+          setCurrentPage(1);
+        }}
+        
+        filterOptions={{
+          filterKategori: [...(kategori ? kategori.map((cat) => cat.name) : [])],
+        }}
       />
 
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
@@ -129,26 +167,32 @@ const Gambar = () => {
                   Memuat data...
                 </td>
               </tr>
-            ) : dataTampil.length === 0 ? (
+            ) : gallery.length === 0 ? (
               <tr>
                 <td colSpan={6} className="text-center py-4 text-gray-500">
                   Tidak ada data ditemukan.
                 </td>
               </tr>
             ) : (
-              dataTampil.map((a, i) => (
+              gallery.map((a, i) => (
                 <tr
                   key={a.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="py-2 px-4">{i + 1 + indexAwal}</td>
+                  <td className="py-2 px-4">{i + 1}</td>
                   <td className="py-2">{a.title}</td>
                   <td className="py-2 px-4">
-                    <div className="bg-orange-300/30 border border-orange-500 px-2 py-[1px] w-fit rounded-2xl text-sm text-orange-500">
-                      {a.category}
-                    </div>
+                    {a.categories.map((cat, idx) => (
+                      <span
+                        key={idx}
+                        style={getCategoryStyle(cat.color)}
+                        className={`border px-2 py-[1px] w-fit rounded-2xl text-sm ${cat.color ? `` : 'bg-orange-100 text-orange-700 border-orange-300'} mr-1 mb-1 inline-block font-medium`}
+                      >
+                        {cat.name}
+                      </span>
+                    ))}
                   </td>
-                  <td className="py-2 px-4">{a.created_at}</td>
+                  <td className="py-2 px-4">{a.date}</td>
                   <td className="py-2 px-4">
                     <button
                       onClick={() => setSelectedImage(a.image)}
@@ -182,14 +226,21 @@ const Gambar = () => {
       </div>
 
       <PaginationAdmin
-        currentPage={halamanKe}
-        totalPages={jumlahHalaman}
+        currentPage={1}
+        totalPages={1}
         perPage={jumlahPage}
-        onPageChange={setHalamanKe}
+        onPageChange={() => {}}
         onPerPageChange={(value) => {
           setJumlahPage(value);
-          setHalamanKe(1);
+          setCursor(null);
+          setCurrentPage(1);
         }}
+        hasNextPage={meta.has_more_pages}
+        hasPrevPage={!!meta.previous_cursor}
+        onNextPage={handleNextPage}
+        onPrevPage={handlePrevPage}
+        onFirstPage={handleFirstPage}
+        currentCursorPage={currentPage}
       />
 
       <ImageModal

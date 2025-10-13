@@ -6,7 +6,7 @@ export const useFacilities = (filters = {}, options = {}) => {
     queryKey: [QUERY_KEYS.FACILITY.LIST, filters],
     queryFn: async () => {
       const response = await facilityService.get(filters);
-      return response.data;
+      return { data: response.data, meta: response.meta, link: response.link };
     },
     staleTime: 5 * 60 * 1000,
     ...options,

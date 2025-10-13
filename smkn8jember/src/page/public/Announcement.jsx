@@ -31,12 +31,12 @@ const Announcement = ({ className = "" }) => {
       <section className="bg-white py-8">
         <div className="w-full max-w-6xl mx-auto px-6 md:px-16">
           <div className="flex overflow-x-auto  flex-col gap-4 md:gap-6 w-full">
-            {announcements.map((announcement) => (
+            {/* {announcements.map((announcement) => (
               <AnnouncementCard
                 key={announcement.id}
                 announcement={announcement}
               />
-            ))}
+            ))} */}
           </div>
         </div>
       </section>

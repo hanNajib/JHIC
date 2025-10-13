@@ -13,7 +13,7 @@ class CategoryController extends Controller
         $query = Category::applyFilters(
             $request,
             ['type', 'name', 'color'],
-            []
+            ['type']
         );
         return $this->cursorPaginated($query, 'Categories retrieved successfully');
     }

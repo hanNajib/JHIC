@@ -5,7 +5,10 @@ import * as webSettingsService from "../../api/services/admin/WebSettingsService
 export const useWebSettings = (options = {}) => {
     return useQuery({
         queryKey: [QUERY_KEYS.WEB_SETTINGS],
-        queryFn: webSettingsService.getSettings,
+        queryFn: async () => {
+            const response = await webSettingsService.getSettings();
+            return { data: response.data, meta: response.meta, link: response.link };
+        },
         ...options
     });
 };
@@ -13,7 +16,10 @@ export const useWebSettings = (options = {}) => {
 export const useWebSettingByTitle = (title, options = {}) => {
     return useQuery({
         queryKey: [QUERY_KEYS.WEB_SETTINGS, title],
-        queryFn: () => webSettingsService.getByTitle(title),
+        queryFn: async () => {
+            const response = await webSettingsService.getByTitle(title);
+            return { data: response.data, meta: response.meta, link: response.link };
+        },
         ...options
     });
 };

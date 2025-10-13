@@ -6,7 +6,7 @@ export const useAnnouncements = (filters = {}, options = {}) => {
     queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST, filters],
     queryFn: async () => {
       const response = await announcementService.get(filters);
-      return response.data;
+      return { data: response.data, meta: response.meta, link: response.link };
     },
     staleTime: 5 * 60 * 1000,
     ...options,

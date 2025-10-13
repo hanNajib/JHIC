@@ -1,7 +1,7 @@
 import { useWebSettingByTitle, useWebSettings } from "../../hooks/api/useWebSettings";
 import Footer from "../Footer"
 import Navbar from "../Navbar"
-import TextLoading, { LoadingTransition } from "../ui/TextLoading";
+import { LoadingTransition } from "../ui/TextLoading";
 
 const DefaultLayout = ({ children }) => {
     const { data, isLoading } = useWebSettings();

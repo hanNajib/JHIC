@@ -13,14 +13,13 @@ use PhpParser\Node\Expr\FuncCall;
 
 class AnnouncementsController extends Controller
 {
-    use ApiResponse;
-
     public function index(Request $request)
     {
         $announcement = Announcement::applyFilters(
             $request,
-            ['title', 'content'],
-            ['category_id']
+            searchable: ['title', 'content'],
+            filters: ['category_id'],
+            relationFilters: ['category.name' => 'category_name']
         );
         return $this->cursorPaginated($announcement, 'Announcements retrieved successfully');
     }
@@ -56,6 +55,11 @@ class AnnouncementsController extends Controller
     public function update(AnnouncementUpdateRequest $request, $id)
     {
         $validated = $request->validated();
+        $updateData = [
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'category_id' => $validated['category_id'],
+        ];
 
         $announcement = Announcement::find($id);
         if (!$announcement) {

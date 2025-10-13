@@ -2,18 +2,22 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Editor } from "@tinymce/tinymce-react";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useCategories } from "../../../hooks/api/useCategory";
-import { useCreateGallery } from "../../../hooks/api/useGallery"; // ← pastikan ada hook ini
+import { useCreateGallery } from "../../../hooks/api/useGallery";
+import Swal from "sweetalert2";
+import { Multiselect } from "../../../components/ui";
+import { color } from "framer-motion";
 
-// ✅ Validasi input
 const schema = yup.object().shape({
   title: yup.string().required("Judul wajib diisi"),
   description: yup.string().required("Deskripsi wajib diisi"),
-  category: yup.string().required("Kategori wajib dipilih"),
+  category: yup
+    .array()
+    .min(1, "Pilih minimal 1 kategori")
+    .required("Kategori wajib dipilih"),
   image: yup
     .mixed()
     .required("Gambar wajib diunggah")
@@ -34,12 +38,16 @@ const schema = yup.object().shape({
 const TambahGambar = () => {
   const navigate = useNavigate();
 
-  const { data: categoryDataRaw = [] } = useCategories();
-  const categoryData = categoryDataRaw.filter(
-    (item) => item.type === "gallery"
-  );
+  const { data: categoryDataRaw = [] } = useCategories({ type: "gallery", limit: 1000 });
+  const categoryData = categoryDataRaw?.data || [];
+  const categoryOptions = categoryData
+    .filter((item) => item.type === "gallery")
+    .map((category) => ({
+      value: category.id,
+      label: category.name,
+      color: category.color,
+    }));
 
-  // Hook form
   const {
     register,
     handleSubmit,
@@ -52,16 +60,31 @@ const TambahGambar = () => {
     defaultValues: {
       title: "",
       description: "",
-      category: "",
+      category: [],
       image: null,
     },
   });
 
   const [preview, setPreview] = useState(null);
-  const descriptionValue = watch("description");
+  const selectedCategories = watch("category");
 
   const createGallery = useCreateGallery({
-    onSuccess: () => navigate(-1),
+    onSuccess: () => {
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Gambar berhasil ditambahkan ke galeri",
+        icon: "success",
+      }).then(() => {
+        navigate(-1);
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        title: "Gagal!",
+        text: error.response?.data?.message || "Terjadi kesalahan saat menambahkan gambar",
+        icon: "error",
+      });
+    }
   });
 
   const handleFileChange = (e) => {
@@ -75,7 +98,11 @@ const TambahGambar = () => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
-    formData.append("category", data.category);
+    
+    data.category.forEach((categoryId) => {
+      formData.append("category[]", categoryId);
+    });
+
     formData.append("image", data.image);
 
     await createGallery.mutateAsync(formData);
@@ -90,7 +117,6 @@ const TambahGambar = () => {
 
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
@@ -104,6 +130,7 @@ const TambahGambar = () => {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+        {/* Judul */}
         <div className="flex flex-col">
           <label htmlFor="title" className="font-bold text-gray-800">
             Judul <span className="text-red-500">*</span>
@@ -126,51 +153,33 @@ const TambahGambar = () => {
           )}
         </div>
 
-        {/* Kategori */}
-        <div className="flex flex-col">
-          <label className="font-bold text-gray-800">
-            Kategori <span className="text-red-500">*</span>
-          </label>
-          <div className="flex flex-col gap-2">
-            {categoryData.map((item) => (
-              <label
-                key={item.id}
-                className="flex items-center gap-2 text-sm font-medium text-gray-600"
-              >
-                <input
-                  type="radio"
-                  value={item.name}
-                  {...register("category")}
-                  className="accent-orange-500"
-                />
-                {item.name}
-              </label>
-            ))}
-          </div>
-          {errors.category && (
-            <span className="text-red-500 text-sm mt-1">
-              {errors.category.message}
-            </span>
-          )}
-        </div>
+        {/* Kategori - Multiselect */}
+        <Multiselect
+          label="Kategori"
+          required={true}
+          options={categoryOptions}
+          value={selectedCategories}
+          onChange={(values) => setValue("category", values)}
+          placeholder="Pilih kategori..."
+          error={errors.category?.message}
+          multiple={true}
+        />
 
         {/* Deskripsi */}
         <div className="flex flex-col">
-          <label className="font-bold text-gray-800">
+          <label htmlFor="description" className="font-bold text-gray-800">
             Deskripsi <span className="text-red-500">*</span>
           </label>
-          <Editor
-            apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
-            value={descriptionValue}
-            onEditorChange={(content) => setValue("description", content)}
-            init={{
-              height: 300,
-              menubar: false,
-              plugins: "lists link table code",
-              toolbar:
-                "undo redo | bold italic underline | bullist numlist | link table | removeformat | code",
-              placeholder: "Masukkan Deskripsi Gambar",
-            }}
+          <textarea
+            id="description"
+            {...register("description")}
+            placeholder="Masukkan deskripsi gambar..."
+            rows={6}
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors resize-vertical ${
+              errors.description
+                ? "border-red-500 focus:ring-red-200"
+                : "border-gray-300 focus:ring-orange-200 focus:border-orange-500"
+            }`}
           />
           {errors.description && (
             <span className="text-red-500 text-sm mt-1">

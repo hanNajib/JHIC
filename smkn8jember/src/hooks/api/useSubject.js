@@ -7,7 +7,7 @@ export const useSubjects = (filters = {}, options = {}) => {
         queryKey: [QUERY_KEYS.SUBJECTS.LIST, filters],
         queryFn: async () => {
             const response = await subjectService.get(filters);
-            return response.data;
+            return { data: response.data, meta: response.meta, link: response.link };
         },
         staleTime: 5 * 60 * 1000,
         ...options

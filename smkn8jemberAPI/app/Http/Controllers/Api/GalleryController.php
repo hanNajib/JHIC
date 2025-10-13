@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\GalleryResource;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
 
@@ -12,10 +13,11 @@ class GalleryController extends Controller
     {
          $gallery = Gallery::applyFilters(
             $request,
-            ['title', 'description'],
-            []
+            searchable: ['title', 'description'],
+            filters: [],
+            relationFilters: ['categories.name' => 'category_name']
         );
-        return $this->cursorPaginated($gallery, 'Gallery retrieved successfully');
+        return $this->cursorPaginated(GalleryResource::collection($gallery), 'Gallery retrieved successfully');
     }
 
     public function create(Request $request)
@@ -24,9 +26,11 @@ class GalleryController extends Controller
             'title' => 'required|string',
             'description' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,jpg,png,gif,svg|max:2048',
+            'category' => 'nullable|array',
+            'category.*' => 'exists:categories,id'
         ]);
 
-        $createData = $request->only(['title', 'description']);
+        $createData = $request->only(['title', 'description', 'category']);
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('gallery', 'public');
@@ -34,6 +38,7 @@ class GalleryController extends Controller
         }
 
         $gallery = Gallery::create($createData);
+        $gallery->categories()->attach($createData['category']);
         return $this->created($gallery, 'Gallery created successfully');
     }
 
@@ -51,7 +56,9 @@ class GalleryController extends Controller
         $request->validate([
             'title' => 'sometimes|string',
             'description' => 'sometimes|nullable|string',
-            'image' => 'sometimes|image|mimes:jpeg,jpg,png,gif,svg|max:2048'
+            'image' => 'sometimes|image|mimes:jpeg,jpg,png,gif,svg|max:2048',
+            'category' => 'sometimes|array',
+            'category.*' => 'exists:categories,id'
         ]);
 
         $gallery = Gallery::find($id);
@@ -59,12 +66,15 @@ class GalleryController extends Controller
             return $this->notFound('Gallery not found');
         }
 
-        $updateData = $request->only(['title', 'description']);
+        $updateData = $request->only(['title', 'description', 'category']);
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('gallery', 'public');
             $updateData['image'] = $imagePath;
         }
         $gallery->update($updateData);
+        if (isset($updateData['category'])) {
+            $gallery->categories()->sync($updateData['category']);
+        }
         return $this->success($gallery, 'Gallery updated successfully');
     }
 

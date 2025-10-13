@@ -30,8 +30,8 @@ export const WebSettingsApi = {
 export const AnnouncementApi = {
     get : (params) => apiClient.get('/announcements', { params }),
     getById : (id) => apiClient.get(`/announcements/${id}`),
-    create : (data) => apiClient.post('/announcements', data),
-    update : (id, data) => apiClient.post(`/announcements/${id}?_method=PUT`, data),
+    create : (data) => apiClient.post('/announcements', data, {headers: {'Content-Type': 'multipart/form-data'}}),
+    update : (id, data) => apiClient.post(`/announcements/${id}?_method=PUT`, data, {headers: {'Content-Type': 'multipart/form-data'}}),
     delete : (id) => apiClient.delete(`/announcements/${id}`),
     restore: (id) => apiClient.post(`announcements/${id}/restore`)
 }
@@ -112,8 +112,8 @@ export const SubjectApi = {
 export const ArticleApi = {
     get : (params) => apiClient.get('/articles', { params }),
     getBySlug : (slug) => apiClient.get(`/articles/slug/${slug}`),
-    create : (data) => apiClient.post('/articles', data),
-    update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data),
+    create : (data) => apiClient.post('/articles', data, {headers: {'Content-Type': 'multipart/form-data'}}),
+    update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data, {headers: {'Content-Type': 'multipart/form-data'}}),
     delete : (id) => apiClient.delete(`/articles/${id}`),
     restore: (id) => apiClient.post(`articles/${id}/restore`)
     

@@ -7,7 +7,7 @@ export const useAdmins = (filters = {}, options = {}) => {
         queryKey: [QUERY_KEYS.ADMINS.LIST, filters],
         queryFn: async () => {
             const response = await adminService.get(filters);
-            return response.data;
+            return { data: response.data, meta: response.meta, link: response.link };
         },
         staleTime: 5 * 60 * 1000,
         ...options
