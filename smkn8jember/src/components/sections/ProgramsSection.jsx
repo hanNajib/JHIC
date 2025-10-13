@@ -7,7 +7,7 @@ const ProgramsSection = ({ className = '' }) => {
   const { data: majorsData } = useMajors();
   const [isExpanded, setIsExpanded] = useState(false);
   
-  const programs = majorsData?.data || [];
+  const programs = majorsData || [];
   const visiblePrograms = isExpanded ? programs : programs.slice(0, 3);
   const toggleExpanded = () => setIsExpanded(!isExpanded);
 
