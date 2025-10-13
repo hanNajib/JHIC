@@ -122,7 +122,7 @@ const Gallery = () => {
               <img
                 src={selectedImage.image}
                 alt={selectedImage.title}
-                className="w-full h-[420px] object-cover rounded-sm mb-4"
+                className="w-full h-[350px] object-cover rounded-sm mb-4"
               />
 
               <div className="flex flex-col justify-center gap-1">
