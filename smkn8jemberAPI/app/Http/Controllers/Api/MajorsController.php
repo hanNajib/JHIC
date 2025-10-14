@@ -14,7 +14,7 @@ class MajorsController extends Controller
 {
     public function index(Request $request)
     {
-        $major = Major::applyFilters(
+        $major = Major::with('subjects')->applyFilters(
             $request,
             ['name', 'description', 'short_name'],
             []

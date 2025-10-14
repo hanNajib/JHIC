@@ -3,60 +3,82 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { IoCalendarClearOutline } from "react-icons/io5";
 
+const backdrop = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
+const popup = {
+  hidden: { y: "100%", opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.4, ease: "easeInOut" },
+  },
+  exit: { y: "100%", opacity: 0, transition: { duration: 0.3 } },
+};
+
 const GalleryPopUp = ({ image, onClose }) => {
-    if (!image) return null;
   return (
     <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 bg-black/40 flex justify-center items-center z-50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      >
+      {image && (
         <motion.div
-          className="bg-white rounded-lg shadow-xl w-[90%] lg:w-[55%] p-4"
-          initial={{ y: "100%" }}
-          animate={{ y: 0 }}
-          exit={{ y: "100%" }}
-          transition={{ duration: 0.4, ease: "easeInOut" }}
+          key="backdrop"
+          variants={backdrop}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 px-2"
+          onClick={onClose} // klik area luar untuk close
         >
-          {/* close */}
-          <div className="text-end">
+          <motion.div
+            key="popup"
+            variants={popup}
+            onClick={(e) => e.stopPropagation()} // biar klik dalam popup nggak nutup
+            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-5 relative max-h-[85vh] overflow-y-auto"
+          >
+            {/* Tombol Close */}
             <button
               onClick={onClose}
-              className="text-gray-700 transition-all hover:text-red-500 text-2xl font-bold"
+              className="absolute top-3 right-3 text-gray-600 hover:text-red-500 transition text-2xl"
+              aria-label="Close popup"
             >
               <RiCloseLargeLine />
             </button>
-          </div>
 
-          {/* Gambar */}
-          <img
-            src={image.image}
-            alt={image.title}
-            className="w-full h-full object-cover rounded-sm mb-4"
-          />
-
-          {/* Info */}
-          <div className="flex flex-col justify-center">
-            <h3 className="bg-orange-500 text-white font-medium text-xs lg:text-sm px-3 py-0.5 w-fit rounded-4xl">
-              {image.category}
-            </h3>
-            <h2 className="text-xl lg:text-2xl font-bold text-gray-800 text-start">
-              {image.title}
-            </h2>
-            <p className="font-medium text-sm lg:text-base text-gray-700">
-              {image.desc ||
-                "Kompetisi Kelas Bersih, Lomba Antar Sekolah tingkat kabupaten"}
-            </p>
-            <div className="flex items-center text-xs lg:text-sm gap-2 text-gray-700">
-              <IoCalendarClearOutline className="font-bold" />
-              <p>{image.date || "5 Juli 2024"}</p>
+            {/* Gambar */}
+            <div className="w-full mb-4">
+              <img
+                src={image.image}
+                alt={image.title}
+                className="w-full rounded-lg object-contain max-h-[50vh] mx-auto"
+                loading="lazy"
+              />
             </div>
-          </div>
+
+            {/* Info */}
+            <div className="space-y-2">
+              {image.categories && image.categories.map((cat) => (
+                <span className="bg-orange-500 text-white text-xs lg:text-sm font-medium px-3 py-1 rounded-full inline-block">
+                  {cat.name}
+                </span>
+              ))}
+              <h2 className="text-xl lg:text-2xl font-bold text-gray-800">
+                {image.title}
+              </h2>
+              <p className="text-sm lg:text-base text-gray-700">
+                {image.description ||
+                  "Kompetisi Kelas Bersih, Lomba Antar Sekolah tingkat kabupaten."}
+              </p>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <IoCalendarClearOutline />
+                <p>{image.date || "5 Juli 2024"}</p>
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      )}
     </AnimatePresence>
   );
 };

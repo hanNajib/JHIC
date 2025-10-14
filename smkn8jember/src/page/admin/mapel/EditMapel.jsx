@@ -27,8 +27,9 @@ const EditMapel = () => {
         title: "Berhasil!",
         text: "Mata pelajaran berhasil diperbarui",
         icon: "success",
+        confirmButtonText: "OK",
       }).then(() => {
-        navigate(-1);
+        navigate('/admin/mapel');
       });
     },
     onError: (error) => {

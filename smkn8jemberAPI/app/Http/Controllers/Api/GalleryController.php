@@ -11,7 +11,7 @@ class GalleryController extends Controller
 {
     public function index(Request $request)
     {
-         $gallery = Gallery::applyFilters(
+         $gallery = Gallery::with('categories')->applyFilters(
             $request,
             searchable: ['title', 'description'],
             filters: [],

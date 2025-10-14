@@ -36,13 +36,13 @@ export const AnnouncementApi = {
 
 
 export const FacilityApi = {
-  get: (params) => apiClient.get("/facility", { params }),
-  getById: (id) => apiClient.get(`/facility/${id}`),
-  create: (data) => apiClient.post("/facility", data),
-  update: (id, data) => apiClient.post(`/facility/${id}?_method=PUT`, data),
-  delete: (id) => apiClient.delete(`/facility/${id}`),
-  restore: (id) => apiClient.post(`facility/${id}/restore`),
-};
+    get : (params) => apiClient.get('/facility', { params }),
+    getById : (id) => apiClient.get(`/facility/${id}`),
+    create : (data) => apiClient.post('/facility', data,{headers: {'Content-Type': 'multipart/form-data'}}),
+    update : (id, data) => apiClient.post(`/facility/${id}?_method=PUT`, data),
+    delete : (id) => apiClient.delete(`/facility/${id}`),
+    restore: (id) => apiClient.post(`facility/${id}/restore`)
+}
 
 export const MajorsApi = {
   get: (params) => apiClient.get("/majors", { params }),

@@ -10,7 +10,7 @@ class SubjectsController extends Controller
 {
     public function index(Request $request)
     {
-        $subjects = Subject::applyFilters(
+        $subjects = Subject::with('major')->applyFilters(
             $request,
             ['name', 'description'],
             ['major_id']

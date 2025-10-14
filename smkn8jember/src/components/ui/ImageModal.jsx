@@ -19,7 +19,7 @@ const ImageModal = ({ image, onClose, alt = "Preview" }) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="relative bg-white/90 rounded-lg shadow-xl p-3 w-3xl"
+            className="relative bg-white/90 rounded-lg shadow-xl p-3 w-xs lg:w-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-end">

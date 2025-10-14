@@ -2,7 +2,7 @@
 // components/Sidebar/index.jsx
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaBars, FaRegUser, FaChevronDown, FaRegListAlt } from "react-icons/fa";
+import { FaBars, FaRegUser, FaChevronDown, FaRegListAlt, FaRegHandshake } from "react-icons/fa";
 import {
   MdOutlineDashboard,
   MdOutlineSettings,
@@ -24,7 +24,7 @@ import {
   LuUserRoundPen,
 } from "react-icons/lu";
 import { LiaUserTieSolid } from "react-icons/lia";
-import { RiBuilding2Line } from "react-icons/ri";
+import { RiBriefcaseLine, RiBuilding2Line } from "react-icons/ri";
 
 const NavItem = ({ to, icon: Icon, label, isOpen }) => {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -156,7 +156,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { to: "/admin/siswa", icon: LuUserRoundPen, label: "Data Siswa" },
     { to: "/admin/fasilitas", icon: RiBuilding2Line, label: "Data Fasilitas" },
     {
-      to: "/ekstrakulikuler",
+      to: "/admin/ekstrakulikuler",
       icon: MdOutlineSportsVolleyball,
       label: "Data Ekstra",
     },
@@ -276,6 +276,18 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               to="/admin/jurusan"
               icon={MdOutlineCategory}
               label="Jurusan"
+              isOpen={isOpen}
+            />
+            <NavItem
+              to="/admin/partner"
+              icon={FaRegHandshake}
+              label="Partner"
+              isOpen={isOpen}
+            />
+            <NavItem
+              to="/admin/carrier"
+              icon={RiBriefcaseLine}
+              label="Carrier"
               isOpen={isOpen}
             />
             <NavItem
