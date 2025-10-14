@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
+import Profile from "./page/Profile";
 import AdminLayout from "./components/layout/AdminLayout";
 // Auth
 import Login from "./page/auth/Login";
@@ -180,11 +181,13 @@ function Router() {
         <Route path="/history" element={<History />} />
         <Route path="/teacher" element={<Teacher />} />
         <Route path="/employee" element={<Employee />} />
-        <Route path="/facilitas" element={<Facilitas />} />
+        <Route path="/fasilitas" element={<Facilitas />} />
         <Route path="/extracurricular" element={<Extracurricular />} />
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/major/detail" element={<MajorDetail />} />
         <Route path="/major/:id" element={<MajorDetail />} />
         <Route path="/detail" element={<DetailArtikel />} />
         <Route path="/visi-misi" element={<VisiMisi />} />

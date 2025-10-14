@@ -2,28 +2,29 @@ import React, { useState } from 'react';
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Section, Button, ProgramCard } from '../ui';
 import { useMajors } from '../../hooks/api/useMajor';
+import { all } from 'axios';
 
 const ProgramsSection = ({ className = '' }) => {
-  const { data: majorsData } = useMajors();
+  const { data: majorsResponse } = useMajors({
+    all: true
+  });
+  const majorsData = majorsResponse?.data || [];
   const [isExpanded, setIsExpanded] = useState(false);
   
-  const programs = majorsData || [];
-  const visiblePrograms = isExpanded ? programs : programs.slice(0, 3);
   const toggleExpanded = () => setIsExpanded(!isExpanded);
 
   return (
     <Section 
       background="gradient" 
       title={<>Program <span className='text-[#ff6000]'>Keahlian</span></>}
-      subtitle="SMKN 8 Jember menyediakan 7 program keahlian"
+      subtitle={`SMKN 8 Jember menyediakan ${majorsData.length} program keahlian`}
       className={className}
     >
       <div className="flex flex-col md:flex-row overflow-x-auto w-full pt-8 md:pt-10 gap-6 md:gap-4 items-stretch pb-4">
-        {visiblePrograms.map((program, index) => (
+        {majorsData.map((program, index) => (
           <ProgramCard 
             key={program.id} 
             program={program}
-            className={`${isExpanded ? 'md:flex' : ''} ${index >= 3 && !isExpanded ? 'hidden md:flex' : ''}`}
           />
         ))}
       </div>

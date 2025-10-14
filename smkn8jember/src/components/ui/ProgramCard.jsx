@@ -19,7 +19,7 @@ const ProgramCard = ({ program, className = "" }) => {
         loading="lazy"
       />
 
-      <div className="flex flex-col px-5 py-6 gap-2 relative">
+      <div className="flex flex-col px-5 py-6 gap-1 relative">
         <div className="flex items-center gap-3">
           <span className="p-2 bg-[#f78000] text-[#fff] text-2xl rounded-full">
             <Icon name={program.icon} size={24} />
@@ -29,27 +29,27 @@ const ProgramCard = ({ program, className = "" }) => {
           </h1>
         </div>
 
-        <p className="text-[#495057] leading-snug py-2">
-          {program.description
-            ? parse(String(program.description))
-            : "Tanpa Deskripsi"}
-        </p>
+        <div className="flex flex-col justify-between gap-3 mb-3">
+          <div className="text-[#495057] leading-snug py-2 child-line-clamp">
+            {program.description ? parse(program.description) : "-"}
+          </div>
 
-        <p className="font-poppins font-medium text-[#ff6000] text-sm">
-          Mata pelajaran utama:
-        </p>
-
-        <div className="flex flex-wrap w-full gap-2 relative">
-          {subjects.length > 0 ? (
-            subjects.map((subject, index) => (
-              <Badge key={index} variant="primary" size="xs">
-                {subject.name || subject} {/* tergantung bentuk datanya */}
-              </Badge>
-            ))
-          ) : (
-            <span className="text-gray-500 text-sm">Belum ada data</span>
-          )}
         </div>
+
+        {program.subjects && program.subjects.length > 0 && (
+          <>
+            <p className="font-poppins font-medium text-[#ff6000] text-sm">
+              Mata pelajaran utama:
+            </p>
+            <div className="flex flex-wrap w-full gap-2 relative">
+              {(program.subjects || []).map((subject, index) => (
+                <Badge key={index} variant="primary" size="xs">
+                  {subject.name}
+                </Badge>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </Card>
   );

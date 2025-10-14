@@ -13,7 +13,6 @@ const Artikel = () => {
   const [halamanKe, setHalamanKe] = useState(1);
   const [jumlahPage, setJumlahPage] = useState(5);
 
-  // Search & Filter
   const [search, setSearch] = useState("");
   const [filterKategori, setFilterKategori] = useState("Semua");
 
@@ -23,7 +22,6 @@ const Artikel = () => {
       .then((data) => setArtikel(data));
   }, []);
 
-  // Filter dan search
   const filteredArtikel = artikel.filter((a) => {
     const matchSearch = a.judul.toLowerCase().includes(search.toLowerCase());
     const matchKategori =
@@ -48,7 +46,6 @@ const Artikel = () => {
 
   return (
     <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
-      {/*  filters */}
       <FilterAdmin
         filterKategori={filterKategori}
         setFilterKategori={(value) => {

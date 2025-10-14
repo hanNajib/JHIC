@@ -1,6 +1,7 @@
 import { IoMdClose } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { useState, useRef, useEffect } from "react";
+import { getCategoryStyle } from "../../utils/helpers";
 
 const Multiselect = ({
   options = [],
@@ -14,7 +15,6 @@ const Multiselect = ({
   multiple = true,
   disabled = false,
   className = "",
-  color = "",
 }) => {
   const dropdownRef = useRef(null);
   const triggerRef = useRef(null);
@@ -60,7 +60,7 @@ const Multiselect = ({
       }
     } else {
       if (value === optionValue) {
-        onChange(null); 
+        onChange(null);
       } else {
         onChange(optionValue);
       }
@@ -143,21 +143,27 @@ const Multiselect = ({
                 getSelectedItems().map((item) => (
                   <span
                     key={item.value}
-                    className={`inline-flex items-center gap-1 ${item.color ? `bg-${item.color}-100 text-${item.color}-700` : 'bg-orange-100 text-orange-700'} px-2.5 py-1 rounded-full text-sm font-medium`}
+                    style={getCategoryStyle(item.color)}
+                    className={`inline-flex items-center gap-1 ${
+                      item.color
+                        ? `bg-${item.color}-100 text-${item.color}-700`
+                        : "bg-orange-100 text-orange-700"
+                    } px-2.5 py-1 rounded-full text-sm font-medium`}
                   >
                     {item.label}
                     {!disabled && (
-                      <button
-                        type="button"
+                      <span
+                        role="button"
+                        tabIndex={0}
                         onClick={(e) => {
                           e.stopPropagation();
                           removeItem(item.value);
                         }}
-                        className="hover:bg-orange-200 rounded-full p-0.5 transition-colors"
+                        className="hover:bg-orange-200 rounded-full p-0.5 transition-colors cursor-pointer"
                         aria-label={`Hapus ${item.label}`}
                       >
                         <IoMdClose className="text-sm" />
-                      </button>
+                      </span>
                     )}
                   </span>
                 ))
@@ -169,14 +175,18 @@ const Multiselect = ({
             </div>
             <div className="flex items-center gap-1 ml-2">
               {hasSelectedItems && !disabled && (
-                <button
-                  type="button"
-                  onClick={clearAll}
-                  className="text-gray-400 hover:text-gray-600 p-1 transition-colors"
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearAll(e);
+                  }}
+                  className="text-gray-400 hover:text-gray-600 p-1 transition-colors cursor-pointer"
                   aria-label="Hapus semua"
                 >
                   <IoMdClose className="text-lg" />
-                </button>
+                </span>
               )}
               <MdKeyboardArrowDown
                 className={`text-xl text-gray-500 transition-transform duration-200 ${

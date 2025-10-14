@@ -2,18 +2,12 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import CardFE from "../../components/ui/CardFE";
+import { useFacilities } from "../../hooks/api/useFacility";
 
 const Facilitas = () => {
-  const [fasilitas, setFasilitas] = useState([]);
-
-  console.log(fasilitas);
-
-  useEffect(() => {
-    fetch("/fasilitas.json")
-      .then((res) => res.json())
-      .then((data) => setFasilitas(data));
-  }, []);
-
+  const { data: fasilitasResponse = [], isLoading, isError } = useFacilities();
+  const fasilitas = fasilitasResponse?.data || [];
+  
   return (
     <>
       <Navbar />
@@ -41,10 +35,10 @@ const Facilitas = () => {
         {fasilitas.map((item, index) => (
           <CardFE
             key={index}
-            data1={item.foto}
-            data2={item.nama}
-            data3={`${item.total} Ruang`}
-            data4={item.deskripsi}
+            data1={item.image}
+            data2={item.name}
+            data3={`${item.room_total} Ruang`}
+            data4={item.description}
           />
         ))}
       </div>

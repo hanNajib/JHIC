@@ -70,3 +70,31 @@ export const debounce = (func, wait) => {
     timeout = setTimeout(later, wait);
   };
 };
+
+export const getCategoryStyle = (color) => {
+  if (!color) return {};
+
+  let hex = color.startsWith('#') ? color.slice(1) : color;
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  const isLight = brightness > 200; // makin tinggi makin putih cerah
+
+  const bgColor = `rgba(${r}, ${g}, ${b}, 0.1)`;
+
+  const borderColor = isLight
+    ? `rgba(0, 0, 0, 0.15)`
+    : `rgba(${r}, ${g}, ${b}, 0.3)`;
+
+  const textColor = isLight ? '#333' : color;
+
+  return {
+    background: bgColor,
+    color: textColor,
+    border: `1px solid ${borderColor}`,
+  };
+};

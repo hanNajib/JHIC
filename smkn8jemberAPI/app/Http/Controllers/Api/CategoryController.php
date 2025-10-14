@@ -13,7 +13,7 @@ class CategoryController extends Controller
         $query = Category::applyFilters(
             $request,
             ['type', 'name', 'color'],
-            []
+            ['type']
         );
         return $this->cursorPaginated($query, 'Categories retrieved successfully');
     }
@@ -31,7 +31,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|string|max:255',
-            'name' => 'required|string|unique:categories,name|max:255',
+            'name' => 'required|string|unique:categories,name,NULL,id,type,' . $request->type . '|max:255',
             'color' => 'nullable|string|max:7',
         ]);
 

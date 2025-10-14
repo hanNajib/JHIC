@@ -9,6 +9,7 @@ export { default as ArticleCard } from './ArticleCard';
 export { default as AnnouncementCard } from './AnnouncementCard';
 export { default as GalleryCard } from './GalleryCard';
 export { default as DropdownSelect } from './DropdownSelect';
+export { default as Multiselect } from './Multiselect';
 export { default as ImageModal } from './ImageModal';
 export { default as Loading } from './Loading';
 export { default as AdminLoading } from './AdminLoading';

@@ -106,9 +106,9 @@ const Navbar = () => {
                 <h1 className={`font-poppins font-bold text-[#424242] lg:hidden ${isSearch ? 'hidden md:flex' : 'flex'}`}>SMKN 8 JEMBER</h1>
             </div>
             <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
-                <Link to={'/'} className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Home</Link>
+                <Link to={'/'} className="active:opacity-100 active:font-semibold hover:opacity-100 opacity-75 transition-all duration-300 cursor-pointer">Home</Link>
                 <div className="relative group cursor-pointer">
-                    <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">
+                    <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">
                         Profil <FaChevronDown className="text-xs" />
                     </p>
                     <div className="absolute top-full left-0 mt-0 pt-2 w-48 bg-transparent hidden group-hover:block"></div>
@@ -125,7 +125,7 @@ const Navbar = () => {
                     </div>
                 </div>
                 <div className="relative group cursor-pointer">
-                    <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">
+                    <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">
                         Jurusan <FaChevronDown className="text-xs" />
                     </p>
                     <div className="absolute top-full left-0 mt-0 pt-2 w-48 bg-transparent hidden group-hover:block"></div>
@@ -140,7 +140,7 @@ const Navbar = () => {
                     </div>
                 </div>
                 <div className="relative group cursor-pointer">
-                    <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">
+                    <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">
                         Artikel <FaChevronDown className="text-xs" />
                     </p>
                     <div className="absolute top-full left-0 mt-0 pt-2 w-48 bg-transparent hidden group-hover:block"></div>
@@ -155,8 +155,8 @@ const Navbar = () => {
                         <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">APT</Link>
                     </div>
                 </div>
-                <Link to={'/gallery'} className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Galeri</Link>
-                <Link to={'/announcement'} className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Pengumuman</Link>
+                <Link to={'/gallery'} className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Galeri</Link>
+                <Link to={'/announcement'} className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Pengumuman</Link>
             </div>
             
             <div className="hidden lg:flex relative w-full lg:w-72">
@@ -191,8 +191,8 @@ const Navbar = () => {
                 }`}
             >
                 <div className="flex justify-center items-center flex-col font-poppins gap-2 text-center py-5 text-[#4c4c4c]">
-                    <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Home</a>
-                    <button onClick={handleMenuProfil} className="active:font-semibold hover:opacity-100 opacity-75 hover:font-semibold transition-all duration-300 flex items-center gap-1">
+                    <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Home</a>
+                    <button onClick={handleMenuProfil} className="active:font-semibold hover:opacity-100 opacity-75  transition-all duration-300 flex items-center gap-1">
                         Profil
                         {isProfil ? 
                             ( <FaChevronUp className="text-xs" />
@@ -210,7 +210,7 @@ const Navbar = () => {
                             <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Siswa</Link>
                             <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Ekstrakurikuler</Link>
                         </div>
-                    <button onClick={handleMenuJurusan} className="active:font-semibold hover:opacity-100 opacity-75 hover:font-semibold transition-all duration-300 flex items-center gap-1">
+                    <button onClick={handleMenuJurusan} className="active:font-semibold hover:opacity-100 opacity-75  transition-all duration-300 flex items-center gap-1">
                         Jurusan 
                         {isJurusan ? 
                             ( <FaChevronUp className="text-xs" />
@@ -226,7 +226,7 @@ const Navbar = () => {
                             <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Agribisnis Tanaman Pangan dan Holtikultura</Link>
                             <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Agribisnis Perbenihan Tanaman</Link>
                         </div>
-                    <button onClick={handleMenuBlog} className="active:font-semibold hover:opacity-100 opacity-75 hover:font-semibold transition-all duration-300 flex items-center gap-1">
+                    <button onClick={handleMenuBlog} className="active:font-semibold hover:opacity-100 opacity-75  transition-all duration-300 flex items-center gap-1">
                         Artikel
                         {isBlog ? 
                             ( <FaChevronUp className="text-xs" />
@@ -243,8 +243,8 @@ const Navbar = () => {
                             <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">ATPH</Link>
                             <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">APT</Link>
                         </div>
-                    <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Galeri</a>
-                    <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Pengumuman</a>
+                    <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Galeri</a>
+                    <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Pengumuman</a>
                 </div>
             </div>
         </div>

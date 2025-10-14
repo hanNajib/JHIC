@@ -7,7 +7,7 @@ export const useMajors = (filters = {}, options = {}) => {
         queryKey: [QUERY_KEYS.MAJORS.LIST, filters],
         queryFn: async () => {
             const response = await majorService.get(filters);
-            return response.data;
+            return { data: response.data, meta: response.meta, link: response.link };
         },
         staleTime: 5 * 60 * 1000,
         ...options

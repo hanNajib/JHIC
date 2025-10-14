@@ -13,11 +13,16 @@ class Gallery extends Model
 
     protected $fillable = ['title', 'description', 'image'];
     protected $table = 'gallery';
+    protected $appends = ['date'];
+    protected $with = ['categories'];
+
     public function categories()
     {
         return $this->morphToMany(Category::class, 'categorizable');
     }
-    public function getCreatedAtAttribute($value) {
-        return date("Y-m-d", strtotime($value));
+
+    public function getDateAttribute()
+    {
+        return $this->created_at ? $this->created_at->format('d F Y') : null;
     }
 }

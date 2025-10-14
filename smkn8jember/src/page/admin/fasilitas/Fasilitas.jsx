@@ -16,7 +16,7 @@ import { Button } from "../../../components/ui";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 const Fasilitas = () => {
-  const [fasilitas, setFasilitas] = useState([]);
+  const { data: fasilitas = [], isLoading } = useFacilities();
   const [selectedImage, setSelectedImage] = useState(null);
 
   // Pagiination
@@ -28,13 +28,14 @@ const Fasilitas = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(search);
   const [status, setStatus] = useState("Semua");
   const {
-    data: facility = [],
+    data: facilityResponse,
     isFetching,
     refetch,
   } = useFacilities({
     s: debouncedSearchTerm,
   });
 
+  const { data: facility = [] } = facilityResponse || {};
   // Filter dan search
   const filteredFasilitas = facility.filter((item) => {
     const matchStatus =

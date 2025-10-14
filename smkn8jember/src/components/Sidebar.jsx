@@ -146,8 +146,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const [openManajemen, setOpenManajemen] = useState(true);
 
   const artikelItems = [
-    { to: "/admin/artikel", icon: PiArticleMedium, label: "Artikel Admin" },
-    { to: "/admin/artikelUser", icon: PiArticleNyTimes, label: "Artikel User" },
+    { to: "/admin/artikel", icon: PiArticleMedium, label: "Artikel Saya" },
+    { to: "/admin/artikelUser", icon: PiArticleNyTimes, label: "Artikel Review" },
   ];
 
   const manajemenItems = [
@@ -224,7 +224,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             <NavItem
               to="/admin/gambar"
               icon={IoImagesOutline}
-              label="Gambar"
+              label="Galeri"
               isOpen={isOpen}
             />
             <NavItem

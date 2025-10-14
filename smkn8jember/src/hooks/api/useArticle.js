@@ -6,7 +6,7 @@ export const useArticles = (filters = {}, options = {}) => {
     queryKey: [QUERY_KEYS.ARTICLE.LIST, filters],
     queryFn: async () => {
       const response = await articleService.get(filters);
-      return response.data;
+      return { data: response.data, meta: response.meta, link: response.link };
     },
     staleTime: 5 * 60 * 1000,
     ...options,

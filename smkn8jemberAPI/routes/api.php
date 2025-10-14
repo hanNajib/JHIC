@@ -40,6 +40,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [AnnouncementsController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [AnnouncementsController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [AnnouncementsController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [AnnouncementsController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('facility')->group(function () {

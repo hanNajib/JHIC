@@ -6,7 +6,7 @@ export const useExtarculiculars = (filters = {}, options = {}) => {
     queryKey: [QUERY_KEYS.EXTRACURICULARS.LIST, filters],
     queryFn: async () => {
       const response = await extracurricularService.get(filters);
-      return response.data;
+      return { data: response.data, meta: response.meta, link: response.link };
     },
     staleTime: 5 * 60 * 1000,
     ...options,
