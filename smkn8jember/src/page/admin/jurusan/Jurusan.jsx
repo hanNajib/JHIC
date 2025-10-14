@@ -182,7 +182,7 @@ const Jurusan = () => {
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
                   <td className="py-2 px-4">{index + 1}</td>
-                  <td className="py-2">{major.name}</td>
+                  <td className="py-2">({major.short_name}) {major.name}</td>
                   <td className="py-2 px-4">
                     <div 
                       className="line-clamp-2"
