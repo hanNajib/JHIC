@@ -2,15 +2,11 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import CardFE from "../../components/ui/CardFE";
+import { useExtarculiculars } from "../../hooks/api/useExtarculicular";
 
 const Extracurricular = () => {
-  const [ekstra, setEkstra] = useState([]);
-
-  useEffect(() => {
-    fetch("/ekstra.json")
-      .then((res) => res.json())
-      .then((data) => setEkstra(data));
-  }, []);
+  const {data: ekstra = [], isLoading, isError} = useExtarculiculars();
+console.log(ekstra);
 
   return (
     <>
@@ -39,10 +35,10 @@ const Extracurricular = () => {
           {ekstra.map((item, index) => (
             <CardFE
               key={index}
-              data1={item.foto}
-              data2={item.nama}
-              data3={item.pembimbing}
-              data4={item.deskripsi}
+              data1={item.image}
+              data2={item.name}
+              data3={item.mentor_name}
+              data4={item.description}
             />
           ))}
         </div>

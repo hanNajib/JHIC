@@ -8,9 +8,10 @@ import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../../components/ui/ImageModal";
 import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
+import { useFacilities } from "../../../hooks/api/useFacility";
 
 const Fasilitas = () => {
-  const [fasilitas, setFasilitas] = useState([]);
+  const { data: fasilitas = [], isLoading } = useFacilities();
   const [selectedImage, setSelectedImage] = useState(null);
 
   // Pagiination
@@ -21,15 +22,15 @@ const Fasilitas = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("Semua");
 
-  useEffect(() => {
-    fetch("/fasilitas.json")
-      .then((res) => res.json())
-      .then((data) => setFasilitas(data));
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://127.0.0.1:8000/api/facility")
+  //     .then((res) => res.json())
+  //     .then((data) => setFasilitas(data.data));
+  // }, []);
 
   // Filter dan search
   const filteredFasilitas = fasilitas.filter((a) => {
-    const matchSearch = a.nama.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = a.name.toLowerCase().includes(search.toLowerCase());
     return matchSearch;
   });
 
@@ -76,12 +77,8 @@ const Fasilitas = () => {
         <table className="min-w-full bg-white ">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th className="py-2 px-4 text-left text-white min-w-full">
-                No
-              </th>
-              <th className="py-2 px-4 text-left text-white min-w-26">
-                Nama
-              </th>
+              <th className="py-2 px-4 text-left text-white min-w-full">No</th>
+              <th className="py-2 px-4 text-left text-white min-w-26">Nama</th>
               <th className="py-2 px-4 text-left text-white min-w-full">
                 Total
               </th>
@@ -100,13 +97,9 @@ const Fasilitas = () => {
             {dataHasil.map((a, _i) => (
               <tr className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
                 <td className="py-2 px-4">{_i + 1}</td>
-                <td className="py-2  ">{a.nama}</td>
-                <td className="py-2 px-4">
-                  {a.total}
-                </td>
-                <td className="py-2 px-4">
-                  {a.deskripsi}
-                </td>
+                <td className="py-2  ">{a.name}</td>
+                <td className="py-2 px-4">{a.total}</td>
+                <td className="py-2 px-4">{a.deskripsi}</td>
                 <td className="py-2 px-4">
                   <button
                     onClick={() => setSelectedImage(a.foto)}

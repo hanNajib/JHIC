@@ -169,7 +169,7 @@ export const SAMPLE_ANNOUNCEMENTS = [
   {
     id: 1,
     title: 'Kegiatan MPLS 2025',
-    content: 'Masa Pengenalan Lingkungan Sekolah (MPLS) akan dilaksanakan pada tanggal 15–17 Juli 2024 untuk seluruh siswa baru. Peserta wajib hadir pukul 06.30 dengan mengenakan seragam putih biru (SMP) atau putih abu (SMA/SMK).',
+    content: 'Masa Pengenalan Lingkungan Sekolah (MPLS) akan dilaksanakan pada tanggal 15–17 Juli 2024 untuk seluruh siswa baru. Peserta wajib hadir pukul 06.30 dengan mengenakan seragam putih biru (SMP) atau putih abu (SMA/SMK).\n\n Masa Pengenalan Lingkungan Sekolah (MPLS) akan dilaksanakan pada tanggal 15–17 Juli 2024 untuk seluruh siswa baru. Peserta wajib hadir pukul 06.30 dengan mengenakan seragam putih biru (SMP) atau putih abu (SMA/SMK).\n\n Masa Pengenalan Lingkungan Sekolah (MPLS) akan dilaksanakan pada tanggal 15–17 Juli 2024 untuk seluruh siswa baru. Peserta wajib hadir pukul 06.30 dengan mengenakan seragam putih biru (SMP) atau putih abu (SMA/SMK).',
     type: 'Info',
     date: '25 Februari 2025',
     priority: 'normal'

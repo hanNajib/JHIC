@@ -2,85 +2,25 @@ import React, { useState, useMemo } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
-import { GALLERY_CATEGORIES, SAMPLE_GALLERY } from "../../constants/schoolData";
+import { GALLERY_CATEGORIES } from "../../constants/schoolData";
 import { GalleryCard } from "../../components/ui";
-import { AnimatePresence } from "framer-motion";
-import { motion } from "framer-motion";
-import { RiCloseLargeLine } from "react-icons/ri";
-import { IoCalendarClearOutline } from "react-icons/io5";
-
-// Data sampel galeri jika tidak ada di constants
-const sampleGalleryData = [
-  {
-    id: 1,
-    title: "Lomba Kompetensi Siswa 2024",
-    image: "/assets/images/gallery-1.jpg",
-    category: "prestasi",
-    date: "2024-03-15"
-  },
-  {
-    id: 2,
-    title: "Workshop Teknologi",
-    image: "/assets/images/gallery-2.jpg",
-    category: "kegiatan",
-    date: "2024-03-10"
-  },
-  {
-    id: 3,
-    title: "Kunjungan Industri",
-    image: "/assets/images/gallery-3.jpg",
-    category: "kunjungan",
-    date: "2024-03-05"
-  },
-  {
-    id: 4,
-    title: "Laboratorium Komputer",
-    image: "/assets/images/gallery-4.jpg",
-    category: "fasilitas",
-    date: "2024-03-01"
-  },
-  {
-    id: 5,
-    title: "Upacara Bendera",
-    image: "/assets/images/gallery-5.jpg",
-    category: "kegiatan",
-    date: "2024-02-26"
-  },
-  {
-    id: 6,
-    title: "Juara Olimpiade",
-    image: "/assets/images/gallery-6.jpg",
-    category: "prestasi",
-    date: "2024-02-20"
-  },
-  {
-    id: 7,
-    title: "Praktikum Lab",
-    image: "/assets/images/gallery-7.jpg",
-    category: "fasilitas",
-    date: "2024-02-15"
-  },
-  {
-    id: 8,
-    title: "Event Sekolah",
-    image: "/assets/images/gallery-8.jpg",
-    category: "kegiatan",
-    date: "2024-02-10"
-  }
-];
+import GalleryPopUp from "../../components/ui/GalleryPopUp";
+import { useGalleries } from "../../hooks/api/useGallery";
 
 const Gallery = () => {
   const [sort, setSort] = useState("terbaru");
   const [category, setCategory] = useState("all");
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const galleryData = SAMPLE_GALLERY || sampleGalleryData;
+  // Ambil data galeri dari backend
+  const { data: galleryData = [], isLoading, isError } = useGalleries();
 
+  // Filter dan sort gallery
   const filteredGallery = useMemo(() => {
     let filtered = galleryData;
 
-    if (category && category !== "" && category !== "all") {
-      filtered = filtered.filter(item => item.category === category);
+    if (category && category !== "all") {
+      filtered = filtered.filter((item) => item.category === category);
     }
 
     // Sort by date
@@ -95,11 +35,24 @@ const Gallery = () => {
 
   const handleOpenPopup = (image) => {
     setSelectedImage(image);
-  }
+  };
 
   const handleClosePopup = () => {
     setSelectedImage(null);
+  };
+
+  if (isLoading) {
+    return <p className="text-center py-20">Memuat galeri...</p>;
   }
+
+  if (isError) {
+    return (
+      <p className="text-center py-20 text-red-500">
+        Gagal memuat galeri. Silakan coba lagi.
+      </p>
+    );
+  }
+
   return (
     <>
       <Navbar />
@@ -135,15 +88,18 @@ const Gallery = () => {
             className="w-full border border-gray-300 rounded-md py-2 pl-3 pr-20 bg-white text-gray-700"
           >
             <option value="all">Semua Kategori</option>
-            {GALLERY_CATEGORIES && GALLERY_CATEGORIES.filter(c => c.id !== 'all').map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.label}
-              </option>
-            ))}
+            {GALLERY_CATEGORIES &&
+              GALLERY_CATEGORIES.filter((c) => c.id !== "all").map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
+              ))}
           </select>
 
           <button
-            onClick={() => setSort(sort === "terbaru" ? "terlama" : "terbaru")}
+            onClick={() =>
+              setSort(sort === "terbaru" ? "terlama" : "terbaru")
+            }
             className="flex items-center justify-center gap-2 px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-md transition"
           >
             {sort === "terbaru" ? (
@@ -161,65 +117,23 @@ const Gallery = () => {
 
       {/* Gallery Grid */}
       <section className="bg-white py-10">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-16">
-          {SAMPLE_GALLERY.map((image, index) => (
-            <GalleryCard
-              key={image.id}
-              image={image}
-              onClick={() => handleOpenPopup(image)} // buka popup
-            />
-          ))}
-        </div>
+        {filteredGallery.length === 0 ? (
+          <p className="text-center text-gray-500">Tidak ada galeri ditemukan.</p>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-16">
+            {filteredGallery.map((image) => (
+              <GalleryCard
+                key={image.id}
+                image={image}
+                onClick={() => handleOpenPopup(image)}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* Popup Modal */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            className="fixed inset-0 bg-black/40 flex justify-center items-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {/* isi popup */}
-            <motion.div
-              className="bg-white rounded-lg shadow-xl max-w-3xl w-full sm:w-[90%] p-4"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
-            >
-              <div className="text-end">
-                <button
-                  onClick={handleClosePopup}
-                  className="text-gray-700 transition-all text-end hover:text-red-500 text-2xl font-bold"
-                >
-                  <RiCloseLargeLine />
-                </button>
-              </div>
-
-              <img
-                src={selectedImage.image}
-                alt={selectedImage.title}
-                className="w-full h-[420px] object-cover rounded-sm mb-4"
-              />
-
-              <div className="flex flex-col justify-center gap-1">
-                <h3 className="bg-orange-500 text-white font-medium text-sm px-3 py-0.5 w-fit rounded-4xl">Prestasi</h3>
-                <h2 className="text-2xl font-bold text-gray-800 text-start">
-                  {selectedImage.title}
-                </h2>
-                <p className="font-medium text-lg text-gray-700">Kompetisi Kelas Bersih, Lomba Antar Sekolah tingkat kabupaten</p>
-                <div className="flex items-center text-sm gap-2 text-gray-700">
-                  <IoCalendarClearOutline className="font-bold"/>
-                  <p> 5 Juli 2024</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Popup */}
+      <GalleryPopUp image={selectedImage} onClose={handleClosePopup} />
 
       <Footer />
     </>
