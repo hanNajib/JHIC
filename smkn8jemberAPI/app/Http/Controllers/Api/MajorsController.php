@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\Major;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class MajorsController extends Controller
@@ -31,14 +33,27 @@ class MajorsController extends Controller
 
         $createData = $request->only(['name', 'description', 'short_name']);
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('majors', 'public');
-            $createData['image'] = $imagePath;
+        try {
+            DB::beginTransaction();
+
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('majors', 'public');
+                $createData['image'] = $imagePath;
+            }
+
+            $major = Major::create($createData);
+            $kategori = Category::create([
+                'type' => 'all',
+                'name' => $major->short_name,
+                'color' => '#ff6900'
+            ]);
+            DB::commit();
+            return $this->created($major, 'Major created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->error('Failed to create major');
         }
 
-        $major = Major::create($createData);
-
-        return $this->created($major, 'Major created successfully');
     }
 
     public function show($id)

@@ -31,7 +31,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|string|max:255',
-            'name' => 'required|string|unique:categories,name|max:255',
+            'name' => 'required|string|unique:categories,name,NULL,id,type,' . $request->type . '|max:255',
             'color' => 'nullable|string|max:7',
         ]);
 

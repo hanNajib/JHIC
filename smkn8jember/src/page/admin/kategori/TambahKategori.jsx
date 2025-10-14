@@ -62,6 +62,7 @@ const TambahKategori = () => {
   };
 
   const kategoriOptions = [
+    { value: "all", label: "All" },
     { value: "article", label: "Article" },
     { value: "announcement", label: "Announcement" },
     { value: "gallery", label: "Gallery" },
