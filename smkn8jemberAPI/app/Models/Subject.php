@@ -11,7 +11,6 @@ class Subject extends Model
     use SoftDeletes, HasCursorPagination;
 
     protected $fillable = ['name', 'description', 'major_id'];
-    public $with = ['major'];
 
     public function major()
     {

@@ -5,9 +5,9 @@ import CardFE from "../../components/ui/CardFE";
 import { useFacilities } from "../../hooks/api/useFacility";
 
 const Facilitas = () => {
-  const { data: fasilitasResponse, isLoading, isError } = useFacilities();
+  const { data: fasilitasResponse = [], isLoading, isError } = useFacilities();
   const fasilitas = fasilitasResponse?.data || [];
-
+  
   return (
     <>
       <Navbar />

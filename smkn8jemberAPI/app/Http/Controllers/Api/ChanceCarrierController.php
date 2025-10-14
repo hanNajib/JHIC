@@ -21,12 +21,12 @@ class ChanceCarrierController extends Controller
     public function create(Request $request) {
         $request->validate([
             'name' => 'required|string',
-            'description' => 'required|string',
+            'salary' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'major_id' => 'required|exists:majors,id',
         ]);
 
-        $createData = $request->only(['name', 'description', 'major_id']);
+        $createData = $request->only(['name', 'salary', 'major_id']);
 
         if($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('extracurriculars', 'public');
@@ -51,9 +51,9 @@ class ChanceCarrierController extends Controller
     {
         $request->validate([
             'title' => 'sometimes|string',
+            'salary' => 'sometimes|required|string',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'content' => 'sometimes|required|string',
-            'category_id' => 'sometimes|exists:categories,id',
+            'major_id' => 'sometimes|exists:majors,id',
         ]);
 
         $chanceCarrier = ChanceCarrier::find($id);

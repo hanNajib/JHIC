@@ -89,9 +89,20 @@ trait HasCursorPagination
             if ($request->filled($field)) {
                 $value = $request->query($field);
 
-                // Sanitasi untuk mencegah SQL injection
                 if ($this->isValidFilterField($field)) {
-                    $query = $query->where($field, $value);
+                    if (is_array($value)) {
+                        $query = $query->where(function ($q) use ($field, $value) {
+                            $q->whereIn($field, $value);
+
+                            if (in_array('all', $value)) {
+                                $q->orWhere($field, 'all');
+                            }
+                        });
+                    } else {
+                        // kalau single value biasa
+                        $query = $query->where($field, $value)
+                            ->orWhere($field, 'all'); // biar 'all' tetap ikut juga
+                    }
                 } else {
                     Log::warning("Invalid filter field attempted: {$field}");
                 }
@@ -100,6 +111,7 @@ trait HasCursorPagination
 
         return $query;
     }
+
 
     /**
      * Apply filters untuk relasi

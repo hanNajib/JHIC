@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\MajorsController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\SchoolDataController;
 use App\Http\Controllers\Api\SchoolSettingsController;
+use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\SubjectsController;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ Route::prefix('auth')->middleware('web')->group(function () {
 
 Route::middleware('web')->group(function () {
 
-
+    Route::get('search', [SearchController::class, 'index']);
     // ----------------------------------
     // ---------- CRUD ROUTES ----------
     //-----------------------------------

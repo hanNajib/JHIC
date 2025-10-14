@@ -31,6 +31,14 @@ export const QUERY_KEYS = {
         LIST: 'categories',
         DETAIL: 'categoriesDetail',
     },
+    PARTNERS : {
+        LIST: 'partners',
+        DETAIL: 'partnersDetail',
+    },
+    CAREER : {
+        LIST: 'careers',
+        DETAIL: 'careerDetail',
+    },
     WEB_SETTINGS: {
         LIST: 'webSettings',
         DETAIL: 'webSettingDetail',

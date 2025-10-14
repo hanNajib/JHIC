@@ -125,11 +125,6 @@ const Artikel = () => {
 
   return (
     <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
-      {/* Header Title */}
-      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-        Artikel
-      </h1>
-
       <FilterAdmin
         search={search}
         setSearch={(val) => {
