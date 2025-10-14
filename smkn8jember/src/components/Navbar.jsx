@@ -136,7 +136,7 @@ const Navbar = () => {
                         <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Desain Komunikasi Visual</Link>
                         <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Teknik Komputer dan Jaringan</Link>
                         <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Agribisnis Tanaman Pangan dan Holtikultura</Link>
-                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Agribisnin Perbenihan Tanaman</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Agribisnis Perbenihan Tanaman</Link>
                     </div>
                 </div>
                 <div className="relative group cursor-pointer">
