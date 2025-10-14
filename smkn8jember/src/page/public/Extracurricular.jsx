@@ -6,7 +6,6 @@ import { useExtarculiculars } from "../../hooks/api/useExtarculicular";
 
 const Extracurricular = () => {
   const {data: ekstra = [], isLoading, isError} = useExtarculiculars();
-console.log(ekstra);
 
   return (
     <>

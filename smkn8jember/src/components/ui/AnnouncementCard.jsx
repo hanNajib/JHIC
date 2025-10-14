@@ -7,8 +7,8 @@ import parse from 'html-react-parser';
 const AnnouncementCard = ({ announcement, className = "", onClick }) => {
 
   const type = announcement.category || null;
-  const typeLabel = type.name || "Tanpa Kategori";
-  const typeColor = type.color || "#6B7280";
+  // const typeLabel = type.name || "Tanpa Kategori";
+  // const typeColor = type.color || "#6B7280";
 
   return (
     <div

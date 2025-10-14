@@ -156,7 +156,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { to: "/admin/siswa", icon: LuUserRoundPen, label: "Data Siswa" },
     { to: "/admin/fasilitas", icon: RiBuilding2Line, label: "Data Fasilitas" },
     {
-      to: "/ekstrakulikuler",
+      to: "/admin/ekstrakulikuler",
       icon: MdOutlineSportsVolleyball,
       label: "Data Ekstra",
     },

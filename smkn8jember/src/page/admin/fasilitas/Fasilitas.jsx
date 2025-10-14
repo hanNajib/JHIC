@@ -11,7 +11,9 @@ import FilterAdmin from "../../../components/ui/FilterAdmin";
 import { useFacilities } from "../../../hooks/api/useFacility";
 
 const Fasilitas = () => {
-  const { data: fasilitas = [], isLoading } = useFacilities();
+  const { data: fasilitasResponse, isLoading, isError } = useFacilities();
+  const fasilitas = fasilitasResponse?.data || [];
+
   const [selectedImage, setSelectedImage] = useState(null);
 
   // Pagiination
@@ -21,12 +23,6 @@ const Fasilitas = () => {
   // Search & Filter
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("Semua");
-
-  // useEffect(() => {
-  //   fetch("http://127.0.0.1:8000/api/facility")
-  //     .then((res) => res.json())
-  //     .then((data) => setFasilitas(data.data));
-  // }, []);
 
   // Filter dan search
   const filteredFasilitas = fasilitas.filter((a) => {

@@ -40,7 +40,7 @@ const ArticleCard = ({ article, className = '' }) => {
                     {article.title}
                 </h1>
                 <p className="text-[#5a5a5a] leading-snug py-1 line-clamp-2 font-medium">
-                    {article.description}
+                    {article.content}
                 </p>
             </div>
 
