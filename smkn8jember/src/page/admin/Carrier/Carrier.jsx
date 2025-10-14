@@ -8,15 +8,14 @@ import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../../components/ui/ImageModal";
 import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
-import { useDeletePartner, usePartners } from "../../../hooks/api/usePartner";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { useMajors } from "../../../hooks/api/useMajor";
 import { Button } from "../../../components/ui";
 import Swal from "sweetalert2";
+import { useCareers, useDeleteCareer } from "../../../hooks/api/useCareer";
 
-const Partner = () => {
-  const [guru, setGuru] = useState([]);
+const Carrier = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [filterKategori, setFilterKategori] = useState("Semua");
   const [halamanKe, setHalamanKe] = useState(1);
@@ -28,10 +27,10 @@ const Partner = () => {
   const debouncedSearchTerm = useDebounce(search, 500);
   const navigate = useNavigate();
   const {
-    data: partner = [],
+    data: career = [],
     isFetching,
     refetch,
-  } = usePartners({
+  } = useCareers({
     s: debouncedSearchTerm,
     trashed,
   });
@@ -41,14 +40,13 @@ const Partner = () => {
     majorMap[major.id] = major.name;
   });
 
-  // Filter dan search
-  const filteredData = partner.filter((a) => {
+  const filteredData = career.filter((a) => {
     const matchKategori =
       filterKategori === "Semua" || a.kategori === filterKategori;
     return matchKategori;
   });
 
-  const jumlahHalaman = Math.ceil(partner.length / jumlahPage);
+  const jumlahHalaman = Math.ceil(career.length / jumlahPage);
   const arrayTerakhir = halamanKe * jumlahPage;
   const arrayAwal = arrayTerakhir - jumlahPage;
   const dataHasil = filteredData.slice(arrayAwal, arrayTerakhir);
@@ -59,9 +57,9 @@ const Partner = () => {
     setHalamanKe(1);
   };
   const handleEdit = (id) => {
-    navigate(`/admin/partner/edit/${id}`);
+    navigate(`/admin/carrier/edit/${id}`);
   };
-   const deletePartner = useDeletePartner();
+   const deleteCareer = useDeleteCareer();
     const handleDelete = (id) => {
         Swal.fire({
           title: "Yakin ingin menghapus?",
@@ -74,7 +72,7 @@ const Partner = () => {
           cancelButtonText: "Batal",
         }).then((result) => {
           if (result.isConfirmed) {
-            deletePartner.mutate(id, {
+            deleteCareer.mutate(id, {
               onSuccess: () => {
                 refetch();
                 Swal.fire({
@@ -115,10 +113,10 @@ const Partner = () => {
           setHalamanKe(1);
         }}
         handleReset={handleReset}
-        titleHalaman="Data Partner"
-        descHalaman="Kelola data partner"
-        linkTambah="/admin/partner/tambah"
-        titleBTN="Tambah Partner"
+        titleHalaman="Data Carrier"
+        descHalaman="Kelola data carrier setelah lulus dari sekolah"
+        linkTambah="/admin/carrier/tambah"
+        titleBTN="Tambah Carrier"
         kategoriList={["Active", "Nonactive"]}
       />
 
@@ -132,10 +130,13 @@ const Partner = () => {
                 Nama
               </th>
               <th className="py-2 px-4 text-left text-white min-w-full">
+                Gaji
+              </th>
+              <th className="py-2 px-4 text-left text-white min-w-full">
                 Jurusan
               </th>
               <th className="py-2 px-4 text-left text-white min-w-full">
-                Foto
+                Icon
               </th>
               <th className="py-2 px-4 text-left text-white min-w-full">
                 Aksi
@@ -147,6 +148,7 @@ const Partner = () => {
               <tr className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
                 <td className="py-2 px-4">{_i + 1 + arrayAwal}</td>
                 <td className="py-2  ">{a.name}</td>
+                <td className="py-2  ">{a.salary}</td>
                 <td className="py-2 px-4">{majorMap[a.major_id] || "-"}</td>
                 <td className="py-2 px-4">
                   <button
@@ -200,4 +202,4 @@ const Partner = () => {
   );
 };
 
-export default Partner;
+export default Carrier;

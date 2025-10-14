@@ -5,39 +5,38 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMajors } from "../../../hooks/api/useMajor";
-import { usePartner, useUpdatePartner } from "../../../hooks/api/usePartner";
+import { useCareer, useCareers, useUpdateCareer } from "../../../hooks/api/useCareer";
 import Swal from "sweetalert2";
 
 const schema = yup.object().shape({
-  name: yup.string().required("Nama partner wajib diisi"),
+  name: yup.string().required("Nama pekerjaan wajib diisi"),
+  salary: yup.string().required("Gaji wajib diisi"),
   major_id: yup.string().required("Jurusan wajib diisi"),
   image: yup
     .mixed()
     .nullable()
-    .notRequired()
     .test("fileSize", "Ukuran gambar maksimal 2MB", (value) => {
-      if (!value) return true; 
+      if (!value || typeof value === "string") return true; // biar gambar lama gak error
       return value.size <= 2 * 1024 * 1024;
     })
     .test(
       "fileType",
       "Format gambar tidak valid (harus PNG, JPG, atau JPEG)",
       (value) => {
-        if (!value) return true; // boleh kosong saat edit
+        if (!value || typeof value === "string") return true;
         return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
       }
     ),
 });
 
-const EditPartner = () => {
+const EditCareer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: currentPartner, isLoading } = usePartner(id);
-  const updatePartner = useUpdatePartner(id);
+  const { data: currentCareer, isLoading } = useCareer(id);
+  const updateCareer = useUpdateCareer(id);
   const { data: majorDataRaw = [] } = useMajors();
 
   const [preview, setPreview] = useState(null);
-
   const {
     register,
     handleSubmit,
@@ -48,21 +47,23 @@ const EditPartner = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
+      salary: "",
       major_id: "",
       image: null,
     },
   });
 
   useEffect(() => {
-    if (currentPartner) {
+    if (currentCareer) {
       reset({
-        name: currentPartner.name || "",
-        major_id: currentPartner.major_id?.toString() || "",
+        name: currentCareer.name || "",
+        salary: currentCareer.salary || "",
+        major_id: currentCareer.major_id?.toString() || "",
         image: null,
       });
-      setPreview(currentPartner.image); // menampilkan gambar lama
+      setPreview(currentCareer.image);
     }
-  }, [currentPartner, reset]);
+  }, [currentCareer, reset]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -76,29 +77,30 @@ const EditPartner = () => {
     try {
       const formData = new FormData();
       formData.append("name", data.name);
+      formData.append("salary", data.salary);
       formData.append("major_id", data.major_id);
-      if (data.image) formData.append("image", data.image); // hanya append jika ada file baru
+      if (data.image) formData.append("image", data.image);
 
-      await updatePartner.mutateAsync(formData);
+      await updateCareer.mutateAsync(formData);
 
       await Swal.fire({
         icon: "success",
         title: "Berhasil!",
-        text: "Data partner berhasil diperbarui.",
+        text: "Data karier berhasil diperbarui.",
         confirmButtonColor: "#f97316",
         timer: 1800,
         showConfirmButton: false,
         confirmButtonText: "OK",
       });
 
-      navigate("/admin/partner"); // atau kembali ke halaman list
+      navigate("/admin/career");
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Gagal!",
         text:
           error?.response?.data?.message ||
-          "Terjadi kesalahan saat memperbarui data partner.",
+          "Terjadi kesalahan saat memperbarui data karier.",
         confirmButtonColor: "#f97316",
       });
     }
@@ -107,7 +109,7 @@ const EditPartner = () => {
   if (isLoading) {
     return (
       <div className="text-center text-gray-500 py-10">
-        Memuat data partner...
+        Memuat data karier...
       </div>
     );
   }
@@ -123,26 +125,43 @@ const EditPartner = () => {
           <IoIosArrowBack />
         </button>
         <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-          Edit Data Partner
+          Edit Data Karier
         </h1>
       </div>
 
       {/* Form */}
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
-        {/* Nama Partner */}
+        {/* Nama Pekerjaan */}
         <div className="flex flex-col">
           <label htmlFor="name" className="font-bold text-gray-800">
-            Nama Partner
+            Nama Pekerjaan
           </label>
           <input
             {...register("name")}
             type="text"
             id="name"
-            placeholder="Masukkan Nama Partner"
+            placeholder="Masukkan nama pekerjaan"
             className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg"
           />
           {errors.name && (
             <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+          )}
+        </div>
+
+        {/* Gaji */}
+        <div className="flex flex-col">
+          <label htmlFor="salary" className="font-bold text-gray-800">
+            Gaji
+          </label>
+          <input
+            {...register("salary")}
+            type="text"
+            id="salary"
+            placeholder="Masukkan gaji"
+            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg"
+          />
+          {errors.salary && (
+            <p className="text-red-500 text-sm mt-1">{errors.salary.message}</p>
           )}
         </div>
 
@@ -161,7 +180,7 @@ const EditPartner = () => {
                 value={item.id}
                 {...register("major_id")}
                 className="accent-orange-500"
-                defaultChecked={currentPartner?.major_id === item.id}
+                defaultChecked={currentCareer?.major_id === item.id}
               />
               {item.name}
             </label>
@@ -175,7 +194,7 @@ const EditPartner = () => {
 
         {/* Upload Foto */}
         <div className="w-full">
-          <label className="block font-bold mb-2 text-gray-800">Foto Partner</label>
+          <label className="block font-bold mb-2 text-gray-800">Icon</label>
           <label
             htmlFor="upload"
             className="flex flex-col items-center justify-center w-full h-fit border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50"
@@ -187,7 +206,7 @@ const EditPartner = () => {
                 className="h-64 object-contain rounded-lg"
               />
             ) : (
-              <p className="text-gray-600">Pilih foto Partner</p>
+              <p className="text-gray-600">Pilih foto karier</p>
             )}
             <input
               id="upload"
@@ -224,4 +243,4 @@ const EditPartner = () => {
   );
 };
 
-export default EditPartner;
+export default EditCareer;

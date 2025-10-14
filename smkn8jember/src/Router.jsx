@@ -79,6 +79,9 @@ import EditKategori from "./page/admin/kategori/EditKategori";
 import Partner from "./page/admin/partner/Partner";
 import TambahPartner from "./page/admin/partner/TambahPartner";
 import EditPartner from "./page/admin/partner/EditPartner";
+import Carrier from "./page/admin/Carrier/Carrier";
+import TambahCarrier from "./page/admin/Carrier/TambahCarrier";
+import EditCarrier from "./page/admin/Carrier/EditCarrier";
 
 function Router() {
   return (
@@ -156,6 +159,11 @@ function Router() {
           <Route path="partner" element={<Partner />} />
           <Route path="partner/tambah" element={<TambahPartner />} />
           <Route path="partner/edit/:id" element={<EditPartner />} />
+
+          {/* CArrier */}
+          <Route path="carrier" element={<Carrier />} />
+          <Route path="carrier/tambah" element={<TambahCarrier />} />
+          <Route path="carrier/edit/:id" element={<EditCarrier />} />
 
           {/* Struktur Organisasi */}
           <Route path="strukturorganisasi" element={<StrukturOrganisasi />} />

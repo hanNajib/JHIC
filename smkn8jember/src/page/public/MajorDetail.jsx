@@ -9,7 +9,19 @@ import {
 } from "react-icons/md";
 import { AiOutlineMobile } from "react-icons/ai";
 import { ArticleCard } from "../../components/ui";
+import { useMajor } from "../../hooks/api/useMajor";
+import { useParams } from "react-router-dom";
+import { useSubject, useSubjects } from "../../hooks/api/useSubject";
+import { usePartners } from "../../hooks/api/usePartner";
+import { useCareers } from "../../hooks/api/useCareer";
+// import { useMajor } from "../../hooks/useMajors";
+
 const MajorDetail = () => {
+  const { id } = useParams();
+  const { data: major, isLoading } = useMajor(id);
+  const { data: subjects = [] } = useSubjects({ major_id: id });
+  const { data: careers = []} = useCareers({major_id: id}); 
+  const {data: partner = []} = usePartners({major_id: id});
   const sliderRef = useRef(null);
 
   useEffect(() => {
@@ -18,12 +30,12 @@ const MajorDetail = () => {
 
     let animationFrame;
     let scrollPosition = 0;
-    const speed = 1.2; 
+    const speed = 1.2;
 
     const animate = () => {
       scrollPosition += speed;
       if (scrollPosition >= slider.scrollWidth / 2) {
-        scrollPosition = 0; 
+        scrollPosition = 0;
       }
       slider.scrollLeft = scrollPosition;
       animationFrame = requestAnimationFrame(animate);
@@ -32,36 +44,6 @@ const MajorDetail = () => {
     animationFrame = requestAnimationFrame(animate);
 
     return () => cancelAnimationFrame(animationFrame);
-  }, []);
-
-  const logoItems = [
-    { src: "/assets/images/smartlogy-logo.png", alt: "Smartlogy" },
-    { src: "/assets/images/hummatect.png", alt: "Hummatect" },
-    { src: "/assets/images/mascitra.png", alt: "Mascitra" },
-    { src: "/assets/images/ubig.png", alt: "UBIG" },
-    { src: "/assets/images/tamara.png", alt: "Tamara" },
-    { src: "/assets/images/pringapus.png", alt: "Pringapus" },
-    { src: "/assets/images/mitra1.png", alt: "Mitra 1" },
-    { src: "/assets/images/mitra2.png", alt: "Mitra 2" },
-    { src: "/assets/images/mitra3.png", alt: "Mitra 3" },
-    { src: "/assets/images/mitra4.png", alt: "Mitra 4" },
-  ];
-  const [subjects, setSubjects] = useState([]);
-  const { visibleArticles, isLoading } = useArticles();
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/mapel.json")
-      .then((res) => res.json())
-      .then((data) => {
-        if (!cancelled) setSubjects(Array.isArray(data) ? data : []);
-      })
-      .catch(() => {
-        if (!cancelled) setSubjects([]);
-      });
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   const carieers = [
@@ -86,73 +68,95 @@ const MajorDetail = () => {
       salary: "Gaji: Rp 8-25 juta/bulan",
     },
   ];
-  console.log("visibleArticles:", visibleArticles);
+
+  const logoItems = [
+    { src: "/assets/images/smartlogy-logo.png", alt: "Smartlogy" },
+    { src: "/assets/images/hummatect.png", alt: "Hummatect" },
+    { src: "/assets/images/mascitra.png", alt: "Mascitra" },
+    { src: "/assets/images/ubig.png", alt: "UBIG" },
+    { src: "/assets/images/tamara.png", alt: "Tamara" },
+    { src: "/assets/images/pringapus.png", alt: "Pringapus" },
+    { src: "/assets/images/mitra1.png", alt: "Mitra 1" },
+    { src: "/assets/images/mitra2.png", alt: "Mitra 2" },
+    { src: "/assets/images/mitra3.png", alt: "Mitra 3" },
+    { src: "/assets/images/mitra4.png", alt: "Mitra 4" },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-20 text-gray-500">
+        Memuat data jurusan...
+      </div>
+    );
+  }
 
   return (
     <>
       <Navbar />
+
+      {/* Hero */}
       <section
         className="flex flex-col items-center justify-center py-20 relative text-center"
         style={{
-          backgroundImage: "url('/assets/images/jurusan-rpl.jpg')",
+          backgroundImage: `url(${
+            major?.image || "/assets/images/jurusan-rpl.jpg"
+          })`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
         <div className="absolute inset-0 w-full h-full bg-orange-500 opacity-40 pointer-events-none z-0"></div>
-
         <div className="relative z-10 max-w-3xl">
           <h1 className="font-poppins p-2 font-bold text-white text-4xl md:text-6xl mb-4">
-            Rekayasa Perangkat Lunak
+            {major?.name}
           </h1>
         </div>
       </section>
+
+      {/* About */}
       <section className="flex flex-col gap-4 items-center justify-center bg-[#F8F9FA] px-8 py-16">
         <h1 className="font-bold text-2xl text-center md:text-start">
-          Tentang Jurusan Rekayasa Perangkat Lunak
+          Tentang Jurusan {major?.name}
         </h1>
-        <p className="  md:text-justify text-gray-700 leading-relaxed">
-          Rekayasa Perangkat Lunak (RPL) adalah salah satu program keahlian di
-          bidang Teknologi Informasi dan Komunikasi yang berfokus pada
-          pengembangan perangkat lunak atau software. Jurusan ini mempersiapkan
-          siswa agar mampu merancang, membuat, mengembangkan, dan menguji
-          aplikasi berbasis desktop, web, maupun mobile. Di RPL, siswa akan
-          belajar mulai dari dasar logika pemrograman hingga implementasi
-          aplikasi secara nyata. Kurikulum dirancang untuk mengikuti
-          perkembangan teknologi terkini dan kebutuhan industri.
+        <p className="md:text-justify text-gray-700 leading-relaxed">
+          {major?.description || "Deskripsi jurusan tidak tersedia."}
         </p>
       </section>
 
+      {/* Subjects */}
       <section className="bg-[#eeeeee] py-16 flex flex-col items-center justify-center px-2 m-8 rounded-2xl">
         <h1 className="text-2xl font-bold mb-8 relative">
           Mata Pelajaran Utama
         </h1>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-auto px-6 w-full">
-          {subjects.map((item) => (
-            <div
-              key={item.id ?? item.mapel}
-              className="bg-white p-6 rounded-lg shadow-md flex flex-col gap-2 hover:shadow-lg transition"
-            >
-              <div className="flex items-center gap-2">
-                <MdDoubleArrow size={20} className="text-[#FF6000]" />
-                <h2 className="font-bold text-lg">
-                  {item.mapel || item.title}
-                </h2>
+          {Array.isArray(subjects) && subjects.length > 0 ? (
+            subjects.map((item, idx) => (
+              <div
+                key={item.id ?? idx}
+                className="bg-white p-6 rounded-lg shadow-md flex flex-col gap-2 hover:shadow-lg transition"
+              >
+                <div className="flex items-center gap-2">
+                  <MdDoubleArrow size={20} className="text-[#FF6000]" />
+                  <h2 className="font-bold text-lg">{item.name}</h2>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {item.description}
+                </p>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                {item.deskripsi}
-              </p>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-gray-500 text-center col-span-3">
+              Mata pelajaran tidak tersedia.
+            </p>
+          )}
         </div>
       </section>
 
+      {/* Careers */}
       <section className="bg-[#F77F00]/50 py-16 flex flex-col items-center justify-center px-6 m-8 rounded-lg">
         <h1 className="font-bold text-2xl mb-10 text-white">Peluang Karier</h1>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl w-full">
-          {carieers.map((item, index) => (
+          {careers.map((item, index) => (
             <div
               key={index}
               className="flex flex-col items-center text-center gap-3"
@@ -161,7 +165,7 @@ const MajorDetail = () => {
                 {item.icon}
               </div>
               <h2 className="font-semibold text-lg text-white leading-tight">
-                {item.title}
+                {item.name}
               </h2>
               <p className="text-sm text-white">{item.salary}</p>
             </div>
@@ -169,47 +173,47 @@ const MajorDetail = () => {
         </div>
       </section>
 
-      <section className="py-16 flex flex-col items-center justify-center px-2 m-8">
-        <h1 className="font-bold text-2xl">Prestasi</h1>
+      {/* Prestasi / Articles */}
+      {major?.articles?.length > 0 && (
+        <section className="py-16 flex flex-col items-center justify-center px-2 m-8">
+          <h1 className="font-bold text-2xl">Prestasi</h1>
+          <div className="flex gap-6 w-full pt-10 pb-4 overflow-x-auto no-scrollbar">
+            {major.articles.map((article) => (
+              <div key={article.id} className="flex-none w-72 sm:w-80 md:w-96">
+                <ArticleCard article={article} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-        {/* Container scroll horizontal */}
-        <div className="flex gap-6 w-full pt-10 pb-4 overflow-x-auto no-scrollbar">
-          {visibleArticles.map((article) => (
-            <div key={article.id} className="flex-none w-72 sm:w-80 md:w-96">
-              <ArticleCard article={article} />
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Partners / Logos */}
       <h1 className="font-bold text-2xl justify-center items-center text-center mt-3">
         Bekerja sama dan dipercaya oleh
       </h1>
-      <section className="bg-[#F7BB7D] py-16 px-6 m-8 rounded-lg overflow-hidden">
+      <section className="py-16 px-6 m-8 rounded-lg overflow-hidden">
         <div
           ref={sliderRef}
           className="flex items-center gap-16 whitespace-nowrap overflow-hidden scrollbar-hide"
           style={{ scrollBehavior: "auto" }}
         >
-          {[...Array(3)].map((_, groupIndex) => (
-            <React.Fragment key={groupIndex}>
-              {logoItems.map((logo, index) => (
+          {partner.map((val, index) => (
+            <div key={index}>
                 <div
-                  key={`${groupIndex}-${index}`}
-                  className="flex-shrink-0 flex flex-col items-center gap-3 w-32 h-32"
+                  key={`${val.id}-${index}`}
+                  className="flex flex-col items-center justify-between gap-3 w-32 h-32"
                 >
-                  <div className="w-28 h-28 flex items-center justify-center bg-white rounded-xl shadow-sm">
-                    <img
-                      src={logo.src}
-                      alt={logo.alt}
-                      className="object-contain w-full h-full p-3 grayscale hover:grayscale-0 transition-all duration-300"
-                    />
-                  </div>
+                  <img
+                    src={val.image}
+                    alt={val.name}
+                    className="object-contain max-h-24 p-3 grayscale hover:grayscale-0 hover:scale-[1.1] transition-all duration-300"
+                  />
+
                   <h2 className="font-poppins font-semibold text-center text-sm">
-                    {logo.alt}
+                    {val.name}
                   </h2>
                 </div>
-              ))}
-            </React.Fragment>
+            </div>
           ))}
         </div>
       </section>

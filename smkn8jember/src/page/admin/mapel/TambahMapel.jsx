@@ -22,8 +22,9 @@ const TambahMapel = () => {
         title: "Berhasil!",
         text: "Mata pelajaran berhasil ditambahkan",
         icon: "success",
+        confirmButtonText: "OK",
       }).then(() => {
-        navigate(-1);
+        navigate('/admin/mapel');
       });
     },
     onError: (error) => {
