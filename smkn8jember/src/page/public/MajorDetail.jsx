@@ -8,12 +8,13 @@ import {
   MdWeb,
 } from "react-icons/md";
 import { AiOutlineMobile } from "react-icons/ai";
-import { ArticleCard } from "../../components/ui";
+import { ArticleCard, Loading } from "../../components/ui";
 import { useMajor } from "../../hooks/api/useMajor";
 import { useParams } from "react-router-dom";
 import { useSubject, useSubjects } from "../../hooks/api/useSubject";
 import { usePartners } from "../../hooks/api/usePartner";
 import { useCareers } from "../../hooks/api/useCareer";
+import TextLoading from "../../components/ui/TextLoading";
 // import { useMajor } from "../../hooks/useMajors";
 
 const MajorDetail = () => {
@@ -84,9 +85,7 @@ const MajorDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="text-center py-20 text-gray-500">
-        Memuat data jurusan...
-      </div>
+     <TextLoading />
     );
   }
 

@@ -124,6 +124,14 @@ const Partner = () => {
 
       {/* tabel */}
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
+         {isFetching && (
+          <div className="absolute inset-0 bg-white/80 z-10 flex items-center justify-center">
+            <div className="bg-white rounded-lg shadow-xl p-6 flex items-center gap-3">
+              <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-gray-700 font-medium">Memuat data...</span>
+            </div>
+          </div>
+        )}
         <table className="min-w-full bg-white ">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>

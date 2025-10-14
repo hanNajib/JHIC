@@ -3,7 +3,9 @@ import Card from "../ui/Card";
 import Badge from "../ui/Badge";
 import Icon from "../ui/Icon";
 import parse from "html-react-parser";
+import { useSubjects } from "../../hooks/api/useSubject";
 const ProgramCard = ({ program, className = "" }) => {
+  const { data: subjects = [] } = useSubjects({ major_id: program.id });
   return (
     <Card
       className={`flex-none w-full lg:w-1/3 ${className}`}
@@ -28,7 +30,9 @@ const ProgramCard = ({ program, className = "" }) => {
         </div>
 
         <p className="text-[#495057] leading-snug py-2">
-         {program.description ? parse(String(program.description)) : "Tanpa Deskripsi"} 
+          {program.description
+            ? parse(String(program.description))
+            : "Tanpa Deskripsi"}
         </p>
 
         <p className="font-poppins font-medium text-[#ff6000] text-sm">
@@ -36,11 +40,15 @@ const ProgramCard = ({ program, className = "" }) => {
         </p>
 
         <div className="flex flex-wrap w-full gap-2 relative">
-          {(program.subjects || []).map((subject, index) => (
-            <Badge key={index} variant="primary" size="xs">
-              {subject}
-            </Badge>
-          ))}
+          {subjects.length > 0 ? (
+            subjects.map((subject, index) => (
+              <Badge key={index} variant="primary" size="xs">
+                {subject.name || subject} {/* tergantung bentuk datanya */}
+              </Badge>
+            ))
+          ) : (
+            <span className="text-gray-500 text-sm">Belum ada data</span>
+          )}
         </div>
       </div>
     </Card>
