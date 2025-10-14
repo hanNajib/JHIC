@@ -73,6 +73,10 @@ const Footer = ({data}) => {
 
             </div>
 
+            <div className="flex justify-center bg-white md:w-2/3 lg:w-1/2 mt-14 rounded-2xl">
+                <img src="assets/images/Logo Jagoan Hosting, Komdigi, Maspion IT, Garuda Spark.png" alt=""  className=""/>
+            </div>
+
             <div className="flex border-t-2 w-full border-[#495057] justify-center items-center mt-8 text-center">
                 <p className="font-poppins text-[#A0A0A0] text-sm pt-8">© 2025 SMK Negeri 8 Jember.  Semua hak dilindungi undang-undang.</p>
             </div>

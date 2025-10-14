@@ -7,6 +7,8 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronUp } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { MdOutlineSearch } from "react-icons/md";
 
@@ -16,18 +18,54 @@ const Navbar = () => {
     const [isSearch, setIsSearch] = useState(false);
 
     const handleToggleOpen = () => {
-  setIsOpen((prev) => {
-    if (!prev) setIsSearch(false); // kalau mau buka open, tutup search
-    return !prev;
-  });
-};
+    setIsOpen((prev) => {
+        if (!prev) setIsSearch(false); // kalau mau buka open, tutup search
+        if (!prev) setIsProfil(false); // kalau mau buka open, tutup search
+        if(!prev) setIsJurusan(false);
+        if(!prev) setIsBlog(false);
+        return !prev;
+    });
+    };
 
-const handleToggleSearch = () => {
-  setIsSearch((prev) => {
-    if (!prev) setIsOpen(false); // kalau mau buka search, tutup open
-    return !prev;
-  });
-};
+    const handleToggleSearch = () => {
+    setIsSearch((prev) => {
+        if (!prev) setIsOpen(false); // kalau mau buka search, tutup open
+        if (!prev) setIsProfil(false); // kalau mau buka open, tutup search
+        if(!prev) setIsJurusan(false);
+        if(!prev) setIsBlog(false);
+        return !prev;
+    });
+    };
+
+
+    const [isProfil, setIsProfil] = useState(false);
+    const [isJurusan, setIsJurusan] = useState(false);
+    const [isBlog, setIsBlog] = useState(false);
+
+    const handleMenuProfil = () => {
+        setIsProfil((prev) => {
+            if(!prev) setIsJurusan(false);
+            if(!prev) setIsBlog(false);
+            return !prev;
+        });
+    };
+    
+    const handleMenuJurusan = () => {
+        setIsJurusan((prev) => {
+            if(!prev) setIsProfil(false);
+            if(!prev) setIsBlog(false);
+            return !prev;
+        });
+    };
+
+    const handleMenuBlog = () => {
+        setIsBlog((prev) => {
+            if(!prev) setIsProfil(false);
+            if(!prev) setIsJurusan(false);
+            return !prev;
+        });
+    };
+
 
     // useEffect(() => {
     //     if (isOpen) {
@@ -68,12 +106,57 @@ const handleToggleSearch = () => {
                 <h1 className={`font-poppins font-bold text-[#424242] lg:hidden ${isSearch ? 'hidden md:flex' : 'flex'}`}>SMKN 8 JEMBER</h1>
             </div>
             <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
-                <Link to={'/'} className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Home</Link>
-                <Link to={'/profil'} className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Profil</Link>
-                <Link className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Jurusan</Link>
-                <Link className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Artikel</Link>
-                <Link to={'/gallery'} className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Galeri</Link>
-                <Link to={'/announcement'} className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Pengumuman</Link>
+                <Link to={'/'} className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Home</Link>
+                <div className="relative group cursor-pointer">
+                    <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">
+                        Profil <FaChevronDown className="text-xs" />
+                    </p>
+                    <div className="absolute top-full left-0 mt-0 pt-2 w-48 bg-transparent hidden group-hover:block"></div>
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md hidden group-hover:flex flex-col text-[#4c4c4c]/75 z-50">
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition ">Sejarah Sekolah</Link>
+                        <Link to="/profil/struktur" className="px-4 py-2 hover:bg-gray-100 transition">Visi dan Misi</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Struktur Sekolah</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Kepala Sekolah</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Fasilitas Sekolah</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Data Guru</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Data Karyawan</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Data Siswa</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Ekstrakurikuler</Link>
+                    </div>
+                </div>
+                <div className="relative group cursor-pointer">
+                    <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">
+                        Jurusan <FaChevronDown className="text-xs" />
+                    </p>
+                    <div className="absolute top-full left-0 mt-0 pt-2 w-48 bg-transparent hidden group-hover:block"></div>
+                    <div className="absolute top-full left-0 mt-2 w-80 bg-white shadow-lg rounded-md hidden group-hover:flex flex-col text-[#4c4c4c]/75 z-50">
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">Teknik Kendaraan Ringan</Link>
+                        <Link to="/profil/struktur" className="px-4 py-2 hover:bg-gray-100 transition">Teknik Sepeda Motor</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Rekayasa Perangkat Lunak</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Desain Komunikasi Visual</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Teknik Komputer dan Jaringan</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Agribisnis Tanaman Pangan dan Holtikultura</Link>
+                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Agribisnis Perbenihan Tanaman</Link>
+                    </div>
+                </div>
+                <div className="relative group cursor-pointer">
+                    <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">
+                        Artikel <FaChevronDown className="text-xs" />
+                    </p>
+                    <div className="absolute top-full left-0 mt-0 pt-2 w-48 bg-transparent hidden group-hover:block"></div>
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md hidden group-hover:flex flex-col text-[#4c4c4c]/75 z-50">
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">Semua Artikel</Link>
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">TKR</Link>
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">TSM</Link>
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">RPL</Link>
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">DKV</Link>
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">TKJ</Link>
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">ATPH</Link>
+                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">APT</Link>
+                    </div>
+                </div>
+                <Link to={'/gallery'} className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Galeri</Link>
+                <Link to={'/announcement'} className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Pengumuman</Link>
             </div>
             
             <div className="hidden lg:flex relative w-full lg:w-72">
@@ -107,13 +190,61 @@ const handleToggleSearch = () => {
                 isOpen ? 'translate-y-0' : '-translate-y-full'
                 }`}
             >
-                <div className="flex flex-col font-poppins gap-2 text-center py-5 text-[#4c4c4c]">
-                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Home</a>
-                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Profil</a>
-                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Jurusan</a>
-                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Blog</a>
-                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Galeri</a>
-                <a href="" className="active:font-bold hover:opacity-100 opacity-75 hover:font-medium transition-all duration-300">Pengumuman</a>
+                <div className="flex justify-center items-center flex-col font-poppins gap-2 text-center py-5 text-[#4c4c4c]">
+                    <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Home</a>
+                    <button onClick={handleMenuProfil} className="active:font-semibold hover:opacity-100 opacity-75 hover:font-semibold transition-all duration-300 flex items-center gap-1">
+                        Profil
+                        {isProfil ? 
+                            ( <FaChevronUp className="text-xs" />
+                            ) : (<FaChevronDown className="text-xs" />) 
+                        }
+                    </button>
+                        <div className={`mt-2 w-72 bg-white shadow-lg rounded-md z-50 flex flex-col transition-all duration-300 text-[#4c4c4c]/75 ${isProfil ? 'flex' : 'hidden'}`}>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Sejarah Sekolah</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Visi dan Misi</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Struktur Sekolah</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Kepala Sekolah</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Fasilitas Sekolah</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Guru</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Karyawan</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Siswa</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Ekstrakurikuler</Link>
+                        </div>
+                    <button onClick={handleMenuJurusan} className="active:font-semibold hover:opacity-100 opacity-75 hover:font-semibold transition-all duration-300 flex items-center gap-1">
+                        Jurusan 
+                        {isJurusan ? 
+                            ( <FaChevronUp className="text-xs" />
+                            ) : (<FaChevronDown className="text-xs" />) 
+                        }
+                    </button>
+                        <div className={`mt-2 w-72 bg-white shadow-lg rounded-md z-50 flex flex-col transition-all duration-300 text-[#4c4c4c]/75 ${isJurusan ? 'flex' : 'hidden'}`}>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Teknik Kendaraan Ringan</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Teknik Sepeda Motor</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Rekayasa Perangkat Lunak</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Desain Komunikasi Visual</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Teknik Komputer dan Jaringan</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Agribisnis Tanaman Pangan dan Holtikultura</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Agribisnis Perbenihan Tanaman</Link>
+                        </div>
+                    <button onClick={handleMenuBlog} className="active:font-semibold hover:opacity-100 opacity-75 hover:font-semibold transition-all duration-300 flex items-center gap-1">
+                        Artikel
+                        {isBlog ? 
+                            ( <FaChevronUp className="text-xs" />
+                            ) : (<FaChevronDown className="text-xs" />) 
+                        }
+                    </button>
+                        <div className={`mt-2 w-72 bg-white shadow-lg rounded-md z-50 flex flex-col transition-all duration-300 text-[#4c4c4c]/75 ${isBlog ? 'flex' : 'hidden'}`}>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Semua Artikel</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">TKR</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">TSM</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">RPL</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">DKV</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">TKJ</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">ATPH</Link>
+                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">APT</Link>
+                        </div>
+                    <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Galeri</a>
+                    <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100 hover:font-semibold opacity-75 transition-all duration-300 cursor-pointer">Pengumuman</a>
                 </div>
             </div>
         </div>
