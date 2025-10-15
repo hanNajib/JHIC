@@ -9,6 +9,7 @@ import {
   AnnouncementsSection,
   GallerySection,
 } from '../../components/sections';
+import SambutanSection from '../../components/sections/SambutanSection';
 
 const HomePage = () => {
   return (
@@ -18,6 +19,7 @@ const HomePage = () => {
       <main>
         <HeroSection />
         <AboutSection />
+        {/* <SambutanSection /> */}
         <ProgramsSection />
         <ArticlesSection />
         <AnnouncementsSection />
