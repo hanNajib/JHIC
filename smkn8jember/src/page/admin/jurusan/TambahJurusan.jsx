@@ -106,11 +106,10 @@ const TambahJurusan = () => {
             type="text"
             {...register("name")}
             placeholder="Masukkan Nama Jurusan"
-            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
-              errors.name
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${errors.name
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-            }`}
+              }`}
           />
           {errors.name && (
             <span className="text-red-500 text-sm mt-1">{errors.name.message}</span>
@@ -124,12 +123,11 @@ const TambahJurusan = () => {
             id="short_name"
             type="text"
             {...register("short_name")}
-            placeholder="Masukkan Nama Jurusan"
-            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
-              errors.short_name
+            placeholder="Masukkan Nama Singkat Jurusan"
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${errors.short_name
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-            }`}
+              }`}
           />
           {errors.short_name && (
             <span className="text-red-500 text-sm mt-1">{errors.short_name.message}</span>
@@ -167,11 +165,10 @@ const TambahJurusan = () => {
           </label>
           <label
             htmlFor="upload"
-            className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
-              preview
+            className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer transition-colors ${preview
                 ? "border-orange-300 bg-orange-50"
                 : "border-gray-300 bg-white hover:bg-gray-50"
-            }`}
+              }`}
           >
             {preview ? (
               <div className="relative p-4">

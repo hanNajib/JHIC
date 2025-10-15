@@ -22,7 +22,7 @@ class Article extends Model
         'views',
         'author_id'
     ];
-    protected $with = ['author', 'categories'];
+    protected $with = ['author'];
 
     public function author()
     {
@@ -62,5 +62,18 @@ class Article extends Model
     public static function whereSlug($slug)
     {
         return self::where('slug', $slug);
+    }
+
+    public function setSlugAttribute($value)
+    {
+        $slug = Str::slug($value);
+        $count = 1;
+        
+        while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
+            $slug = Str::slug($value) . '-' . $count;
+            $count++;
+        }
+        
+        $this->attributes['slug'] = $slug;
     }
 }

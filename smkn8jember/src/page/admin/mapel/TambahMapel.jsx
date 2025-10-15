@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMajors } from "../../../hooks/api/useMajor";
 import * as yup from "yup";
+import { Multiselect } from "../../../components/ui";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useCreateSubject } from "../../../hooks/api/useSubject";
@@ -35,7 +36,14 @@ const TambahMapel = () => {
       });
     }
   });
-  const { data: majors } = useMajors();
+  const { data: majorsDataRaw = [] } = useMajors();
+
+  const majorsData = majorsDataRaw?.data || [];
+  const majorOptions = majorsData.map((major) => ({
+    value: major.id?.toString(),
+    label: major.name,
+    color: major.color || "#FF6000",
+  }));
 
   const {
     register,
@@ -55,6 +63,7 @@ const TambahMapel = () => {
 
   const [preview, setPreview] = useState(null);
 
+  const selectedMajor = watch("major_id");
   const descriptionValue = watch("description");
 
   const handleFileChange = (e) => {
@@ -138,22 +147,16 @@ const TambahMapel = () => {
         </div>
 
         <div className="flex flex-col">
-          <label className="font-bold text-gray-800 mb-2">Jurusan <span className="text-red-500">*</span></label>
-          <select
-            {...register("major_id")}
-            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${errors.major_id
-                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-              }`}
-          >
-            <option value="">Pilih Jurusan</option>
-            {majors && majors.map((major) => (
-              <option key={major.id} value={major.id}>{major.name}</option>
-            ))}
-          </select>
-          {errors.major_id && (
-            <span className="text-red-500 text-sm mt-1">{errors.major_id.message}</span>
-          )}
+          <Multiselect
+            label="Jurusan"
+            required={true}
+            options={majorOptions}
+            value={selectedMajor}
+            onChange={(value) => setValue("major_id", value)}
+            placeholder="Pilih jurusan..."
+            error={errors.major_id?.message}
+            multiple={false}
+          />
         </div>
 
         <div className="flex gap-3 justify-end mt-6">

@@ -1,39 +1,48 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
+import { BiRefresh } from "react-icons/bi";
 import { CiImageOn } from "react-icons/ci";
 import ImageModal from "../../../components/ui/ImageModal";
 import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
+import { useNavigate } from "react-router-dom";
+import { useDebounce } from "../../../hooks/useDebounce";
 import {
   useExtarculiculars,
   useDeleteExtarculicular,
+  useRestoreExtarculicular,
 } from "../../../hooks/api/useExtarculicular";
 import { Button } from "../../../components/ui";
-import { Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Ekstra = () => {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [halamanKe, setHalamanKe] = useState(1);
-  const [jumlahPage, setJumlahPage] = useState(5);
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("Semua");
+  const [cursor, setCursor] = useState(null);
+  const [jumlahPage, setJumlahPage] = useState(5);
+  const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(search);
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearchTerm(search), 500);
-    return () => clearTimeout(handler);
-  }, [search]);
+  const debouncedSearchTerm = useDebounce(search, 500);
+  const navigate = useNavigate();
 
   const {
-    data: extra = [],
+    data: extraResponse,
     isFetching,
     refetch,
   } = useExtarculiculars({
     s: debouncedSearchTerm,
+    trashed: softDeleteFilter === "deleted",
+    limit: jumlahPage,
+    cursor: cursor,
   });
+  
+  const extra = extraResponse?.data || [];
+  const meta = extraResponse?.meta || {};
+  
   const deleteExtraculicular = useDeleteExtarculicular();
+  const restoreExtraculicular = useRestoreExtarculicular();
   const handleDelete = (id) => {
       Swal.fire({
         title: "Yakin ingin menghapus?",
@@ -70,48 +79,78 @@ const Ekstra = () => {
       });
     };
 
-  const filteredEkstra = extra.filter((item) => {
-    const matchStatus =
-      status === "Semua" || item.status?.toLowerCase() === status.toLowerCase();
-    const matchSearch =
-      !search || item.name.toLowerCase().includes(search.toLowerCase());
-    return matchStatus && matchSearch;
-  });
-
-  const jumlahHalaman = Math.ceil(filteredEkstra.length / jumlahPage);
-  const arrayTerakhir = halamanKe * jumlahPage;
-  const arrayAwal = arrayTerakhir - jumlahPage;
-  const dataHasil = filteredEkstra.slice(arrayAwal, arrayTerakhir);
-  const navigate = useNavigate();
   const handleEdit = (id) => {
     navigate(`/admin/ekstrakulikuler/edit/${id}`);
   };
+
+  const handleRestore = (ekstra) => {
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data akan diaktifkan kembali!",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, aktifkan!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        restoreExtraculicular.mutateAsync(ekstra.id);
+        refetch();
+        Swal.fire("Diaktifkan!", "Data telah diaktifkan.", "success");
+      }
+    });
+  };
+
   const handleReset = () => {
     setSearch("");
-    setStatus("Semua");
-    setHalamanKe(1);
+    setSoftDeleteFilter("active");
+    setCursor(null);
+    setCurrentPage(1);
+  };
+
+  const handleNextPage = () => {
+    if (meta.next_cursor) {
+      setCursor(meta.next_cursor);
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (meta.previous_cursor) {
+      setCursor(meta.previous_cursor);
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  const handleFirstPage = () => {
+    setCursor(null);
+    setCurrentPage(1);
   };
 
   return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-4 w-auto h-fit bg-white rounded-lg p-5">
-      {/* Filter */}
+    <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
       <FilterAdmin
-        filterKategori={status}
-        setFilterKategori={(value) => {
-          setStatus(value);
-          setHalamanKe(1);
-        }}
         search={search}
-        setSearch={(value) => {
-          setSearch(value);
-          setHalamanKe(1);
+        setSearch={(val) => {
+          setSearch(val);
+          setCursor(null);
+          setCurrentPage(1);
         }}
         handleReset={handleReset}
         titleHalaman="Data Ekstrakurikuler"
         descHalaman="Kelola data ekstrakurikuler"
-        linkTambah="admin/ekstrakulikuler/tambah"
+        linkTambah="/admin/ekstrakulikuler/tambah"
         titleBTN="Tambah Ekstrakurikuler"
-        kategoriList={["Active", "Nonactive"]}
+        handleRefresh={() => refetch()}
+        
+        hasSoftDelete={true}
+        softDeleteFilter={softDeleteFilter}
+        setSoftDeleteFilter={(val) => {
+          setSoftDeleteFilter(val);
+          setCursor(null);
+          setCurrentPage(1);
+        }}
       />
 
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
@@ -133,19 +172,19 @@ const Ekstra = () => {
                   Memuat data...
                 </td>
               </tr>
-            ) : dataHasil.length === 0 ? (
+            ) : extra.length === 0 ? (
               <tr>
                 <td colSpan="6" className="text-center py-5">
                   Tidak ada data ekstrakurikuler.
                 </td>
               </tr>
             ) : (
-              dataHasil.map((a, _i) => (
+              extra.map((a, _i) => (
                 <tr
                   key={a.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="py-2 px-4">{_i + 1 + arrayAwal}</td>
+                  <td className="py-2 px-4">{_i + 1}</td>
                   <td className="py-2 px-4">{a.name}</td>
                   <td className="py-2 px-4">{a.mentor_name}</td>
                   <td className="py-2 px-4">{a.description}</td>
@@ -160,15 +199,23 @@ const Ekstra = () => {
                   </td>
                   <td className="py-2 px-4">
                     <div className="flex gap-2 justify-center">
-                      <Button
-                        onClick={() => handleEdit(a.id)}
-                        className="text-center text-3xl bg-green-500 p-2 rounded-2xl shadow-lg text-white hover:bg-green-600"
+                      {a.deleted_at === null && (
+                        <Button
+                          onClick={() => handleEdit(a.id)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
+                        >
+                          <FaRegEdit className="text-lg" />
+                        </Button>
+                      )}
+                      <button
+                        onClick={() => a.deleted_at === null ? handleDelete(a.id) : handleRestore(a)}
+                        className={`${a.deleted_at === null
+                          ? 'bg-red-500 hover:bg-red-600'
+                          : 'bg-green-500 hover:bg-green-600'
+                          } text-white p-2 rounded transition duration-200`}
                       >
-                        <FaRegEdit className="text-lg" />
-                      </Button>
-                      <Button onClick={() => handleDelete(a.id)}  className="text-center text-3xl bg-red-500 p-2 rounded-2xl shadow-lg text-white hover:bg-red-600">
-                        <MdDeleteOutline className="text-lg" />
-                      </Button>
+                        {a.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -179,14 +226,21 @@ const Ekstra = () => {
       </div>
 
       <PaginationAdmin
-        currentPage={halamanKe}
-        totalPages={jumlahHalaman}
+        currentPage={1}
+        totalPages={1}
         perPage={jumlahPage}
-        onPageChange={(page) => setHalamanKe(page)}
+        onPageChange={() => { }}
         onPerPageChange={(value) => {
           setJumlahPage(value);
-          setHalamanKe(1);
+          setCursor(null);
+          setCurrentPage(1);
         }}
+        hasNextPage={meta.has_more_pages}
+        hasPrevPage={!!meta.previous_cursor}
+        onNextPage={handleNextPage}
+        onPrevPage={handlePrevPage}
+        onFirstPage={handleFirstPage}
+        currentCursorPage={currentPage}
       />
 
       {/* Modal Gambar */}

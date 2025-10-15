@@ -13,7 +13,7 @@ class PartnersController extends Controller
     use ApiResponse;
     public function index(Request $request)
     {
-         $partner = Partner::applyFilters(
+         $partner = Partner::with('major')->applyFilters(
             $request,
             ['name'],
             ['major_id']

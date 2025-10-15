@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMajors } from "../../../hooks/api/useMajor";
-import { useCareer, useCareers, useUpdateCareer } from "../../../hooks/api/useCareer";
+import { useCareer, useUpdateCareer } from "../../../hooks/api/useCareer";
+import { Multiselect } from "../../../components/ui";
 import Swal from "sweetalert2";
 
 const schema = yup.object().shape({
@@ -16,7 +17,7 @@ const schema = yup.object().shape({
     .mixed()
     .nullable()
     .test("fileSize", "Ukuran gambar maksimal 2MB", (value) => {
-      if (!value || typeof value === "string") return true; // biar gambar lama gak error
+      if (!value || typeof value === "string") return true; 
       return value.size <= 2 * 1024 * 1024;
     })
     .test(
@@ -32,9 +33,35 @@ const schema = yup.object().shape({
 const EditCareer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: currentCareer, isLoading } = useCareer(id);
-  const updateCareer = useUpdateCareer(id);
-  const { data: majorDataRaw = [] } = useMajors();
+  const { data: currentCareer, isLoading, error } = useCareer(id);
+  
+  const updateCareer = useUpdateCareer(id, {
+    onSuccess: () => {
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Karier berhasil diperbarui",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate('/admin/career');
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        title: "Gagal!",
+        text: error.response?.data?.message || "Terjadi kesalahan saat memperbarui karier",
+        icon: "error",
+      });
+    }
+  });
+  
+  const { data: majorsDataRaw = [] } = useMajors();
+  const majorsData = majorsDataRaw?.data || [];
+  const majorOptions = majorsData.map((major) => ({
+    value: major.id?.toString(),
+    label: major.name,
+    color: major.color || "#FF6000",
+  }));
 
   const [preview, setPreview] = useState(null);
   const {
@@ -43,6 +70,7 @@ const EditCareer = () => {
     formState: { errors, isSubmitting },
     reset,
     setValue,
+    watch,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -53,56 +81,46 @@ const EditCareer = () => {
     },
   });
 
+  const selectedMajor = watch("major_id");
+
   useEffect(() => {
     if (currentCareer) {
-      reset({
-        name: currentCareer.name || "",
-        salary: currentCareer.salary || "",
-        major_id: currentCareer.major_id?.toString() || "",
-        image: null,
-      });
+      console.log("Setting form values:", currentCareer); // Debug log
+      setValue("name", currentCareer.name || "");
+      setValue("salary", currentCareer.salary || "");
+      setValue("major_id", currentCareer.major_id?.toString() || "");
+      setValue("image", null);
       setPreview(currentCareer.image);
     }
-  }, [currentCareer, reset]);
+  }, [currentCareer, setValue]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setValue("image", file);
     if (file) {
       setPreview(URL.createObjectURL(file));
-      setValue("image", file);
+    } else {
+      setPreview(null);
     }
   };
 
   const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("salary", data.salary);
-      formData.append("major_id", data.major_id);
-      if (data.image) formData.append("image", data.image);
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("salary", data.salary);
+    formData.append("major_id", data.major_id);
+    if (data.image) formData.append("image", data.image);
 
-      await updateCareer.mutateAsync(formData);
+    await updateCareer.mutateAsync(formData);
+  };
 
-      await Swal.fire({
-        icon: "success",
-        title: "Berhasil!",
-        text: "Data karier berhasil diperbarui.",
-        confirmButtonColor: "#f97316",
-        timer: 1800,
-        showConfirmButton: false,
-        confirmButtonText: "OK",
-      });
-
-      navigate("/admin/career");
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Gagal!",
-        text:
-          error?.response?.data?.message ||
-          "Terjadi kesalahan saat memperbarui data karier.",
-        confirmButtonColor: "#f97316",
-      });
+  const handleReset = () => {
+    if (currentCareer) {
+      setValue("name", currentCareer.name || "");
+      setValue("salary", currentCareer.salary || "");
+      setValue("major_id", currentCareer.major_id?.toString() || "");
+      setValue("image", null);
+      setPreview(currentCareer.image);
     }
   };
 
@@ -114,13 +132,35 @@ const EditCareer = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center text-red-500">
+          <h3 className="text-lg font-semibold mb-2">Error Loading Data</h3>
+          <p>{error?.message || "Gagal memuat data karier"}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentCareer && !isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold mb-2">Data Tidak Ditemukan</h3>
+          <p className="text-gray-600">Karier dengan ID tersebut tidak ditemukan.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 text-4xl text-center p-1 rounded-4xl text-white"
+          className="bg-orange-500 cursor-pointer text-3xl lg:text-4xl text-center p-2 rounded-lg text-white hover:bg-orange-600 transition-colors"
         >
           <IoIosArrowBack />
         </button>
@@ -170,21 +210,14 @@ const EditCareer = () => {
           <label className="font-bold text-gray-800 mb-2">
             Jurusan <span className="text-red-500">*</span>
           </label>
-          {majorDataRaw.map((item) => (
-            <label
-              key={item.id}
-              className="flex items-center gap-2 text-sm font-medium text-gray-600"
-            >
-              <input
-                type="radio"
-                value={item.id}
-                {...register("major_id")}
-                className="accent-orange-500"
-                defaultChecked={currentCareer?.major_id === item.id}
-              />
-              {item.name}
-            </label>
-          ))}
+          <Multiselect
+            options={majorOptions}
+            value={selectedMajor}
+            onChange={(value) => setValue("major_id", value)}
+            placeholder="Pilih jurusan"
+            isSearchable
+            multiple={false}
+          />
           {errors.major_id && (
             <span className="text-red-500 text-sm mt-1">
               {errors.major_id.message}
@@ -222,20 +255,21 @@ const EditCareer = () => {
         </div>
 
         {/* Tombol */}
-        <div className="flex gap-3 justify-end">
-          <button
-            type="submit"
-            className="bg-orange-500 text-white font-semibold py-1 text-sm md:text-base w-24 rounded-4xl hover:bg-orange-600"
-            disabled={isSubmitting}
-          >
-            Save
-          </button>
+        <div className="flex gap-3 justify-end mt-6">
           <button
             type="button"
-            onClick={() => reset()}
-            className="py-1 w-24 text-orange-500 text-sm md:text-base font-bold border-[1.9px] border-orange-500 rounded-4xl hover:bg-orange-500 hover:text-white transition duration-300"
+            onClick={handleReset}
+            className="py-2 px-6 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300"
+            disabled={isSubmitting}
           >
             Reset
+          </button>
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </form>

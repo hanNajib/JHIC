@@ -12,10 +12,8 @@ const Gallery = () => {
   const [category, setCategory] = useState("all");
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Ambil data galeri dari backend
   const { data: galleryData = [], isLoading, isError } = useGalleries();
 
-  // Filter dan sort gallery
   const filteredGallery = useMemo(() => {
     let filtered = galleryData;
 
@@ -23,7 +21,6 @@ const Gallery = () => {
       filtered = filtered.filter((item) => item.category === category);
     }
 
-    // Sort by date
     filtered = filtered.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);

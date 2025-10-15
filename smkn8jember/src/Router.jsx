@@ -98,7 +98,7 @@ function Router() {
           {/* Artikel */}
           <Route path="artikel" element={<Artikel />} />
           <Route path="artikel/tambah" element={<TambahArtikel />} />
-          <Route path="artikel/edit/:id" element={<EditArtikel />} />
+          <Route path="artikel/edit/:slug" element={<EditArtikel />} />
           <Route path="artikelUser" element={<ArtikelUser />} />
           <Route path="artikelUser/verifikasi" element={<ArtikelUserVerifikasi />} />
           <Route path="artikelUser/edit/:id" element={<EditArtikel />} />
@@ -187,8 +187,7 @@ function Router() {
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/major/detail" element={<MajorDetail />} />
-        <Route path="/major/:id" element={<MajorDetail />} />
+        <Route path="/major/:name" element={<MajorDetail />} />
         <Route path="/detail" element={<DetailArtikel />} />
         <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/student-data" element={<StudentData />} />

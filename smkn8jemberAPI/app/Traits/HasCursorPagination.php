@@ -86,31 +86,39 @@ trait HasCursorPagination
     protected function applyDynamicFilters($query, Request $request, array $filters)
     {
         foreach ($filters as $field) {
-            if ($request->filled($field)) {
-                $value = $request->query($field);
+            if (!$request->has($field)) {
+                continue;
+            }
 
-                if ($this->isValidFilterField($field)) {
-                    if (is_array($value)) {
-                        $query = $query->where(function ($q) use ($field, $value) {
-                            $q->whereIn($field, $value);
+            $value = $request->query($field);
 
-                            if (in_array('all', $value)) {
-                                $q->orWhere($field, 'all');
-                            }
-                        });
-                    } else {
-                        // kalau single value biasa
-                        $query = $query->where($field, $value)
-                            ->orWhere($field, 'all'); // biar 'all' tetap ikut juga
+            if (!$this->isValidFilterField($field)) {
+                continue;
+            }
+
+            if (is_array($value)) {
+                $query = $query->where(function ($q) use ($field, $value) {
+                    $q->whereIn($field, $value);
+                    if (in_array('all', $value)) {
+                        $q->orWhere($field, 'all');
                     }
-                } else {
-                    Log::warning("Invalid filter field attempted: {$field}");
-                }
+                });
+            }
+            elseif (is_string($value) && str_contains($value, ',')) {
+                $values = array_map('trim', explode(',', $value));
+                $query = $query->whereIn($field, $values);
+            }
+            else {
+                $query = $query->where(function ($q) use ($field, $value) {
+                    $q->where($field, $value)
+                        ->orWhere($field, 'all');
+                });
             }
         }
 
         return $query;
     }
+
 
 
     /**

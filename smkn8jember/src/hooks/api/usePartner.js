@@ -7,7 +7,7 @@ export const usePartners = (filters = {}, options = {}) => {
         queryKey: [QUERY_KEYS.PARTNERS.LIST, filters],
         queryFn: async () => {
             const response = await partnerService.get(filters);
-            return response.data;
+            return {data: response.data, meta: response.meta, link: response.link};
         },
         staleTime: 5 * 60 * 1000,
         ...options

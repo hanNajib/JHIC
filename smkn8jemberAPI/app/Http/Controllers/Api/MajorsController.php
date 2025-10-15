@@ -22,6 +22,15 @@ class MajorsController extends Controller
         return $this->cursorPaginated($major, 'Majors retrieved successfully');
     }
 
+    public function getByShortName($short_name)
+    {
+        $major = Major::where('short_name', $short_name)->with('subjects')->first();
+        if (!$major) {
+            return $this->notFound('Major not found');
+        }
+        return $this->success($major, 'Major retrieved successfully');
+    }
+
     public function create(Request $request)
     {
         $request->validate([
@@ -43,7 +52,7 @@ class MajorsController extends Controller
 
             $major = Major::create($createData);
             $kategori = Category::create([
-                'type' => 'all',
+                'type' => 'major',
                 'name' => $major->short_name,
                 'color' => '#ff6900'
             ]);

@@ -26,6 +26,18 @@ export const useMajor = (id, options = {}) => {
     })
 }
 
+export const useMajorByName = (name, options = {}) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.MAJORS.DETAIL, name],
+        queryFn: async () => {
+            const response = await majorService.getByShortName(name);
+            return response.data;
+        },
+        staleTime: 5 * 60 * 1000,
+        ...options
+    })
+}
+
 export const useCreateMajor = (options = {}) => {
     const queryClient = useQueryClient();
 

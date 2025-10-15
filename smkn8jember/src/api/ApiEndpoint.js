@@ -1,4 +1,6 @@
 import { apiClient, axiosClient } from "./ApiClient";
+import { updateStatus } from "./services/admin/ArticleService";
+import { getByShortName } from "./services/admin/MajorService";
 
 export const AuthApi = {
   csrf: () => axiosClient.get("/sanctum/csrf-cookie"),
@@ -47,6 +49,7 @@ export const FacilityApi = {
 export const MajorsApi = {
   get: (params) => apiClient.get("/majors", { params }),
   getById: (id) => apiClient.get(`/majors/${id}`),
+  getByShortName: (short_name) => apiClient.get(`/majors/shortname/${short_name}`),
   create: (data) =>
     apiClient.post("/majors", data, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -87,13 +90,13 @@ export const ExtracurricularApi = {
 };
 
 export const ChanceCarrierApi = {
-  get: (params) => apiClient.get("/chance-carrier", { params }),
-  getById: (id) => apiClient.get(`/chance-carrier/${id}`),
-  create: (data) => apiClient.post("/chance-carrier", data),
+  get: (params) => apiClient.get("/chance-carriers", { params }),
+  getById: (id) => apiClient.get(`/chance-carriers/${id}`),
+  create: (data) => apiClient.post("/chance-carriers", data),
   update: (id, data) =>
-    apiClient.post(`/chance-carrier/${id}?_method=PUT`, data),
-  delete: (id) => apiClient.delete(`/chance-carrier/${id}`),
-  restore: (id) => apiClient.post(`chance-carrier/${id}/restore`),
+    apiClient.post(`/chance-carriers/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/chance-carriers/${id}`),
+  restore: (id) => apiClient.post(`/chance-carriers/${id}/restore`),
 };
 
 export const GalleryApi = {
@@ -116,11 +119,11 @@ export const SubjectApi = {
 
 export const ArticleApi = {
     get : (params) => apiClient.get('/articles', { params }),
-    getBySlug : (slug) => apiClient.get(`/articles/slug/${slug}`),
+    getBySlug : (slug) => apiClient.get(`/articles/${slug}`),
     create : (data) => apiClient.post('/articles', data, {headers: {'Content-Type': 'multipart/form-data'}}),
     update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data, {headers: {'Content-Type': 'multipart/form-data'}}),
     delete : (id) => apiClient.delete(`/articles/${id}`),
-    restore: (id) => apiClient.post(`articles/${id}/restore`)
-    
+    restore: (id) => apiClient.post(`/articles/${id}/restore`),
+    updateStatus: (id, status) => apiClient.post(`/articles/${id}/status?_method=PATCH`, status)
 }
 

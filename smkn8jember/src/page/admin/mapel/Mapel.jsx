@@ -9,6 +9,7 @@ import { useDebounce } from "../../../hooks/useDebounce";
 import { useDeleteSubject, useSubjects } from "../../../hooks/api/useSubject";
 import Swal from "sweetalert2";
 import { Button } from "../../../components/ui";
+import { useMajors } from "../../../hooks/api/useMajor";
 
 const Mapel = () => {
   const [search, setSearch] = useState("");
@@ -16,6 +17,7 @@ const Mapel = () => {
   const [jumlahPage, setJumlahPage] = useState(5);
   const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
   const [currentPage, setCurrentPage] = useState(1);
+  const [majorId, setMajorId] = useState(null);
 
   const debouncedSearchTerm = useDebounce(search, 500);
   const navigate = useNavigate();
@@ -29,7 +31,10 @@ const Mapel = () => {
     trashed: softDeleteFilter === "deleted",
     limit: jumlahPage,
     cursor: cursor,
+    major_id: majorId === "Semua" ? undefined : majorId
   });
+  const { data: majorResponse} = useMajors({ all: true });
+  const majors = majorResponse?.data || [];
 
   const subjects = subjectResponse?.data || [];
   const meta = subjectResponse?.meta || {};
@@ -88,7 +93,6 @@ const Mapel = () => {
       cancelButtonText: "Batal"
     }).then((result) => {
       if (result.isConfirmed) {
-        // Implementasi restore - mungkin perlu menambahkan mutation untuk restore
         console.log('Restore subject:', subject.id);
       }
     });
@@ -142,6 +146,17 @@ const Mapel = () => {
           setSoftDeleteFilter(val);
           setCursor(null);
           setCurrentPage(1);
+        }}
+
+        setFilterJurusan={(val) => {
+          setMajorId(val);
+          setCursor(null);
+          setCurrentPage(1);
+        }}
+        filterJurusan={majorId}
+        
+        filterOptions={{
+          filterJurusan: [...(majors ? majors.map((major) => ({value: major.id, label: major.short_name})) : [] )]
         }}
       />
 

@@ -13,12 +13,12 @@ export const useArticles = (filters = {}, options = {}) => {
   });
 };
 
-export const useArticle = (id, options = {}) => {
+export const useArticle = (slug, options = {}) => {
   return useQuery({
-    queryKey: [QUERY_KEYS.ARTICLE.DETAIL, id],
+    queryKey: [QUERY_KEYS.ARTICLE.DETAIL, slug],
     queryFn: async () => {
-      const response = await articleService.getById(id);
-      return response.data;
+      const response = await articleService.getBySlug(slug);
+      return response;
     },
     staleTime: 5 * 60 * 1000,
     ...options,
@@ -117,3 +117,25 @@ export const useRestoreArticle = (options = {}) => {
         }
     })
 };
+
+export const useUpdateArticleStatus = (options = {}) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, status }) => articleService.updateStatus(id, { status }),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries([QUERY_KEYS.ARTICLE.DETAIL, variables.id]);
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ARTICLE.LIST],
+                exact: false 
+            });
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+}

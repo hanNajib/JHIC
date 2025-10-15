@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Swal from "sweetalert2";
 import { useCreateCareer } from "../../../hooks/api/useCareer";
+import { Multiselect } from "../../../components/ui";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama pekerjaan wajib diisi"),
@@ -35,13 +36,21 @@ const TambahCarrier = () => {
   const navigate = useNavigate();
   const [preview, setPreview] = useState(null);
 
-  const { data: majorDataRaw = [] } = useMajors();
+  const { data: majorsDataRaw = [] } = useMajors();
+
+  const majorsData = majorsDataRaw?.data || [];
+  const majorOptions = majorsData.map((major) => ({
+    value: major.id?.toString(),
+    label: major.name,
+    color: major.color || "#FF6000",
+  }));
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    watch,
     setValue,
   } = useForm({
     resolver: yupResolver(schema),
@@ -52,6 +61,8 @@ const TambahCarrier = () => {
       image: null,
     },
   });
+
+  const selectedMajor = watch("major_id");
 
   const createPartner = useCreateCareer({
     onSuccess: () => {
@@ -116,7 +127,7 @@ const TambahCarrier = () => {
           <IoIosArrowBack />
         </button>
         <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-          Tambah Data Carrier
+          Tambah Data Karir
         </h1>
       </div>
 
@@ -125,13 +136,13 @@ const TambahCarrier = () => {
         {/* Nama */}
         <div className="flex flex-col">
           <label htmlFor="name" className="font-bold text-gray-800">
-            Nama Carrier <span className="text-red-500">*</span>
+            Nama <span className="text-red-500">*</span>
           </label>
           <input
             id="name"
             type="text"
             {...register("name")}
-            placeholder="Masukkan Nama Perusahaan"
+            placeholder="Masukkan Nama Karir"
             className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
               errors.name
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
@@ -148,7 +159,7 @@ const TambahCarrier = () => {
         {/* gaji */}
         <div className="flex flex-col">
           <label htmlFor="salary" className="font-bold text-gray-800">
-            Gaji Carrier <span className="text-red-500">*</span>
+            Gaji <span className="text-red-500">*</span>
           </label>
           <input
             id="salary"
@@ -170,30 +181,16 @@ const TambahCarrier = () => {
 
         {/* Jurusan */}
         <div className="flex flex-col">
-          <label className="font-bold text-gray-800 mb-2">
-            Jurusan <span className="text-red-500">*</span>
-          </label>
-          <div className="flex flex-col gap-2">
-            {majorDataRaw.map((item) => (
-              <label
-                key={item.id}
-                className="flex items-center gap-2 text-sm font-medium text-gray-600"
-              >
-                <input
-                  type="radio"
-                  value={item.id}
-                  {...register("major_id")}
-                  className="accent-orange-500"
-                />
-                {item.name}
-              </label>
-            ))}
-          </div>
-          {errors.major_id && (
-            <span className="text-red-500 text-sm mt-1">
-              {errors.major_id.message}
-            </span>
-          )}
+          <Multiselect
+            label="Jurusan"
+            required={true}
+            options={majorOptions}
+            value={selectedMajor}
+            onChange={(value) => setValue("major_id", value)}
+            placeholder="Pilih jurusan..."
+            error={errors.major_id?.message}
+            multiple={false}
+          />
         </div>
 
         {/* Upload Gambar */}

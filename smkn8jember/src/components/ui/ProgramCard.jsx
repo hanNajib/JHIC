@@ -28,8 +28,8 @@ const ProgramCard = ({ program, className = "" }) => {
         </div>
 
         <div className="flex flex-col justify-between gap-3 mb-3">
-          <div className="text-[#495057] leading-snug py-2 child-line-clamp">
-            {program.description ? parse(program.description) : "-"}
+          <div className="text-[#495057] leading-snug py-2 max-h-24 h-24 overflow-hidden">
+            <div className="child-line-clamp">{program.description ? parse(program.description) : "-"}</div>
           </div>
 
         </div>
