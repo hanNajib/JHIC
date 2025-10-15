@@ -31,7 +31,7 @@ const Ekstra = () => {
     isFetching,
     refetch,
   } = useExtarculiculars({
-    s: debouncedSearchTerm,
+    s: debouncedSearchTerm
   });
   const deleteExtraculicular = useDeleteExtarculicular();
   const handleDelete = (id) => {

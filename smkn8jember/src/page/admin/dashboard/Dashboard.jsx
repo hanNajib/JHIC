@@ -3,6 +3,8 @@ import { GrArticle } from "react-icons/gr";
 
 const Dashboard = () => {
 
+  
+
   return (
     <div className="flex flex-col gap-10 ">
       <div className="flex flex-col gap-2">
@@ -29,7 +31,7 @@ const Dashboard = () => {
             </div>
           </div>
         ))}
-      </div>
+      </div>  
 
       {/* artikel populer */}
       <div className="bg-white rounded-lg p-5">

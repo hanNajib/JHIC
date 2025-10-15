@@ -12,7 +12,7 @@ const AdminLayout = () => {
   }, [isOpen]);
 
   return (
-    <div className="flex h-screen overflow-x-hidden ">
+    <div className="flex h-screen overflow-y-hidden ">
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen}/>
       <div
     className={`pl-14 lg:pl-0 flex-1 flex flex-col transition-all duration-300`}

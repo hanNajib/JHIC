@@ -3,8 +3,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ARTICLE_CATEGORIES } from "../constants/schoolData";
-import { useArticles } from "../hooks/useSchool";
 import { ArticleCard, Button } from "../components/ui";
+import { useArticles } from "../hooks/api/useArticle";
 
 const Articles = () => {
   const [sort, setSort] = useState("terbaru");
