@@ -83,6 +83,7 @@ import EditPartner from "./page/admin/partner/EditPartner";
 import Carrier from "./page/admin/Carrier/Carrier";
 import TambahCarrier from "./page/admin/Carrier/TambahCarrier";
 import EditCarrier from "./page/admin/Carrier/EditCarrier";
+import ProfileSetting from "./page/admin/settings/ProfileSetting";
 
 function Router() {
   return (
@@ -174,6 +175,7 @@ function Router() {
 
           {/* Web Setting */}
           <Route path="websetting" element={<WebSetting />} />
+          <Route path="profilesetting" element={<ProfileSetting />} />
 
         </Route>
 

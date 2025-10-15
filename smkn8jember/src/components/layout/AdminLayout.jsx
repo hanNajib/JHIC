@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../Sidebar";
+import { useAuth } from "../../hooks/useAuth";
 
 const AdminLayout = () => {
   const [isOpen, setIsOpen] = useState(() => {
     return localStorage.getItem("sidebarOpen") === "false" ? false : true;
   });
-
+const { user } = useAuth();
   useEffect(() => {
     localStorage.setItem("sidebarOpen", isOpen);
   }, [isOpen]);
@@ -47,7 +48,7 @@ const AdminLayout = () => {
           
           <div className="flex items-center gap-4">
             <div className="text-sm text-gray-600">
-              Admin Dashboard
+              {user?.username || "Admin"} Dashboard
             </div>
           </div>
         </div>

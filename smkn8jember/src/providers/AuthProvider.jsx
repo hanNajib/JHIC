@@ -50,13 +50,26 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const update = async (data) => {
+    // setLoading(true);
+    try{
+      const updated = await AuthService.update(data);
+      setUser((prevUser) => ({ ...prevUser, ...updated.data }));
+      return { message: 'Profile updated successfully' };
+    } catch (err) {
+      return err.response ? err.response.data : { message: 'Network Error' };
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     fetchUser();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, loading, fetchUser, login, logout }}
+      value={{ user, isAuthenticated, loading, fetchUser, update, login, logout }}
     >
       {children}
     </AuthContext.Provider>

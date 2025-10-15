@@ -23,6 +23,7 @@ import {
   LuUserRoundCog,
   LuUserRoundPen,
 } from "react-icons/lu";
+import { CgProfile } from "react-icons/cg";
 import { LiaUserTieSolid } from "react-icons/lia";
 import { RiBriefcaseLine, RiBuilding2Line } from "react-icons/ri";
 
@@ -298,6 +299,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             />
           </div>
 
+          <NavItem
+            to="/admin/profilesetting"
+            icon={CgProfile}
+            label="Profile Setting"
+            isOpen={isOpen}
+          />
           <NavItem
             to="/admin/websetting"
             icon={MdOutlineSettings}

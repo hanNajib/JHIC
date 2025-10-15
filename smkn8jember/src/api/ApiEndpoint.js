@@ -5,6 +5,7 @@ export const AuthApi = {
   login: (data) => apiClient.post("/auth/login?spa=true", data),
   logout: () => apiClient.post("/auth/logout"),
   fetchUser: () => apiClient.get("/auth/me"),
+  update: (data) => apiClient.post("/auth/update?_method=PUT", data, {headers: {'Content-Type': 'multipart/form-data'}}),
 };
 
 // SUPERADMIN ROUTE API
@@ -22,6 +23,12 @@ export const WebSettingsApi = {
   updateSetting: (title, data) =>
     apiClient.post(`/settings/${title}?_method=PUT`, data),
   getByTitle: (title) => apiClient.get(`/settings/${title}`),
+};
+export const StudentDataApi = {
+  get: () => apiClient.get("/school-data"),
+  update: (name, data) =>
+    apiClient.post(`/school-data/${name}?_method=PUT`, data),
+  getByName: (name) => apiClient.get(`/school-data/${name}`),
 };
 
 // CRUD ROUTE API
@@ -87,13 +94,13 @@ export const ExtracurricularApi = {
 };
 
 export const ChanceCarrierApi = {
-  get: (params) => apiClient.get("/chance-carrier", { params }),
-  getById: (id) => apiClient.get(`/chance-carrier/${id}`),
-  create: (data) => apiClient.post("/chance-carrier", data),
+  get: (params) => apiClient.get("/chance-carriers", { params }),
+  getById: (id) => apiClient.get(`/chance-carriers/${id}`),
+  create: (data) => apiClient.post("/chance-carriers", data),
   update: (id, data) =>
-    apiClient.post(`/chance-carrier/${id}?_method=PUT`, data),
-  delete: (id) => apiClient.delete(`/chance-carrier/${id}`),
-  restore: (id) => apiClient.post(`chance-carrier/${id}/restore`),
+    apiClient.post(`/chance-carriers/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/chance-carriers/${id}`),
+  restore: (id) => apiClient.post(`chance-carriers/${id}/restore`),
 };
 
 export const GalleryApi = {

@@ -21,7 +21,7 @@ const Partner = () => {
   const [filterKategori, setFilterKategori] = useState("Semua");
   const [halamanKe, setHalamanKe] = useState(1);
   const [jumlahPage, setJumlahPage] = useState(5);
-  const [trashed, setTrashed] = useState(false);
+  const [trashed,   setTrashed] = useState(false);
   // Search & Filter
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("Semua");

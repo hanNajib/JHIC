@@ -113,14 +113,14 @@ const Navbar = () => {
                     </p>
                     <div className="absolute top-full left-0 mt-0 pt-2 w-48 bg-transparent hidden group-hover:block"></div>
                     <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md hidden group-hover:flex flex-col text-[#4c4c4c]/75 z-50">
-                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition ">Sejarah Sekolah</Link>
-                        <Link to="/profil/struktur" className="px-4 py-2 hover:bg-gray-100 transition">Visi dan Misi</Link>
+                        <Link to="/history" className="px-4 py-2 hover:bg-gray-100 transition ">Sejarah Sekolah</Link>
+                        <Link to="/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">Visi dan Misi</Link>
                         <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Struktur Sekolah</Link>
                         <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Kepala Sekolah</Link>
-                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Fasilitas Sekolah</Link>
+                        <Link to="/fasilitas" className="px-4 py-2 hover:bg-gray-100 transition">Fasilitas Sekolah</Link>
                         <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Data Guru</Link>
-                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Data Karyawan</Link>
-                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Data Siswa</Link>
+                        <Link to="/" className="px-4 py-2 hover:bg-gray-100 transition">Data Karyawan</Link>
+                        <Link to="/student-data" className="px-4 py-2 hover:bg-gray-100 transition">Data Siswa</Link>
                         <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Ekstrakurikuler</Link>
                     </div>
                 </div>
