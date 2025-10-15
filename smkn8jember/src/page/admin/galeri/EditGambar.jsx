@@ -39,7 +39,14 @@ const EditGambar = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: currentGallery, isLoading } = useGallery(id);
+  const { data: currentGallery, isLoading, error } = useGallery(id);
+  
+  // Debug logging
+  console.log("Gallery ID:", id);
+  console.log("Current Gallery:", currentGallery);
+  console.log("Loading:", isLoading);
+  console.log("Error:", error);
+  
   const updateGallery = useUpdateGallery(id, {
     onSuccess: () => {
       Swal.fire({
@@ -47,7 +54,7 @@ const EditGambar = () => {
         text: "Gambar berhasil diperbarui",
         icon: "success",
       }).then(() => {
-        navigate(-1);
+        navigate('/admin/gambar');
       });
     },
     onError: (error) => {
@@ -89,28 +96,26 @@ const EditGambar = () => {
   const selectedCategories = watch("category");
 
   useEffect(() => {
-  if (!currentGallery) return;
-  if (categoryOptions.length === 0) return;
-
-  const categoryIds = currentGallery.categories?.map(cat => cat.id) || [];
-
-  reset({
-    title: currentGallery.title || "",
-    description: currentGallery.description || "",
-    category: categoryIds,
-    image: null,
-  });
-
-  setPreview(currentGallery.image);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [currentGallery?.id, categoryOptions.length]);
+    if (currentGallery && categoryOptions.length > 0) {
+      console.log("Setting form values:", currentGallery); // Debug log
+      const categoryIds = currentGallery.categories?.map(cat => cat.id) || [];
+      
+      setValue("title", currentGallery.title || "");
+      setValue("description", currentGallery.description || "");
+      setValue("category", categoryIds);
+      setValue("image", null);
+      setPreview(currentGallery.image);
+    }
+  }, [currentGallery, categoryOptions.length, setValue]);
 
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setValue("image", file);
     if (file) {
       setPreview(URL.createObjectURL(file));
-      setValue("image", file);
+    } else {
+      setPreview(null);
     }
   };
 
@@ -133,16 +138,10 @@ const EditGambar = () => {
   const handleReset = () => {
     if (currentGallery) {
       const categoryIds = currentGallery.categories?.map(cat => cat.id) || [];
-
-      reset({
-        title: currentGallery.title || "",
-        description: currentGallery.description || "",
-        category: categoryIds,
-        image: null,
-      });
-
-      // Explicitly set the category value to ensure it's recognized
+      setValue("title", currentGallery.title || "");
+      setValue("description", currentGallery.description || "");
       setValue("category", categoryIds);
+      setValue("image", null);
       setPreview(currentGallery.image);
     }
   };
@@ -155,13 +154,35 @@ const EditGambar = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center text-red-500">
+          <h3 className="text-lg font-semibold mb-2">Error Loading Data</h3>
+          <p>{error?.message || "Gagal memuat data gallery"}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentGallery && !isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold mb-2">Data Tidak Ditemukan</h3>
+          <p className="text-gray-600">Gallery dengan ID tersebut tidak ditemukan.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 text-3xl lg:text-4xl text-center p-1 rounded-4xl text-white"
+            className="bg-orange-500 text-3xl lg:text-4xl text-center p-1 rounded-4xl text-white"
         >
           <IoIosArrowBack />
         </button>

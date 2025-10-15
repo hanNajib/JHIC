@@ -11,16 +11,19 @@ import { FaChevronDown } from "react-icons/fa6";
 import { FaChevronUp } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { MdOutlineSearch } from "react-icons/md";
+import { useMajors } from "../hooks/api/useMajor";
 
 const Navbar = () => {
+    const { data: majorsResponse = [], isLoading } = useMajors({ all: true });
+    const majors = majorsResponse?.data || [];
 
     const [isOpen, setIsOpen] = useState(false);
     const [isSearch, setIsSearch] = useState(false);
 
     const handleToggleOpen = () => {
     setIsOpen((prev) => {
-        if (!prev) setIsSearch(false); // kalau mau buka open, tutup search
-        if (!prev) setIsProfil(false); // kalau mau buka open, tutup search
+        if (!prev) setIsSearch(false); 
+        if (!prev) setIsProfil(false); 
         if(!prev) setIsJurusan(false);
         if(!prev) setIsBlog(false);
         return !prev;
@@ -130,13 +133,13 @@ const Navbar = () => {
                     </p>
                     <div className="absolute top-full left-0 mt-0 pt-2 w-48 bg-transparent hidden group-hover:block"></div>
                     <div className="absolute top-full left-0 mt-2 w-80 bg-white shadow-lg rounded-md hidden group-hover:flex flex-col text-[#4c4c4c]/75 z-50">
-                        <Link to="/profil/visi-misi" className="px-4 py-2 hover:bg-gray-100 transition">Teknik Kendaraan Ringan</Link>
-                        <Link to="/profil/struktur" className="px-4 py-2 hover:bg-gray-100 transition">Teknik Sepeda Motor</Link>
-                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Rekayasa Perangkat Lunak</Link>
-                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Desain Komunikasi Visual</Link>
-                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Teknik Komputer dan Jaringan</Link>
-                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Agribisnis Tanaman Pangan dan Holtikultura</Link>
-                        <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 transition">Agribisnis Perbenihan Tanaman</Link>
+                        {majors && isLoading === false ? (
+                            majors.map((major) => (
+                                <Link to={`/major/${major.short_name}`} className="px-4 py-2 hover:bg-gray-100 transition" key={major.id}>{major.name}</Link>
+                            ))
+                        ) : (
+                            <p className="px-4 py-2">Loading...</p>
+                        )}
                     </div>
                 </div>
                 <div className="relative group cursor-pointer">

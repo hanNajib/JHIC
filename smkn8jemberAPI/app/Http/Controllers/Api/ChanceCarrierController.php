@@ -29,7 +29,7 @@ class ChanceCarrierController extends Controller
         $createData = $request->only(['name', 'salary', 'major_id']);
 
         if($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('extracurriculars', 'public');
+            $imagePath = $request->file('image')->store('chancecarrier', 'public');
             $createData['image'] = $imagePath;
         }
 

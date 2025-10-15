@@ -116,7 +116,7 @@ const Fasilitas = () => {
         handleReset={handleReset}
         titleHalaman="Data Fasilitas"
         descHalaman="Kelola data fasilitas"
-        linkTambah="admin/fasilitas/tambah"
+        linkTambah="/admin/fasilitas/tambah"
         titleBTN="Tambah Fasilitas"
         kategoriList={["Active", "Nonactive"]}
       />

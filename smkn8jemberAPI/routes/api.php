@@ -54,6 +54,7 @@ Route::middleware('web')->group(function () {
 
     Route::prefix('majors')->group(function () {
         Route::get('/', [MajorsController::class, 'index']);
+        Route::get('/shortname/{short_name}', [MajorsController::class, 'getByShortName']);
         Route::get('/{id}', [MajorsController::class, 'show']);
         Route::post('/', [MajorsController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [MajorsController::class, 'update'])->middleware('auth:sanctum');
@@ -115,6 +116,7 @@ Route::middleware('web')->group(function () {
         Route::put('/{id}', [ArticleController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [ArticleController::class, 'delete'])->middleware('auth:sanctum');
         Route::post('/{id}/restore', [ArticleController::class, 'restore'])->middleware('auth:sanctum');
+        Route::patch('/{id}/status', [ArticleController::class, 'updateStatus'])->middleware('auth:sanctum', 'role:superadmin');
     });
 
     Route::prefix('categories')->group(function () {

@@ -6,7 +6,7 @@ export const useCareers = (filters = {}, options = {}) => {
     queryKey: [QUERY_KEYS.CAREER.LIST, filters],
     queryFn: async () => {
       const response = await careerService.get(filters);
-      return response.data;
+      return { data: response.data, meta: response.meta, link: response.links };
     },
     staleTime: 5 * 60 * 1000,
     ...options,
