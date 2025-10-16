@@ -25,6 +25,9 @@ const Announcement = () => {
     [data]
   );
 
+  console.log(announcements);
+
+
   if (isError)
     return (
       <DefaultLayout>

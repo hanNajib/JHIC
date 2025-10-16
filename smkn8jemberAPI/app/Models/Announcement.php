@@ -11,7 +11,7 @@ class Announcement extends Model
 {
     use SoftDeletes, HasImageUrl, HasCursorPagination;
 
-    protected $fillable = ['title', 'image', 'content', 'category_id'];
+    protected $fillable = ['title', 'image', 'content', 'category_id', 'created_at'];
     protected $with = ['category'];
     protected $appends = ['date'];
 

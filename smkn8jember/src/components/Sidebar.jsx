@@ -173,7 +173,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     },
   ];
 
- const { user } = useAuth();
+  const { user } = useAuth();
   console.log(user);
 
   if (user.role == "superadmin") {
@@ -323,7 +323,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </div>
       </div>
     );
-  } else if(user.role == "admin") {
+  } else if (user.role == "admin") {
     return (
       <div
         className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
@@ -334,10 +334,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         <div>
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-3">
-              <img src="/image/fasil.jpg" className="w-12 h-12 rounded-full" alt="logo" />
+              <img src="/image/logosmk.png" className="w-10" alt="logo" />
               {isOpen && (
                 <h1 className="font-bold text-lg tracking-wide boderTeks">
-                  {user.username}
+                  SMKN 8 JEMBER
                 </h1>
               )}
             </div>
@@ -377,7 +377,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               </h2>
               <NavItem
                 to="/admin/artikel"
-                icon={IoImagesOutline}
+                icon={GrArticle}
                 label="Artikel"
                 isOpen={isOpen}
               />
@@ -387,15 +387,17 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 label="Galeri"
                 isOpen={isOpen}
               />
+            </div>
+
+            {/* Profil Sekolah */}
+            <div className="pb-2 pt-3 border-t-[1.5px] border-zinc-400">
               <NavItem
-                to="/admin/pengumuman"
-                icon={HiOutlineSpeakerphone}
-                label="Pengumuman"
+                to="/admin/websetting"
+                icon={MdOutlineSettings}
+                label="Profil Setting"
                 isOpen={isOpen}
               />
             </div>
-
-            
           </ul>
         </div>
       </div>
