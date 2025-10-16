@@ -7,7 +7,7 @@ export const useStudentData = (options = {}) => {
         queryKey: [QUERY_KEYS.STUDENT_DATA],
         queryFn: async () => {
             const response = await studentDataService.get();
-            return { data: response.data, meta: response.meta, link: response.link };
+            return { data: response.data, meta: response.meta, link: response.links };
         },
         ...options
     });
@@ -18,7 +18,7 @@ export const useStudentDataByName = (name, options = {}) => {
         queryKey: [QUERY_KEYS.STUDENT_DATA, name],
         queryFn: async () => {
             const response = await studentDataService.getByName(name);
-            return { data: response.data, meta: response.meta, link: response.link };
+            return { data: response.data, meta: response.meta, link: response.links };
         },
         ...options
     });

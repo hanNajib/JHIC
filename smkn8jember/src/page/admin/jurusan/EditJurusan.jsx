@@ -6,11 +6,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMajor, useUpdateMajor } from "../../../hooks/api/useMajor";
+import IconPicker from "../../../components/ui/IconPicker";
+import Swal from "sweetalert2";
 
 const schema = yup.object().shape({
   name: yup.string().nullable().notRequired(),
   short_name: yup.string().nullable().notRequired(),
   description: yup.string().nullable().notRequired(),
+  icon: yup.string().nullable().notRequired(),
   image: yup
     .mixed()
     .nullable()
@@ -30,7 +33,24 @@ const EditJurusan = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: currentJurusan, isLoading } = useMajor(id);
-  const updateMajor = useUpdateMajor(id);
+  const updateMajor = useUpdateMajor(id, {
+    onSuccess: () => {
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Jurusan berhasil diperbarui",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        title: "Gagal!",
+        text: error.response?.data?.message || "Terjadi kesalahan saat memperbarui jurusan",
+        icon: "error",
+      });
+    }
+  });
 
   const [preview, setPreview] = useState(null);
 
@@ -38,7 +58,7 @@ const EditJurusan = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting},
+    formState: { errors, isSubmitting },
     setValue,
     watch,
     reset,
@@ -48,6 +68,7 @@ const EditJurusan = () => {
       name: "",
       short_name: "",
       description: "",
+      icon: "",
       image: null,
     },
   });
@@ -58,6 +79,7 @@ const EditJurusan = () => {
         name: currentJurusan.name || "",
         short_name: currentJurusan.short_name || "",
         description: currentJurusan.description || "",
+        icon: currentJurusan.icon || "",
         image: null,
       });
       setPreview(currentJurusan.image);
@@ -72,16 +94,17 @@ const EditJurusan = () => {
     }
   };
 
-  // handle update data
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("short_name", data.short_name);
       formData.append("description", data.description);
+      formData.append("icon", data.icon);
       if (data.image) formData.append("image", data.image);
 
       await updateMajor.mutateAsync(formData);
+
       navigate(-1)
     } catch (error) {
       console.error("Gagal update jurusan:", error);
@@ -176,6 +199,18 @@ const EditJurusan = () => {
               {errors.description.message}
             </p>
           )}
+        </div>
+
+        {/* Icon Picker */}
+        <div className="flex flex-col">
+          <IconPicker
+            label="Icon Jurusan"
+            value={watch("icon")}
+            onChange={(iconName) => setValue("icon", iconName)}
+            placeholder="Pilih icon untuk jurusan"
+            error={errors.icon?.message}
+            iconLibraries={["io5", "md", "fa", "hi"]}
+          />
         </div>
 
         {/* Upload Foto */}

@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useFacility, useUpdateFacility } from "../../../hooks/api/useFacility";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useForm } from "react-hook-form";
+import * as yup from "yup";
 import Swal from "sweetalert2";
 
 const schema = yup.object().shape({
@@ -14,7 +14,7 @@ const schema = yup.object().shape({
   image: yup
     .mixed()
     .test("fileSize", "Ukuran gambar maksimal 2MB", (value) => {
-      if (!value) return true; // biar edit tanpa ganti gambar tidak error
+      if (!value) return true; 
       return value.size <= 2 * 1024 * 1024;
     })
     .test("fileType", "Format gambar tidak valid", (value) => {
@@ -28,13 +28,24 @@ const EditFasilitas = () => {
   const { id } = useParams();
   const [preview, setPreview] = useState(null);
 
-  const { data: facility, isLoading } = useFacility(id);
-  const updateFacility = useUpdateFacility(id);
+  const { data: facility, isLoading, error } = useFacility(id);
+  
+  const updateFacility = useUpdateFacility(
+    id,
+    {
+      onSuccess: () => {
+        console.log("✅ Fasilitas berhasil diupdate");
+      },
+      onError: (error) => {
+        console.error("❌ Error update fasilitas:", error);
+      },
+    }
+  );
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setValue,
     reset,
   } = useForm({
@@ -43,14 +54,13 @@ const EditFasilitas = () => {
 
   useEffect(() => {
     if (facility) {
-      reset({
-        name: facility.name || "",
-        room_total: facility.room_total || "",
-        description: facility.description || "",
-      });
-      setPreview(facility.image);
+      console.log("🔄 Setting form values:", facility);
+      setValue("name", facility.name || "");
+      setValue("room_total", facility.room_total || "");
+      setValue("description", facility.description || "");
+      setPreview(facility.image || null);
     }
-  }, [facility, reset]);
+  }, [facility, setValue]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -60,13 +70,25 @@ const EditFasilitas = () => {
     }
   };
 
+  const handleReset = () => {
+    if (facility) {
+      setValue("name", facility.name || "");
+      setValue("room_total", facility.room_total || "");
+      setValue("description", facility.description || "");
+      setPreview(facility.image || null);
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
+      
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("room_total", data.room_total);
       formData.append("description", data.description);
-      if (data.image) formData.append("image", data.image);
+      if (data.image) {
+        formData.append("image", data.image);
+      }
 
       await updateFacility.mutateAsync(formData);
 
@@ -81,9 +103,8 @@ const EditFasilitas = () => {
 
       navigate("/admin/fasilitas");
     } catch (error) {
-      console.error("Gagal update facilitas:", error);
 
-      Swal.fire({
+      await Swal.fire({
         icon: "error",
         title: "Gagal!",
         text:
@@ -94,12 +115,80 @@ const EditFasilitas = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="p-6">
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-300 rounded mb-6"></div>
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+              <div className="h-10 bg-gray-300 rounded"></div>
+              <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+              <div className="h-10 bg-gray-300 rounded"></div>
+              <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+              <div className="h-32 bg-gray-300 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <div className="text-center py-8">
+            <div className="text-red-500 text-xl mb-2">❌</div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Terjadi Kesalahan
+            </h3>
+            <p className="text-gray-500 mb-4">
+              {error?.message || "Gagal memuat data fasilitas"}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600"
+            >
+              Coba Lagi
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!facility) {
+    return (
+      <div className="p-6">
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <div className="text-center py-8">
+            <div className="text-gray-400 text-xl mb-2">🔍</div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Data Tidak Ditemukan
+            </h3>
+            <p className="text-gray-500 mb-4">
+              Fasilitas dengan ID {id} tidak ditemukan
+            </p>
+            <button
+              onClick={() => navigate("/admin/fasilitas")}
+              className="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600"
+            >
+              Kembali ke Daftar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 text-4xl text-center p-1 rounded-4xl text-white"
+          className="bg-orange-500 text-4xl text-center p-1 rounded-lg text-white hover:bg-orange-600 transition duration-300"
         >
           <IoIosArrowBack />
         </button>
@@ -182,19 +271,21 @@ const EditFasilitas = () => {
         </div>
 
         {/* Tombol */}
-        <div className="flex gap-3 justify-end">
-          <button
-            type="submit"
-            className="bg-orange-500 text-white font-semibold py-1 text-sm md:text-base w-24 rounded-4xl hover:bg-orange-600"
-          >
-            Save
-          </button>
+        <div className="flex gap-3 justify-end mt-6">
           <button
             type="button"
-            onClick={() => reset()}
-            className="py-1 w-24 text-orange-500 text-sm md:text-base font-bold border-[1.9px] border-orange-500 rounded-4xl hover:bg-orange-500 hover:text-white transition duration-300"
+            onClick={handleReset}
+            className="py-2 px-6 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300"
+            disabled={isSubmitting}
           >
             Reset
+          </button>
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </form>

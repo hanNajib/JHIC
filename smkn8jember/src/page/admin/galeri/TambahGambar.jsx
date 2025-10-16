@@ -9,7 +9,6 @@ import { useCategories } from "../../../hooks/api/useCategory";
 import { useCreateGallery } from "../../../hooks/api/useGallery";
 import Swal from "sweetalert2";
 import { Multiselect } from "../../../components/ui";
-import { color } from "framer-motion";
 
 const schema = yup.object().shape({
   title: yup.string().required("Judul wajib diisi"),

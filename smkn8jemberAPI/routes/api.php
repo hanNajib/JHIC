@@ -60,7 +60,6 @@ Route::middleware('web')->group(function () {
         Route::put('/{id}', [MajorsController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [MajorsController::class, 'delete'])->middleware('auth:sanctum');
         Route::post('/{id}/restore', [MajorsController::class, 'restore'])->middleware('auth:sanctum');
-
     });
 
     Route::prefix('partners')->group(function () {
@@ -130,11 +129,15 @@ Route::middleware('web')->group(function () {
 
     Route::prefix('staff')->group(function () {
         Route::get('/', [StaffController::class, 'index']);
+        Route::get('/structure', [StaffController::class, 'structure']);
         Route::get('/{id}', [StaffController::class, 'show']);
-        Route::post('/', [StaffController::class, 'create'])->middleware('auth:sanctum');
-        Route::put('/{id}', [StaffController::class, 'update'])->middleware('auth:sanctum');
-        Route::delete('/{id}', [StaffController::class, 'delete'])->middleware('auth:sanctum');
-        Route::post('/{id}/restore', [StaffController::class, 'restore'])->middleware('auth:sanctum');
+
+        Route::middleware(['auth:sanctum', 'role:superadmin'])->group(function () {
+            Route::post('/', [StaffController::class, 'store']);
+            Route::put('/{id}', [StaffController::class, 'update']);
+            Route::delete('/{id}', [StaffController::class, 'delete']);
+            Route::post('/{id}/restore', [StaffController::class, 'restore']);
+        });
     });
 
     Route::prefix('settings')->group(function () {
@@ -147,7 +150,6 @@ Route::middleware('web')->group(function () {
         Route::get('/', [SchoolDataController::class, 'index']);
         Route::get('/{name}', [SchoolDataController::class, 'show']);
         Route::put('/{name}', [SchoolDataController::class, 'update'])->middleware(['auth:sanctum', 'role:superadmin']);
-
     });
     // ----------------------------------
     // ---------- SUPERADMIN ROUTES ----------

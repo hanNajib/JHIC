@@ -24,7 +24,7 @@ class MajorsController extends Controller
 
     public function getByShortName($short_name)
     {
-        $major = Major::where('short_name', $short_name)->with('subjects')->first();
+        $major = Major::where('short_name', $short_name)->with(['subjects', 'partners', 'chanceCarriers'])->first();
         if (!$major) {
             return $this->notFound('Major not found');
         }
@@ -40,7 +40,7 @@ class MajorsController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $createData = $request->only(['name', 'description', 'short_name']);
+        $createData = $request->only(['name', 'description', 'short_name', 'icon']);
 
         try {
             DB::beginTransaction();
@@ -88,7 +88,7 @@ class MajorsController extends Controller
             return $this->notFound('Major not found');
         }
 
-        $updateData = $request->only(['name', 'short_name', 'description']);
+        $updateData = $request->only(['name', 'short_name', 'description', 'icon']);
 
         if ($request->hasFile('image')) {
             if ($major->OriginalImagePath()) {

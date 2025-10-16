@@ -51,4 +51,8 @@ export const QUERY_KEYS = {
     LIST: "subjects",
     DETAIL: "subjectDetail",
   },
+  STAFF: {
+    LIST: "staff",
+    DETAIL: "staffDetail",
+  },
 };

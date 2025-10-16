@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import DefaultLayout from "../../components/layout/DefaultLayout";
 import { AnnouncementCard, Button } from "../../components/ui";
 import { useAnnouncementsPublic } from "../../hooks/api/useAnnouncement";
 import TextLoading from "../../components/ui/TextLoading";
+import PengumumanPopUp from "../../components/ui/PengumumanPopUp";
 
 const Announcement = () => {
   const { 
@@ -13,12 +14,21 @@ const Announcement = () => {
     hasNextPage, 
     isFetchingNextPage, 
     refetch 
-  } = useAnnouncementsPublic({ limit: 1 });
+  } = useAnnouncementsPublic({limit: 5});
 
   const announcements = useMemo(
     () => data?.pages.flatMap((page) => page.data) || [],
     [data]
   );
+
+  const [pengumumanPopUp, setPengumumanPopUp] = useState(null);
+  const handleOpenPopUp = (announcement) => {
+    setPengumumanPopUp(announcement);
+  }
+
+  const handleClosePopUp = () => {
+    setPengumumanPopUp(null);
+  }
 
   if (isError)
     return (
@@ -34,7 +44,6 @@ const Announcement = () => {
 
   return (
     <DefaultLayout>
-      {/* Hero Section */}
       <section
         className="relative flex flex-col items-center justify-center py-20 text-center"
         style={{
@@ -63,7 +72,7 @@ const Announcement = () => {
             </div>
           ) : announcements.length > 0 ? (
             announcements.map((announcement) => (
-              <AnnouncementCard key={announcement.id} announcement={announcement} />
+              <AnnouncementCard key={announcement.id} announcement={announcement} onClick={() => handleOpenPopUp(announcement)} />
             ))
           ) : (
             <p className="text-center text-gray-500">Belum ada pengumuman saat ini 📭</p>
@@ -71,7 +80,6 @@ const Announcement = () => {
         </div>
       </section>
 
-      {/* Load More */}
       {!isLoading && hasNextPage && (
         <div className="py-8">
           <div className="max-w-6xl mx-auto flex justify-center px-6 md:px-16">
@@ -81,6 +89,8 @@ const Announcement = () => {
           </div>
         </div>
       )}
+
+      <PengumumanPopUp pengumuman={pengumumanPopUp} onClose={handleClosePopUp} />
     </DefaultLayout>
   );
 };

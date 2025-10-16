@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('short_name')->unique();
             $table->text('description');
             $table->string('image');
+            $table->string('icon');
             $table->timestamps();
             $table->softDeletes();
         });

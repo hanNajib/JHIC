@@ -205,7 +205,7 @@ const Partner = () => {
                   key={partner.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="py-2 px-4">{i + 1}</td>
+                  <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                   <td className="py-2">{partner.name}</td>
                   <td className="py-2 px-4">{partner.major?.name || '-'}</td>
                   <td className="py-2 px-4">

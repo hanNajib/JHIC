@@ -3,9 +3,9 @@ import { apiClient, axiosClient } from "./ApiClient";
 export const AuthApi = {
   csrf: () => axiosClient.get("/sanctum/csrf-cookie"),
   login: (data) => apiClient.post("/auth/login?spa=true", data),
-  logout: () => apiClient.post("/auth/logout"),
+  logout: () => apiClient.post("/auth/logout?spa=true"),
   fetchUser: () => apiClient.get("/auth/me"),
-  update: (data) => apiClient.post("/auth/update?_method=PUT", data, {headers: {'Content-Type': 'multipart/form-data'}}),
+  update: (data) => apiClient.post("/auth/update?_method=PUT", data),
 };
 
 // SUPERADMIN ROUTE API
@@ -36,8 +36,8 @@ export const StudentDataApi = {
 export const AnnouncementApi = {
     get : (params) => apiClient.get('/announcements', { params }),
     getById : (id) => apiClient.get(`/announcements/${id}`),
-    create : (data) => apiClient.post('/announcements', data, {headers: {'Content-Type': 'multipart/form-data'}}),
-    update : (id, data) => apiClient.post(`/announcements/${id}?_method=PUT`, data, {headers: {'Content-Type': 'multipart/form-data'}}),
+    create : (data) => apiClient.post('/announcements', data),
+    update : (id, data) => apiClient.post(`/announcements/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/announcements/${id}`),
     restore: (id) => apiClient.post(`announcements/${id}/restore`)
 }
@@ -46,7 +46,7 @@ export const AnnouncementApi = {
 export const FacilityApi = {
     get : (params) => apiClient.get('/facility', { params }),
     getById : (id) => apiClient.get(`/facility/${id}`),
-    create : (data) => apiClient.post('/facility', data,{headers: {'Content-Type': 'multipart/form-data'}}),
+    create : (data) => apiClient.post('/facility', data),
     update : (id, data) => apiClient.post(`/facility/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/facility/${id}`),
     restore: (id) => apiClient.post(`facility/${id}/restore`)
@@ -56,10 +56,7 @@ export const MajorsApi = {
   get: (params) => apiClient.get("/majors", { params }),
   getById: (id) => apiClient.get(`/majors/${id}`),
   getByShortName: (short_name) => apiClient.get(`/majors/shortname/${short_name}`),
-  create: (data) =>
-    apiClient.post("/majors", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+  create: (data) => apiClient.post("/majors", data),
   update: (id, data) => apiClient.post(`/majors/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/majors/${id}`),
   restore: (id) => apiClient.post(`majors/${id}/restore`),
@@ -67,10 +64,7 @@ export const MajorsApi = {
 export const CategoryApi = {
   get: (params) => apiClient.get("/categories", { params }),
   getById: (id) => apiClient.get(`/categories/${id}`),
-  create: (data) =>
-    apiClient.post("/categories", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+  create: (data) => apiClient.post("/categories", data),
   update: (id, data) => apiClient.post(`/categories/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/categories/${id}`),
   restore: (id) => apiClient.post(`categories/${id}/restore`),
@@ -108,7 +102,7 @@ export const ChanceCarrierApi = {
 export const GalleryApi = {
     get : (params) => apiClient.get('/gallery', { params }),
     getById : (id) => apiClient.get(`/gallery/${id}`),
-    create : (data) => apiClient.post('/gallery', data, {headers: {'Content-Type': 'multipart/form-data'}}),
+    create : (data) => apiClient.post('/gallery', data),
     update : (id, data) => apiClient.post(`/gallery/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/gallery/${id}`),
     restore: (id) => apiClient.post(`gallery/${id}/restore`)
@@ -123,11 +117,21 @@ export const SubjectApi = {
   restore: (id) => apiClient.post(`/subject/${id}/restore`),
 };
 
+export const StaffApi = {
+  get: (params) => apiClient.get("/staff", { params }),
+  getById: (id) => apiClient.get(`/staff/${id}`),
+  getStructure: () => apiClient.get("/staff/structure"),
+  create: (data) => apiClient.post("/staff", data),
+  update: (id, data) => apiClient.post(`/staff/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/staff/${id}`),
+  restore: (id) => apiClient.post(`/staff/${id}/restore`),
+};
+
 export const ArticleApi = {
     get : (params) => apiClient.get('/articles', { params }),
     getBySlug : (slug) => apiClient.get(`/articles/${slug}`),
-    create : (data) => apiClient.post('/articles', data, {headers: {'Content-Type': 'multipart/form-data'}}),
-    update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data, {headers: {'Content-Type': 'multipart/form-data'}}),
+    create : (data) => apiClient.post('/articles', data),
+    update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/articles/${id}`),
     restore: (id) => apiClient.post(`/articles/${id}/restore`),
     updateStatus: (id, status) => apiClient.post(`/articles/${id}/status?_method=PATCH`, status)

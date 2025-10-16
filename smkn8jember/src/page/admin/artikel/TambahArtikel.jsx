@@ -38,7 +38,7 @@ const schema = yup.object().shape({
 const TambahArtikel = () => {
   const navigate = useNavigate();
 
-  const { data: categoryDataRaw } = useCategories({ type: ["article", "major"], limit: 1000 });
+  const { data: categoryDataRaw } = useCategories({ type: ["articles", "major"], limit: 1000 });
   const categoryData = categoryDataRaw?.data || [];
   const categoryOptions = categoryData
     .map((category) => ({
@@ -120,7 +120,7 @@ const TambahArtikel = () => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
-    formData.append("draft", true);
+    formData.append("draft", "1");
 
     data.categories.forEach((categoryId) => {
       formData.append("categories[]", categoryId);

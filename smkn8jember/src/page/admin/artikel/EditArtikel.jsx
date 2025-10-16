@@ -41,13 +41,14 @@ const EditArtikel = () => {
   
   const { data: categoryDataRaw } = useCategories({ type: ["article", "major"], limit: 1000 });
   const categoryData = categoryDataRaw?.data || [];
-  const categoryOptions = categoryData.map((category) => ({
+
+  const { data: currentArticle, isLoading, error } = useArticle(slug);
+  const categoryOptions = currentArticle?.categories ? currentArticle.categories.map((category) => ({
     value: category.id,
     label: category.name,
     color: category.color,
-  }));
+  })) : [];
 
-  const { data: currentArticle, isLoading, error } = useArticle(slug);
   
 
   const updateArticle = useUpdateArticle(currentArticle?.id, {
@@ -121,7 +122,7 @@ const EditArtikel = () => {
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("content", data.content);
-      
+      formData.append("draft", false);
       // Handle categories
       if (data.categories && data.categories.length > 0) {
         data.categories.forEach((categoryId) => {

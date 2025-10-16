@@ -9,6 +9,7 @@ import * as yup from "yup";
 import Swal from "sweetalert2";
 import { Loading } from "../../../components/ui";
 
+// 🔸 Validasi Yup
 const schema = yup.object().shape({
   username: yup.string().required("Nama wajib diisi"),
   bio: yup.string().required("Bio wajib diisi"),
@@ -20,14 +21,19 @@ const schema = yup.object().shape({
     .notRequired()
     .test("fileSize", "Ukuran gambar maksimal 2MB", (value) => {
       if (!value) return true;
-      return value.size <= 2 * 1024 * 1024;
+      const file = value instanceof File ? value : value?.[0];
+      return !file || file.size <= 2 * 1024 * 1024;
     })
     .test(
       "fileType",
       "Format gambar tidak valid (harus PNG, JPG, atau JPEG)",
       (value) => {
         if (!value) return true;
-        return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
+        const file = value instanceof File ? value : value?.[0];
+        return (
+          !file ||
+          ["image/png", "image/jpeg", "image/jpg"].includes(file.type)
+        );
       }
     ),
 });
@@ -55,6 +61,7 @@ const ProfileSetting = () => {
     },
   });
 
+  // 🔸 Set default value user saat data sudah ada
   useEffect(() => {
     if (user) {
       reset({
@@ -64,9 +71,18 @@ const ProfileSetting = () => {
         phone_number: user.phone_number || "",
         profile_image: null,
       });
-      setPreview(user.profile_image);
+      setPreview(user.profile_image || null);
     }
   }, [user, reset]);
+
+  // 🔸 Cleanup URL blob saat unmount
+  useEffect(() => {
+    return () => {
+      if (preview && preview.startsWith("blob:")) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
   if (!user) {
     return <Loading variant="spinner" size="large" />;
@@ -88,6 +104,7 @@ const ProfileSetting = () => {
       formData.append("email", data.email);
       formData.append("bio", data.bio);
       formData.append("phone_number", data.phone_number);
+
       if (data.profile_image) {
         formData.append("profile_image", data.profile_image);
       }
@@ -146,7 +163,9 @@ const ProfileSetting = () => {
                 placeholder="Masukkan username baru"
               />
               {errors.username && (
-                <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.username.message}
+                </p>
               )}
             </div>
 
@@ -160,7 +179,9 @@ const ProfileSetting = () => {
                 placeholder="Masukkan email baru"
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -174,7 +195,9 @@ const ProfileSetting = () => {
                 placeholder="Masukkan bio singkat baru"
               />
               {errors.bio && (
-                <p className="text-red-500 text-sm mt-1">{errors.bio.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.bio.message}
+                </p>
               )}
             </div>
 
@@ -211,7 +234,7 @@ const ProfileSetting = () => {
               {preview ? (
                 <div className="relative p-4">
                   <img
-                    src={user.profile_image }
+                    src={preview || user.profile_image}
                     alt="Preview"
                     className="h-65 w-48 object-contain rounded-lg"
                   />

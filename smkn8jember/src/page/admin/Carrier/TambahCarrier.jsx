@@ -3,33 +3,19 @@ import { useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useMajors } from "../../../hooks/api/useMajor";
-import { useCreatePartner } from "../../../hooks/api/usePartner";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Swal from "sweetalert2";
 import { useCreateCareer } from "../../../hooks/api/useCareer";
-import { Multiselect } from "../../../components/ui";
+import { Multiselect} from "../../../components/ui";
+import IconPicker from "../../../components/ui/IconPicker";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama pekerjaan wajib diisi"),
   salary: yup.string().required("Gaji wajib diisi"),
   major_id: yup.string().required("Jurusan wajib diisi"),
-  image: yup
-    .mixed()
-    .required("Gambar partner wajib diisi")
-    .test("fileSize", "Ukuran gambar maksimal 2MB", (value) => {
-      if (!value) return false;
-      return value.size <= 2 * 1024 * 1024;
-    })
-    .test(
-      "fileType",
-      "Format gambar tidak valid (harus PNG, JPG, atau JPEG)",
-      (value) => {
-        if (!value) return false;
-        return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
-      }
-    ),
+  icon: yup.string().required("Icon karir wajib dipilih"),
 });
 
 const TambahCarrier = () => {
@@ -58,7 +44,7 @@ const TambahCarrier = () => {
       name: "",
       salary: "",
       major_id: "",
-      image: null,
+      icon: "",
     },
   });
 
@@ -105,7 +91,7 @@ const TambahCarrier = () => {
     formData.append("name", data.name);
     formData.append("salary", data.salary); 
     formData.append("major_id", data.major_id);
-    formData.append("image", data.image);
+    formData.append("icon", data.icon);
 
     await createPartner.mutateAsync(formData);
     // jangan reset di sini, biarkan onSuccess yang handle reset & alert
@@ -193,64 +179,20 @@ const TambahCarrier = () => {
           />
         </div>
 
-        {/* Upload Gambar */}
+        {/* Icon Picker */}
         <div className="flex flex-col">
-          <label htmlFor="upload" className="font-bold text-gray-800">
-            Icon <span className="text-red-500">*</span>
-          </label>
-          <label
-            htmlFor="upload"
-            className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
-              preview
-                ? "border-orange-300 bg-orange-50"
-                : "border-gray-300 bg-white hover:bg-gray-50"
-            }`}
-          >
-            {preview ? (
-              <div className="relative p-4">
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="h-48 w-48 object-cover rounded-lg shadow-md"
-                />
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPreview(null);
-                    setValue("image", null);
-                  }}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
-                >
-                  x
-                </button>
-              </div>
-            ) : (
-              <div className="py-10 flex flex-col items-center justify-center">
-                <IoCloudUploadOutline className="text-6xl text-gray-400 mb-2" />
-                <p className="text-gray-600 font-medium mb-1">
-                  Klik untuk pilih gambar
-                </p>
-                <p className="text-xs text-gray-400">
-                  Format: PNG, JPEG, JPG (Max: 2MB)
-                </p>
-              </div>
-            )}
-
-            <input
-              id="upload"
-              type="file"
-              accept="image/png,image/jpeg,image/jpg"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-          </label>
-          {errors.image && (
-            <span className="text-red-500 text-sm mt-1">
-              {errors.image.message}
-            </span>
-          )}
+          <IconPicker
+            label="Icon Karir"
+            required={true}
+            value={watch("icon")}
+            onChange={(iconName) => setValue("icon", iconName)}
+            placeholder="Pilih icon untuk karir"
+            error={errors.icon?.message}
+            iconLibraries={["io5", "md", "fa", "hi", "bi"]}
+          />
         </div>
+
+        
 
         {/* Tombol Aksi */}
         <div className="flex gap-3 justify-end mt-6">

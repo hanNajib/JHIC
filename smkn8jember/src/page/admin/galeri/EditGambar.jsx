@@ -68,9 +68,9 @@ const EditGambar = () => {
 
   const [preview, setPreview] = useState(null);
 
-  const { data: categoryDataRaw = [] } = useCategories();
+  const { data: categoryDataResponse } = useCategories({ type: ['gallery'] });
+  const categoryDataRaw = categoryDataResponse?.data || [];
   const categoryOptions = categoryDataRaw
-    .filter((item) => item.type === "gallery")
     .map((category) => ({
       value: category.id,
       label: category.name,

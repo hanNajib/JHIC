@@ -4,6 +4,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useCreateMajor } from "../../../hooks/api/useMajor";
+import IconPicker from "../../../components/ui/IconPicker";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,6 +13,7 @@ const schema = yup.object().shape({
   name: yup.string().required("Nama jurusan wajib diisi"),
   short_name: yup.string().required("Singkatan jurusan wajib diisi"),
   description: yup.string().required("Deskripsi jurusan wajib diisi"),
+  icon: yup.string().required("Icon jurusan wajib dipilih"),
   image: yup
     .mixed()
     .required("Gambar jurusan wajib diisi")
@@ -44,6 +46,7 @@ const TambahJurusan = () => {
       name: "",
       short_name: "",
       description: "",
+      icon: "",
       image: null,
     },
   });
@@ -67,6 +70,7 @@ const TambahJurusan = () => {
     formData.append("name", data.name);
     formData.append("short_name", data.short_name);
     formData.append("description", data.description);
+    formData.append("icon", data.icon);
     formData.append("image", data.image);
 
     await createMajor.mutateAsync(formData);
@@ -156,6 +160,19 @@ const TambahJurusan = () => {
           {errors.description && (
             <span className="text-red-500 text-sm mt-1">{errors.description.message}</span>
           )}
+        </div>
+
+        {/* Icon Picker */}
+        <div className="flex flex-col">
+          <IconPicker
+            label="Icon Jurusan"
+            required={true}
+            value={watch("icon")}
+            onChange={(iconName) => setValue("icon", iconName)}
+            placeholder="Pilih icon untuk jurusan"
+            error={errors.icon?.message}
+            iconLibraries={["io5", "md", "fa", "hi"]}
+          />
         </div>
 
         {/* Upload Gambar */}

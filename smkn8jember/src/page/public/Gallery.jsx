@@ -6,29 +6,24 @@ import { GALLERY_CATEGORIES } from "../../constants/schoolData";
 import { GalleryCard } from "../../components/ui";
 import GalleryPopUp from "../../components/ui/GalleryPopUp";
 import { useGalleries } from "../../hooks/api/useGallery";
+import { all } from "axios";
+import { useCategories } from "../../hooks/api/useCategory";
 
 const Gallery = () => {
   const [sort, setSort] = useState("terbaru");
   const [category, setCategory] = useState("all");
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const { data: galleryData = [], isLoading, isError } = useGalleries();
+  const { data: galleryResponse, isLoading, isError } = useGalleries({
+    category: category === "all" ? undefined : category,
+    sort: sort === "terbaru" ? "desc" : "asc",
+  });
+  const galleryData = galleryResponse?.data || [];
 
-  const filteredGallery = useMemo(() => {
-    let filtered = galleryData;
+  const { data: categoriesResponse } = useCategories({ type: "gallery", all: true });
+  const categories = categoriesResponse?.data || [];
 
-    if (category && category !== "all") {
-      filtered = filtered.filter((item) => item.category === category);
-    }
 
-    filtered = filtered.sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      return sort === "terbaru" ? dateB - dateA : dateA - dateB;
-    });
-
-    return filtered;
-  }, [galleryData, category, sort]);
 
   const handleOpenPopup = (image) => {
     setSelectedImage(image);
@@ -37,10 +32,6 @@ const Gallery = () => {
   const handleClosePopup = () => {
     setSelectedImage(null);
   };
-
-  if (isLoading) {
-    return <p className="text-center py-20">Memuat galeri...</p>;
-  }
 
   if (isError) {
     return (
@@ -85,10 +76,10 @@ const Gallery = () => {
             className="w-full border border-gray-300 rounded-md py-2 pl-3 pr-20 bg-white text-gray-700"
           >
             <option value="all">Semua Kategori</option>
-            {GALLERY_CATEGORIES &&
-              GALLERY_CATEGORIES.filter((c) => c.id !== "all").map((c) => (
+            {categories &&
+              categories.filter((c) => c.id !== "all").map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.label}
+                  {c.name}
                 </option>
               ))}
           </select>
@@ -112,13 +103,12 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Gallery Grid */}
       <section className="bg-white py-10">
-        {filteredGallery.length === 0 ? (
+        {isLoading || galleryData.length === 0 ? (
           <p className="text-center text-gray-500">Tidak ada galeri ditemukan.</p>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-16">
-            {filteredGallery.map((image) => (
+            {galleryData.map((image) => (
               <GalleryCard
                 key={image.id}
                 image={image}

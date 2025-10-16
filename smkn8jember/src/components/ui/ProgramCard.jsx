@@ -4,13 +4,16 @@ import Badge from "../ui/Badge";
 import Icon from "../ui/Icon";
 import parse from "html-react-parser";
 import { useSubjects } from "../../hooks/api/useSubject";
+import { RenderIcon } from "./RenderIcon";
+import { useNavigate } from "react-router-dom";
 const ProgramCard = ({ program, className = "" }) => {
-  const { data: subjects = [] } = useSubjects({ major_id: program.id });
+  const navigate = useNavigate();
   return (
     <Card
-      className={`flex-none w-full lg:w-1/3 ${className}`}
+      className={`flex-none w-full lg:w-1/3 ${className} cursor-pointer`}
       background="gray"
       padding="none"
+      onClick={() => window.location.href = `/major/${program.short_name}`}
     >
       <img
         className="h-52 md:h-56 w-full object-cover"
@@ -22,7 +25,7 @@ const ProgramCard = ({ program, className = "" }) => {
       <div className="flex flex-col px-5 py-6 gap-1 relative">
         <div className="flex items-center gap-3">
           <span className="p-2 bg-[#f78000] text-[#fff] text-2xl rounded-full">
-            <Icon name={program.icon} size={24} />
+            <RenderIcon iconName={program.icon} size={24} />
           </span>
           <h1 className="text-[#242424] font-poppins font-semibold">
             {program.name}

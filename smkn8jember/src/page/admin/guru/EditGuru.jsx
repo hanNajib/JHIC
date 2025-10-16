@@ -1,151 +1,303 @@
 import { IoIosArrowBack } from "react-icons/io";
-import { useParams, useNavigate } from "react-router-dom";
+import { IoCloudUploadOutline } from "react-icons/io5";
 import { useState, useEffect } from "react";
-import Drop from "../../../components/ui/DropdownSelect";
+import { useParams, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import Swal from "sweetalert2";
+import Multiselect from "../../../components/ui/Multiselect";
+import { useStaffById, useUpdateStaff } from "../../../hooks/api/useStaff";
+import { useSubjects } from "../../../hooks/api/useSubject";
 
 const EditGuru = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { id } = useParams(); // ambil id dari URL
-  const [guru, setGuru] = useState([]);
-  const [preview, setPreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    subjects: "",
+    image: null,
+  });
+  const [errors, setErrors] = useState({});
+  
+  const { data: staff, isLoading, error } = useStaffById(id);
+  const updateStaffMutation = useUpdateStaff();
+  const { data: subjectsData } = useSubjects({ per_page: 100 });
 
-  // Daftar pilihan jabatan
-  const jabatanOptions = [
-    "Kepala Sekolah",
-    "Wakil Kepala Sekolah",
-    "Komite",
-    "Kemasanan",
-    "Kesiswaan",
-    "Benddahara",
-  ];
+  const subjectOptions = subjectsData?.data?.data?.map((subject) => ({
+    value: subject.name,
+    label: subject.name,
+    color: subject.color || "gray",
+  })) || [];
 
-  // Fetch data guru dari JSON
+
+
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Nama wajib diisi"),
+    subjects: Yup.string().required("Mata pelajaran wajib diisi"),
+    image: Yup.mixed()
+      .nullable()
+      .test("fileSize", "Ukuran file maksimal 2MB", (value) => {
+        if (!value) return true;
+        return value.size <= 2 * 1024 * 1024;
+      })
+      .test("fileType", "Hanya file gambar yang diperbolehkan", (value) => {
+        if (!value) return true;
+        return ["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(
+          value.type
+        );
+      }),
+  });
+
+  // Load staff data when component mounts or staff data changes
   useEffect(() => {
-    fetch("/guru.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const found = data.find((a) => a.id === parseInt(id));
-        setGuru(found);
-        if (found?.foto) setPreview(found.foto); // tampilkan foto lama
+    if (staff) {
+      const teacherData = staff;
+      setFormData({
+        name: teacherData.name || "",
+        subjects: teacherData.subjects || "",
+        image: null,
       });
-  }, [id]);
+      
+      if (teacherData.image) {
+        setImagePreview(teacherData.image);
+      }
+    }
+  }, [staff]);
 
-  // handle upload gambar
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file)); // preview sementara
+  const validateField = async (field, value) => {
+    try {
+      await validationSchema.validateAt(field, { [field]: value });
+      setErrors(prev => ({ ...prev, [field]: "" }));
+      return true;
+    } catch (error) {
+      setErrors(prev => ({ ...prev, [field]: error.message }));
+      return false;
     }
   };
 
-  // handle submit (sementara console log)
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({
-      nama: guru.nama,
-      jabatan: guru.jabatan,
-      mapel: guru.mapel,
-      foto: preview || guru.foto,
-    });
-    alert("Data siap dikirim ke backend (lihat console)");
+  const validateForm = async () => {
+    try {
+      await validationSchema.validate(formData, { abortEarly: false });
+      setErrors({});
+      return true;
+    } catch (error) {
+      const formErrors = {};
+      error.inner.forEach((err) => {
+        formErrors[err.path] = err.message;
+      });
+      setErrors(formErrors);
+      return false;
+    }
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    validateField(name, value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const isValid = await validateForm();
+    if (!isValid) return;
+
+    const submitFormData = new FormData();
+    submitFormData.append("name", formData.name);
+    submitFormData.append("position", "");
+    submitFormData.append("subjects", formData.subjects);
+    submitFormData.append("category", "lainnya");
+    submitFormData.append("role", "teacher");
+    
+    if (formData.image) {
+      submitFormData.append("image", formData.image);
+    }
+
+    updateStaffMutation.mutate({ id, data: submitFormData }, {
+      onSuccess: () => {
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Data guru berhasil diperbarui",
+          icon: "success",
+          confirmButtonColor: "#f97316",
+        }).then(() => {
+          navigate("/admin/guru");
+        });
+      },
+      onError: (error) => {
+        console.error("Error updating teacher:", error);
+        Swal.fire({
+          title: "Gagal!",
+          text: error.response?.data?.message || "Terjadi kesalahan saat memperbarui data",
+          icon: "error",
+          confirmButtonColor: "#f97316",
+        });
+      },
+    });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, image: file }));
+      validateField("image", file);
+      
+      const reader = new FileReader();
+      reader.onload = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubjectsChange = (selectedSubjects) => {
+    const subjectsString = Array.isArray(selectedSubjects) ? selectedSubjects.join(", ") : selectedSubjects;
+    setFormData(prev => ({ ...prev, subjects: subjectsString }));
+    validateField("subjects", subjectsString);
+  };
+
+  const selectedSubjects = formData.subjects ? formData.subjects.split(", ").filter(Boolean) : [];
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
+        <div className="text-center py-8 text-gray-500">Memuat data...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
+        <div className="text-center py-8 text-red-500">
+          Error loading data: {error.message || "Something went wrong"}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 text-3xl lg:text-4xl text-center p-1 rounded-4xl text-white"
+          className="bg-orange-500 cursor-pointer text-3xl lg:text-4xl text-center p-2 rounded-lg text-white hover:bg-orange-600 transition-colors"
         >
           <IoIosArrowBack />
         </button>
         <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-          Edit Data Guru
+          Edit Guru
         </h1>
       </div>
 
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-        {/* Nama */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="flex flex-col">
-          <label htmlFor="nama" className="font-bold text-gray-800">
-            Nama
+          <label htmlFor="name" className="font-bold text-gray-800">
+            Nama Guru <span className="text-red-500">*</span>
           </label>
           <input
+            id="name"
             type="text"
-            id="nama"
-            value={guru.nama || ""}
-            onChange={(e) => setGuru({ ...guru, nama: e.target.value })}
-            placeholder="Masukkan Nama Guru"
-            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
+            name="name"
+            placeholder="Masukkan nama guru"
+            value={formData.name}
+            onChange={handleInputChange}
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
+              errors.name
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+            }`}
+            required
+          />
+          {errors.name && (
+            <span className="text-red-500 text-sm mt-1">{errors.name}</span>
+          )}
+        </div>
+
+        <div className="flex flex-col">
+          <Multiselect
+            label="Mata Pelajaran"
+            required={true}
+            options={subjectOptions}
+            value={selectedSubjects}
+            onChange={handleSubjectsChange}
+            placeholder="Pilih atau ketik mata pelajaran"
+            searchPlaceholder="Cari mata pelajaran"
+            customValue={true}
+            addCustomPlaceholder="Tekan Enter untuk menggunakan nama mata pelajaran yang diketik"
+            multiple={false}
+            error={errors.subjects}
           />
         </div>
 
-        {/* Jabatan */}
-        <Drop
-          label="Jabatan"
-          name="jabatan"
-          options={jabatanOptions}
-          value={guru.jabatan}
-          onChange={(e) => setGuru({ ...guru, jabatan: e.target.value })}
-          showPlaceholder={false}
-        />
-
-        {/* Mapel */}
         <div className="flex flex-col">
-          <label htmlFor="mapel" className="font-bold text-gray-800">
-            Mata Pelajaran
+          <label htmlFor="image" className="font-bold text-gray-800">
+            Foto Guru
           </label>
-          <input
-            type="text"
-            id="mapel"
-            value={guru.mapel || ""}
-            onChange={(e) => setGuru({ ...guru, mapel: e.target.value })}
-            placeholder="Masukkan Mata Pelajaran"
-            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-          />
-        </div>
 
-        {/* Upload Foto */}
-        <div className="w-full">
-          <label className="block font-semibold mb-2 text-gray-800">Foto</label>
           <label
-            htmlFor="upload"
-            className="flex flex-col items-center justify-center w-full h-fit border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50"
+            htmlFor="image"
+            className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+              imagePreview
+                ? "border-orange-300 bg-orange-50"
+                : "border-gray-300 bg-white hover:bg-gray-50"
+            }`}
           >
-            {preview ? (
-              <img
-                src={preview}
-                alt="Preview"
-                className="h-fit object-contain rounded-lg"
-              />
+            {imagePreview ? (
+              <div className="relative p-4">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="h-48 w-48 object-cover rounded-lg shadow-md"
+                />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setImagePreview(null);
+                    setFormData(prev => ({ ...prev, image: null }));
+                  }}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                >
+                  ×
+                </button>
+              </div>
             ) : (
-              <p className="text-gray-600">Pilih foto guru</p>
+              <div className="py-10 flex flex-col items-center justify-center">
+                <IoCloudUploadOutline className="text-6xl text-gray-600" />
+                <p className="text-gray-600 font-medium">
+                  Klik untuk pilih foto guru
+                </p>
+                <p className="text-xs text-gray-600">PNG, JPEG, JPG (Max 2MB)</p>
+              </div>
             )}
+
             <input
-              id="upload"
+              id="image"
               type="file"
-              accept="image/*"
+              accept="image/png,image/jpeg,image/jpg"
               className="hidden"
-              onChange={handleFileChange}
+              onChange={handleImageChange}
             />
           </label>
+          {errors.image && (
+            <span className="text-red-500 text-sm mt-1">{errors.image}</span>
+          )}
         </div>
 
-        {/* Tombol */}
-        <div className="flex gap-3 justify-end">
-          <button
-            type="submit"
-            className="bg-orange-500 text-white font-semibold py-1 text-sm md:text-base w-24 rounded-4xl hover:bg-orange-600"
-          >
-            Save
-          </button>
+        <div className="flex gap-3 justify-end mt-6">
           <button
             type="button"
-            onClick={() => window.location.reload()}
-            className="py-1 w-24 text-orange-500 text-sm md:text-base font-bold border-[1.9px] border-orange-500 rounded-4xl hover:bg-orange-500 hover:text-white transition duration-300"
+            onClick={() => navigate("/admin/guru")}
+            className="py-2 px-6 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300"
+            disabled={updateStaffMutation.isPending}
           >
-            Reset
+            Batal
+          </button>
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={updateStaffMutation.isPending}
+          >
+            {updateStaffMutation.isPending ? "Menyimpan..." : "Simpan Perubahan"}
           </button>
         </div>
       </form>

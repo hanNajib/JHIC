@@ -29,6 +29,7 @@ class User extends Authenticatable
         'password',
         'role',
         'phone_number',
+        'profile_image',
         'bio'
     ];
 
@@ -95,9 +96,5 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
-    }
-    public function getProfileImageAttribute($value): ?string
-    {
-        return $value ? url(Storage::url($value)) : null;
     }
 }

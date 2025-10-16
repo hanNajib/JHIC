@@ -44,7 +44,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        if ($request->expectsJson()) {
+        $spa = $request->boolean('spa', false);
+        if (!$spa) {
             $request->user()->currentAccessToken()->delete();
             return $this->statusMessage('Logged out', 200);
         } else {

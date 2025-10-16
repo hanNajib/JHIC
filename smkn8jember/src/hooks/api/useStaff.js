@@ -1,12 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '../../constants/queryKeys';
-import * as adminService from '../../api/services/admin/UserService';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "../../constants/queryKeys";
+import * as staffService from "../../api/services/admin/StaffService"
 
-export const useAdmins = (filters = {}, options = {}) => {
+export const useStaff = (filters = {}, options = {}) => {
     return useQuery({
-        queryKey: [QUERY_KEYS.ADMINS.LIST, filters],
+        queryKey: [QUERY_KEYS.STAFF.LIST, filters],
         queryFn: async () => {
-            const response = await adminService.get(filters);
+            const response = await staffService.get(filters);
             return { data: response.data, meta: response.meta, link: response.links };
         },
         staleTime: 5 * 60 * 1000,
@@ -14,38 +14,39 @@ export const useAdmins = (filters = {}, options = {}) => {
     })
 } 
 
-export const useAdmin = (id, options = {}) => {
+export const useStaffById = (id, options = {}) => {
     return useQuery({
-        queryKey: [QUERY_KEYS.ADMINS.DETAIL, id],
+        queryKey: [QUERY_KEYS.STAFF.DETAIL, id],
         queryFn: async () => {
-            const response = await adminService.getById(id);
+            const response = await staffService.getById(id);
             return response.data;
         },
         staleTime: 5 * 60 * 1000,
+        enabled: !!id,
         ...options
     })
 }
 
-export const useAdminByName = (name, options = {}) => {
+export const useStaffStructure = (options = {}) => {
     return useQuery({
-        queryKey: [QUERY_KEYS.ADMINS.DETAIL, name],
+        queryKey: [QUERY_KEYS.STAFF.LIST, 'structure'],
         queryFn: async () => {
-            const response = await adminService.getByName(name);
+            const response = await staffService.getStructure();
             return response.data;
         },
-        staleTime: 5 * 60 * 1000,
+        staleTime: 10 * 60 * 1000,
         ...options
     })
 }
 
-export const useCreateUser = (options = {}) => {
+export const useCreateStaff = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => adminService.create(data),
+        mutationFn: (data) => staffService.create(data),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.STAFF.LIST],
                 exact: false 
             });
             
@@ -61,15 +62,15 @@ export const useCreateUser = (options = {}) => {
     })
 }
 
-export const useUpdateUser = (id, options = {}) => {
+export const useUpdateStaff = (id, options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => adminService.update(id, data),
+        mutationFn: (data) => staffService.update(id, data),
         onSuccess: async (data, variables, context) => {
-            await queryClient.invalidateQueries([QUERY_KEYS.ADMINS.DETAIL, id]);
+            await queryClient.invalidateQueries([QUERY_KEYS.STAFF.DETAIL, id]);
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.STAFF.LIST],
                 exact: false 
             });
             
@@ -85,14 +86,14 @@ export const useUpdateUser = (id, options = {}) => {
     })
 }
 
-export const useDeleteUser = (options = {}) => {
+export const useDeleteStaff = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (id) => adminService.deleteUser(id),
+        mutationFn: (id) => staffService.deleteData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.STAFF.LIST],
                 exact: false 
             });
             
@@ -108,14 +109,14 @@ export const useDeleteUser = (options = {}) => {
     })
 }
 
-export const useRestoreUser = (options = {}) => {
+export const useRestoreStaff = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (id) => adminService.restoreUser(id),
+        mutationFn: (id) => staffService.restoreData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                queryKey: [QUERY_KEYS.STAFF.LIST],
                 exact: false 
             });
             
@@ -130,5 +131,3 @@ export const useRestoreUser = (options = {}) => {
         }
     })
 }
-
-
