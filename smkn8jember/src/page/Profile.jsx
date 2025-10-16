@@ -11,8 +11,6 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const { data: author, isLoading: authorLoading } = useAdminByName(slug);
-  console.log(author);
-  
   const { data: articleResponse, isLoading: articleLoading } = useArticles();
   const articles = articleResponse?.data || articleResponse?.articles || [];
 
@@ -31,42 +29,46 @@ const Profile = () => {
     <>
       <Navbar />
 
-      {/* PROFIL PENULIS */}
-      <div className="flex flex-col lg:flex-row justify-center items-center px-6 md:px-10 lg:px-16 py-10 gap-10 lg:gap-16">
-        {/* Foto */}
+      {/* ===== PROFIL PENULIS ===== */}
+      <div className="flex flex-col lg:flex-row justify-center items-center lg:items-start px-6 md:px-10 lg:px-16 py-12 gap-10 lg:gap-16 bg-white">
+        {/* Foto Profil */}
         {totalLoading ? (
-          <div className="w-56 h-56 md:w-72 md:h-72 lg:w-[410px] lg:h-[410px] rounded-full bg-gray-200 animate-pulse" />
+          <div className="w-40 h-40 md:w-52 md:h-52 rounded-full bg-gray-200 animate-pulse" />
         ) : (
           <img
             src={author?.profile_image || "/assets/images/default-profile.png"}
-            className="w-56 h-56 md:w-72 md:h-72 lg:w-[410px] lg:h-[410px] rounded-full object-cover shadow-md"
             alt={author?.username || "Profile"}
+            className="w-40 h-40 md:w-52 md:h-52 rounded-full object-cover shadow-lg border-4 border-orange-500"
           />
         )}
 
         {/* Info */}
-        <div className="flex flex-col justify-center gap-6 text-center lg:text-left">
+        <div className="flex flex-col justify-center gap-5 text-center lg:text-left">
           {totalLoading ? (
             <>
-              <div className="h-8 bg-gray-200 rounded-md w-64 animate-pulse" />
+              <div className="h-6 bg-gray-200 rounded-md w-48 animate-pulse" />
               <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded-md w-48 animate-pulse" />
-                <div className="h-4 bg-gray-200 rounded-md w-52 animate-pulse" />
+                <div className="h-4 bg-gray-200 rounded-md w-40 animate-pulse" />
                 <div className="h-4 bg-gray-200 rounded-md w-44 animate-pulse" />
+                <div className="h-4 bg-gray-200 rounded-md w-36 animate-pulse" />
               </div>
             </>
           ) : (
             <>
-              <h1 className="text-gray-800 font-bold text-3xl md:text-4xl lg:text-5xl">
+              <h1 className="text-gray-800 font-bold text-2xl md:text-3xl">
                 {author?.username}
               </h1>
 
-              <div className="flex flex-col gap-1 text-base md:text-lg lg:text-xl">
+              <div className="flex flex-col gap-1 text-base md:text-lg">
                 <h4 className="text-gray-600">
-                  Bio: <span className="font-semibold">{author?.bio || "-"}</span>
+                  Bio:{" "}
+                  <span className="font-semibold">
+                    {author?.bio || "-"}
+                  </span>
                 </h4>
                 <h4 className="text-gray-600">
-                  Email: <span className="font-semibold">{author?.email}</span>
+                  Email:{" "}
+                  <span className="font-semibold">{author?.email}</span>
                 </h4>
                 <h4 className="text-gray-600">
                   No Hp:{" "}
@@ -77,15 +79,17 @@ const Profile = () => {
               </div>
 
               {/* Statistik */}
-              <div className="flex justify-center lg:justify-start items-center gap-6 mt-4">
-                <div className="flex flex-col justify-center items-center font-bold bg-orange-500/20 rounded-lg w-full h-24 border-2 border-orange-500">
-                  <h3 className="text-orange-500 text-3xl">{userArticles.length}</h3>
-                  <h4 className="text-gray-800 text-lg">Artikel</h4>
+              <div className="flex justify-center lg:justify-start items-center gap-4 mt-3">
+                <div className="flex flex-col justify-center items-center font-bold bg-orange-500/20 rounded-lg w-32 h-20 border-2 border-orange-500">
+                  <h3 className="text-orange-500 text-2xl">
+                    {userArticles.length}
+                  </h3>
+                  <h4 className="text-gray-800 text-sm">Artikel</h4>
                 </div>
 
-                <div className="flex flex-col justify-center items-center font-bold bg-orange-500/20 rounded-lg w-full h-24 border-2 border-orange-500">
-                  <h3 className="text-orange-500 text-3xl">5740</h3>
-                  <h4 className="text-gray-800 text-lg">Dilihat</h4>
+                <div className="flex flex-col justify-center items-center font-bold bg-orange-500/20 rounded-lg w-32 h-20 border-2 border-orange-500">
+                  <h3 className="text-orange-500 text-2xl">5740</h3>
+                  <h4 className="text-gray-800 text-sm">Dilihat</h4>
                 </div>
               </div>
             </>
@@ -93,7 +97,7 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* ARTIKEL PENULIS */}
+      {/* ===== ARTIKEL PENULIS ===== */}
       <div className="bg-gray-200 px-6 md:px-10 lg:px-16 py-10">
         <div className="text-center w-full p-2 border-b-4 border-orange-500">
           <h2 className="text-gray-800 text-xl md:text-2xl font-bold">
@@ -101,7 +105,8 @@ const Profile = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 w-full pt-10 gap-6">
+        {/* Card tetap sejajar & konsisten */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full pt-10 gap-6">
           {totalLoading ? (
             Array(6)
               .fill(0)
@@ -116,7 +121,7 @@ const Profile = () => {
               <div
                 key={article.id}
                 onClick={() => navigate(`/artikel/${article.slug}`)}
-                className="cursor-pointer"
+                className="cursor-pointer transition-transform hover:scale-[1.02]"
               >
                 <ArticleCard article={article} />
               </div>

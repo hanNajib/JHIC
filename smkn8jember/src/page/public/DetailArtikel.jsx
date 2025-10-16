@@ -31,7 +31,6 @@ function DetailArtikel() {
   const { data: articleResponse, isLoading } = useArticle(slug);
   const article = articleResponse || {};
 
-  // ✅ Skeleton Loader saat isLoading
   if (isLoading) {
     return (
       <>
@@ -169,11 +168,14 @@ function DetailArtikel() {
                 <h1
                   className="text-[#212529] font-poppins font-bold text-xl cursor-pointer hover:text-orange-500"
                   onClick={() =>
-                    navigate(`/profile/${article.author.username || article.author.id}`)
+                    (window.location.href = `/profile/${
+                      article.author.username || article.author?.id
+                    }`)
                   }
                 >
                   {article.author.username}
                 </h1>
+
                 <p className="text-sm text-[#5A5A5A]">{article.author.email}</p>
               </div>
             </div>

@@ -89,9 +89,7 @@ const ArtikelPage = () => {
             </div>
           </div>
 
-          {/* Tabs & Sort */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            {/* Tabs */}
             <div className="flex flex-wrap gap-3 text-gray-700 font-medium">
               {["All", "RPL", "TKJ", "DKV", "TKR", "TSM", "APTH", "APT"].map(
                 (tab, i) => (
