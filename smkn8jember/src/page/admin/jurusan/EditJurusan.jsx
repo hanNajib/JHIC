@@ -9,6 +9,7 @@ import { useMajor, useUpdateMajor } from "../../../hooks/api/useMajor";
 
 const schema = yup.object().shape({
   name: yup.string().nullable().notRequired(),
+  short_name: yup.string().nullable().notRequired(),
   description: yup.string().nullable().notRequired(),
   image: yup
     .mixed()
@@ -37,7 +38,7 @@ const EditJurusan = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting},
     setValue,
     watch,
     reset,
@@ -45,24 +46,24 @@ const EditJurusan = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
+      short_name: "",
       description: "",
       image: null,
     },
   });
 
-  // ketika data jurusan sudah diambil dari API
   useEffect(() => {
     if (currentJurusan) {
       reset({
         name: currentJurusan.name || "",
+        short_name: currentJurusan.short_name || "",
         description: currentJurusan.description || "",
         image: null,
       });
-      setPreview(currentJurusan.image); // tampilkan gambar lama
+      setPreview(currentJurusan.image);
     }
   }, [currentJurusan, reset]);
 
-  // handle ganti gambar baru
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -76,6 +77,7 @@ const EditJurusan = () => {
     try {
       const formData = new FormData();
       formData.append("name", data.name);
+      formData.append("short_name", data.short_name);
       formData.append("description", data.description);
       if (data.image) formData.append("image", data.image);
 
@@ -85,6 +87,11 @@ const EditJurusan = () => {
       console.error("Gagal update jurusan:", error);
     }
   };
+
+  const handleReset = () => {
+    reset();
+    setPreview(null)
+  }
 
   if (isLoading) {
     return (
@@ -128,6 +135,22 @@ const EditJurusan = () => {
           )}
         </div>
 
+        <div className="flex flex-col">
+          <label htmlFor="name" className="font-bold text-gray-800">
+            Nama Singkat Jurusan
+          </label>
+          <input
+            {...register("short_name")}
+            type="text"
+            id="short_name"
+            placeholder="Masukkan Nama Singkat Jurusan"
+            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
+          />
+          {errors.short_name && (
+            <p className="text-red-500 text-sm mt-1">{errors.short_name.message}</p>
+          )}
+        </div>
+
         {/* Deskripsi */}
         <div>
           <label className="block mb-1 font-semibold text-gray-800">
@@ -143,7 +166,7 @@ const EditJurusan = () => {
               height: 300,
               menubar: false,
               plugins: "lists link table code",
-              toolbar: "undo redo | bold italic underline | bullist numlist",
+              toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
               content_style:
                 "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
             }}
@@ -193,19 +216,21 @@ const EditJurusan = () => {
         </div>
 
         {/* Tombol */}
-        <div className="flex gap-3 justify-end">
-          <button
-            type="submit"
-            className="bg-orange-500 text-white font-semibold py-1 text-sm md:text-base w-24 rounded-4xl hover:bg-orange-600"
-          >
-            Save
-          </button>
+        <div className="flex gap-3 justify-end mt-6">
           <button
             type="button"
-            onClick={() => reset()}
-            className="py-1 w-24 text-orange-500 text-sm md:text-base font-bold border-[1.9px] border-orange-500 rounded-4xl hover:bg-orange-500 hover:text-white transition duration-300"
+            onClick={handleReset}
+            className="py-2 px-6 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300"
+            disabled={isSubmitting}
           >
             Reset
+          </button>
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </form>

@@ -6,35 +6,57 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMajors } from "../../../hooks/api/useMajor";
 import { usePartner, useUpdatePartner } from "../../../hooks/api/usePartner";
+import { Multiselect } from "../../../components/ui";
 import Swal from "sweetalert2";
 
 const schema = yup.object().shape({
-  name: yup.string().required("Nama partner wajib diisi"),
+  name: yup.string().required("Nama Partner wajib diisi"),
   major_id: yup.string().required("Jurusan wajib diisi"),
   image: yup
     .mixed()
     .nullable()
     .notRequired()
     .test("fileSize", "Ukuran gambar maksimal 2MB", (value) => {
-      if (!value) return true; 
+      if (!value) return true;
       return value.size <= 2 * 1024 * 1024;
     })
-    .test(
-      "fileType",
-      "Format gambar tidak valid (harus PNG, JPG, atau JPEG)",
-      (value) => {
-        if (!value) return true; // boleh kosong saat edit
-        return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
-      }
-    ),
+    .test("fileType", "Format gambar tidak valid (harus PNG, JPG, atau JPEG)", (value) => {
+      if (!value) return true;
+      return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
+    }),
 });
 
 const EditPartner = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: currentPartner, isLoading } = usePartner(id);
-  const updatePartner = useUpdatePartner(id);
-  const { data: majorDataRaw = [] } = useMajors();
+  const updatePartner = useUpdatePartner(id, {
+    onSuccess: () => {
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Partner berhasil diperbarui",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate('/admin/partner');
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        title: "Gagal!",
+        text: error.response?.data?.message || "Terjadi kesalahan saat memperbarui partner",
+        icon: "error",
+      });
+    }
+  });
+  
+  const { data: majorsDataRaw = [] } = useMajors();
+  const majorsData = majorsDataRaw?.data || [];
+  const majorOptions = majorsData.map((major) => ({
+    value: major.id?.toString(),
+    label: major.name,
+    color: major.color || "#FF6000",
+  }));
 
   const [preview, setPreview] = useState(null);
 
@@ -42,8 +64,9 @@ const EditPartner = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
     setValue,
+    watch,
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -53,54 +76,44 @@ const EditPartner = () => {
     },
   });
 
+  const selectedMajor = watch("major_id");
+
   useEffect(() => {
     if (currentPartner) {
-      reset({
-        name: currentPartner.name || "",
-        major_id: currentPartner.major_id?.toString() || "",
-        image: null,
-      });
-      setPreview(currentPartner.image); // menampilkan gambar lama
+      const majorId = currentPartner.major_id?.toString() || "";
+      setValue("name", currentPartner.name || "");
+      setValue("major_id", majorId);
+      setValue("image", null);
+      setPreview(currentPartner.image);
     }
-  }, [currentPartner, reset]);
+  }, [currentPartner, setValue]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setValue("image", file);
     if (file) {
       setPreview(URL.createObjectURL(file));
-      setValue("image", file);
+    } else {
+      setPreview(null);
     }
   };
 
   const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("major_id", data.major_id);
-      if (data.image) formData.append("image", data.image); // hanya append jika ada file baru
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("major_id", data.major_id);
+    if (data.image) formData.append("image", data.image);
 
-      await updatePartner.mutateAsync(formData);
+    await updatePartner.mutateAsync(formData);
+  };
 
-      await Swal.fire({
-        icon: "success",
-        title: "Berhasil!",
-        text: "Data partner berhasil diperbarui.",
-        confirmButtonColor: "#f97316",
-        timer: 1800,
-        showConfirmButton: false,
-        confirmButtonText: "OK",
-      });
-
-      navigate("/admin/partner"); // atau kembali ke halaman list
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Gagal!",
-        text:
-          error?.response?.data?.message ||
-          "Terjadi kesalahan saat memperbarui data partner.",
-        confirmButtonColor: "#f97316",
-      });
+  const handleReset = () => {
+    if (currentPartner) {
+      const majorId = currentPartner.major_id?.toString() || "";
+      setValue("name", currentPartner.name || "");
+      setValue("major_id", majorId);
+      setValue("image", null);
+      setPreview(currentPartner.image);
     }
   };
 
@@ -118,7 +131,7 @@ const EditPartner = () => {
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 text-4xl text-center p-1 rounded-4xl text-white"
+          className="bg-orange-500 cursor-pointer text-3xl lg:text-4xl text-center p-2 rounded-lg text-white hover:bg-orange-600 transition-colors"
         >
           <IoIosArrowBack />
         </button>
@@ -151,21 +164,14 @@ const EditPartner = () => {
           <label className="font-bold text-gray-800 mb-2">
             Jurusan <span className="text-red-500">*</span>
           </label>
-          {majorDataRaw.map((item) => (
-            <label
-              key={item.id}
-              className="flex items-center gap-2 text-sm font-medium text-gray-600"
-            >
-              <input
-                type="radio"
-                value={item.id}
-                {...register("major_id")}
-                className="accent-orange-500"
-                defaultChecked={currentPartner?.major_id === item.id}
-              />
-              {item.name}
-            </label>
-          ))}
+          <Multiselect
+            options={majorOptions}
+            value={selectedMajor}
+            onChange={(value) => setValue("major_id", value)}
+            placeholder="Pilih jurusan"
+            isSearchable
+            multiple={false}
+          />
           {errors.major_id && (
             <span className="text-red-500 text-sm mt-1">
               {errors.major_id.message}
@@ -203,20 +209,21 @@ const EditPartner = () => {
         </div>
 
         {/* Tombol */}
-        <div className="flex gap-3 justify-end">
-          <button
-            type="submit"
-            className="bg-orange-500 text-white font-semibold py-1 text-sm md:text-base w-24 rounded-4xl hover:bg-orange-600"
-            disabled={isSubmitting}
-          >
-            Save
-          </button>
+        <div className="flex gap-3 justify-end mt-6">
           <button
             type="button"
-            onClick={() => reset()}
-            className="py-1 w-24 text-orange-500 text-sm md:text-base font-bold border-[1.9px] border-orange-500 rounded-4xl hover:bg-orange-500 hover:text-white transition duration-300"
+            onClick={handleReset}
+            className="py-2 px-6 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300"
+            disabled={isSubmitting}
           >
             Reset
+          </button>
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </form>

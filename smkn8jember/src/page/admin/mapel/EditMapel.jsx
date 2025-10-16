@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useUpdateSubject, useSubject } from "../../../hooks/api/useSubject";
-import { Loading } from "../../../components/ui";
+import { Loading, Multiselect } from "../../../components/ui";
 import Swal from "sweetalert2";
 
 const schema = yup.object().shape({
@@ -18,8 +18,8 @@ const schema = yup.object().shape({
 const EditMapel = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data: majors } = useMajors();
-  const { data: subject, isLoading: subjectLoading } = useSubject(id);
+  const { data: majorsDataRaw = [] } = useMajors();
+  const { data: subject, isLoading: subjectLoading, error } = useSubject(id);
   
   const updateSubject = useUpdateSubject(id, {
     onSuccess: () => {
@@ -41,6 +41,13 @@ const EditMapel = () => {
     }
   });
 
+  const majorsData = majorsDataRaw?.data || [];
+  const majorOptions = majorsData.map((major) => ({
+    value: major.id?.toString(),
+    label: major.name,
+    color: major.color || "#FF6000",
+  }));
+
   const {
     register,
     handleSubmit,
@@ -51,21 +58,22 @@ const EditMapel = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      name: subject?.name || "",
-      description: subject?.description || "",
-      major_id: subject?.major_id?.toString() || "",
+      name: "",
+      description: "",
+      major_id: "",
     },
   });
 
   const [preview, setPreview] = useState(null);
+  const selectedMajor = watch("major_id");
   const descriptionValue = watch("description");
 
   useEffect(() => {
-    if (subject?.data) {
-      const subjectData = subject.data;
-      setValue("name", subjectData.name || "");
-      setValue("description", subjectData.description || "");
-      setValue("major_id", subjectData.major_id?.toString() || "");
+    if (subject) {
+      console.log("Subject data:", subject); // Debug log
+      setValue("name", subject.name || "");
+      setValue("description", subject.description || "");
+      setValue("major_id", subject.major_id?.toString() || "");
     }
   }, [subject, setValue]);
 
@@ -80,34 +88,43 @@ const EditMapel = () => {
   };
 
   const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("description", data.description);
-      formData.append("major_id", data.major_id);
-      formData.append("_method", "PUT");
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("major_id", data.major_id);
 
-      await updateSubject.mutateAsync(formData);
-    } catch (error) {
-      console.error("Error updating subject:", error);
-    }
+    await updateSubject.mutateAsync(formData);
   };
 
   const handleReset = () => {
-    if (subject?.data) {
-      const subjectData = subject.data;
-      setValue("name", subjectData.name || "");
-      setValue("description", subjectData.description || "");
-      setValue("major_id", subjectData.major_id?.toString() || "");
+    if (subject) {
+      setValue("name", subject.name || "");
+      setValue("description", subject.description || "");
+      setValue("major_id", subject.major_id?.toString() || "");
     }
     setPreview(null);
   };
 
   if (subjectLoading) {
-    return <Loading variant="spinner" size="lg" />;
+    return (
+      <div className="text-center text-gray-500 py-10">
+        Memuat data Mata Pelajaran...
+      </div>
+    );
   }
 
-  if (!subject) {
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center text-red-500">
+          <h3 className="text-lg font-semibold mb-2">Error Loading Data</h3>
+          <p>{error?.message || "Gagal memuat data mata pelajaran"}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!subject && !subjectLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
         <div className="text-center">
@@ -160,6 +177,21 @@ const EditMapel = () => {
         </div>
 
         <div className="flex flex-col">
+          <label className="font-bold text-gray-800 mb-2">Jurusan</label>
+          <Multiselect
+            options={majorOptions}
+            value={selectedMajor}
+            onChange={(value) => setValue("major_id", value)}
+            placeholder="Pilih jurusan"
+            isSearchable
+            multiple={false}
+          />
+          {errors.major_id && (
+            <span className="text-red-500 text-sm mt-1">{errors.major_id.message}</span>
+          )}
+        </div>
+
+        <div className="flex flex-col">
           <label htmlFor="description" className="font-bold text-gray-800">
             Deskripsi <span className="text-red-500">*</span>
           </label>
@@ -177,26 +209,6 @@ const EditMapel = () => {
           />
           {errors.description && (
             <span className="text-red-500 text-sm mt-1">{errors.description.message}</span>
-          )}
-        </div>
-
-        <div className="flex flex-col">
-          <label className="font-bold text-gray-800 mb-2">Jurusan <span className="text-red-500">*</span></label>
-          <select
-            {...register("major_id")}
-            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
-              errors.major_id
-                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-            }`}
-          >
-            <option value="">Pilih Jurusan</option>
-            {majors && majors.map((major) => (
-              <option key={major.id} value={major.id}>{major.name}</option>
-            ))}
-          </select>
-          {errors.major_id && (
-            <span className="text-red-500 text-sm mt-1">{errors.major_id.message}</span>
           )}
         </div>
 

@@ -9,9 +9,9 @@ export const get = async (params) => {
     }
 };
 
-export const getById = async (id) => {
+export const getBySlug = async (slug) => {
     try {
-        const response = await  ArticleApi.getBySlug(id);
+        const response = await  ArticleApi.getBySlug(slug);
         return response.data;
     } catch (error) {
         throw error;
@@ -53,3 +53,12 @@ export const restoreData = async (id) => {
         throw error;
     }
 }
+
+export const updateStatus = async (id, status) => {
+    try {
+        const response = await ArticleApi.updateStatus(id, status);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

@@ -1,211 +1,214 @@
 import { IoIosArrowBack } from "react-icons/io";
-import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, use } from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useMajor, useUpdateMajor } from "../../../hooks/api/useMajor";
+import { useCategory, useUpdateCategory } from "../../../hooks/api/useCategory";
+import Swal from "sweetalert2";
 
 const schema = yup.object().shape({
-  name: yup.string().nullable().notRequired(),
-  description: yup.string().nullable().notRequired(),
-  image: yup
-    .mixed()
-    .nullable()
-    .notRequired()
-    .test("fileSize", "Ukuran gambar maksimal 2MB", (value) => {
-      if (!value) return true;
-      return value.size <= 2 * 1024 * 1024;
-    })
-    .test("fileType", "Format gambar tidak valid (harus PNG, JPG, atau JPEG)", (value) => {
-      if (!value) return true;
-      return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
-    }),
+  name: yup.string().required("Nama kategori wajib diisi"),
+  type: yup.string().required("Tipe kategori wajib dipilih"),
+  color: yup.string().required("Warna kategori wajib diisi"),
 });
 
-
-const EditJurusan = () => {
+const EditKategori = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: currentJurusan, isLoading } = useMajor(id);
-  const updateMajor = useUpdateMajor(id);
+  const { data: currentCategory, isLoading, error } = useCategory(id);
+  
 
-  const [preview, setPreview] = useState(null);
-
+  const updateCategory = useUpdateCategory(id, {
+    onSuccess: () => {
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Kategori berhasil diperbarui",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate('/admin/kategori');
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        title: "Gagal!",
+        text: error.response?.data?.message || "Terjadi kesalahan saat memperbarui kategori",
+        icon: "error",
+      });
+    }
+  });
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    reset,
     setValue,
     watch,
-    reset,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
-      description: "",
-      image: null,
+      type: "",
+      color: "",
     },
   });
 
-  // ketika data jurusan sudah diambil dari API
+  // Watch untuk memantau value type
+  const watchedType = watch("type");
+
   useEffect(() => {
-    if (currentJurusan) {
-      reset({
-        name: currentJurusan.name || "",
-        description: currentJurusan.description || "",
-        image: null,
-      });
-      setPreview(currentJurusan.image); // tampilkan gambar lama
+    if (currentCategory) {
+      console.log("Setting form values:", currentCategory); // Debug log
+      setValue("name", currentCategory.name || "");
+      setValue("type", currentCategory.type || "");
+      setValue("color", currentCategory.color || "");
     }
-  }, [currentJurusan, reset]);
+  }, [currentCategory, setValue]);
 
-  // handle ganti gambar baru
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      setValue("image", file);
-    }
-  };
-
-  // handle update data
   const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("description", data.description);
-      if (data.image) formData.append("image", data.image);
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("type", data.type);
+    formData.append("color", data.color);
 
-      await updateMajor.mutateAsync(formData);
-      navigate(-1)
-    } catch (error) {
-      console.error("Gagal update jurusan:", error);
+    await updateCategory.mutateAsync(formData);
+  };
+
+  const handleReset = () => {
+    if (currentCategory) {
+      setValue("name", currentCategory.name || "");
+      setValue("type", currentCategory.type || "");
+      setValue("color", currentCategory.color || "");
     }
   };
+
+  const kategoriOptions = [
+    { value: "major", label: "Jurusan" },
+    { value: "article", label: "Artikel" },
+    { value: "announcement", label: "Pengumuman" },
+    { value: "gallery", label: "Galeri" },
+  ];
 
   if (isLoading) {
     return (
       <div className="text-center text-gray-500 py-10">
-        Memuat data jurusan...
+        Memuat data kategori...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center text-red-500">
+          <h3 className="text-lg font-semibold mb-2">Error Loading Data</h3>
+          <p>{error?.message || "Gagal memuat data kategori"}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentCategory && !isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold mb-2">Data Tidak Ditemukan</h3>
+          <p className="text-gray-600">Kategori dengan ID tersebut tidak ditemukan.</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 text-3xl lg:text-4xl text-center p-1 rounded-4xl text-white"
+          className="bg-orange-500 cursor-pointer text-3xl lg:text-4xl text-center p-2 rounded-lg text-white hover:bg-orange-600 transition-colors"
         >
           <IoIosArrowBack />
         </button>
         <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-          Edit Data Jurusan
+          Edit Kategori
         </h1>
       </div>
 
-      {/* Form */}
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
-        {/* Nama Jurusan */}
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        {/* Nama Kategori */}
         <div className="flex flex-col">
           <label htmlFor="name" className="font-bold text-gray-800">
-            Nama Jurusan
+            Nama Kategori
           </label>
           <input
-            {...register("name")}
             type="text"
             id="name"
-            placeholder="Masukkan Nama Jurusan"
-            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
+            placeholder="Masukkan Nama Kategori"
+            {...register("name")}
+            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600 focus:outline-none"
           />
           {errors.name && (
             <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
           )}
         </div>
 
-        {/* Deskripsi */}
-        <div>
-          <label className="block mb-1 font-semibold text-gray-800">
-            Deskripsi
+        {/* Dropdown Type */}
+        <div className="flex flex-col">
+          <label htmlFor="type" className="font-bold text-gray-800">
+            Tipe Kategori
           </label>
-          <Editor
-            apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
-            value={watch("description")}
-            onEditorChange={(newContent) =>
-              setValue("description", newContent)
-            }
-            init={{
-              height: 300,
-              menubar: false,
-              plugins: "lists link table code",
-              toolbar: "undo redo | bold italic underline | bullist numlist",
-              content_style:
-                "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
-            }}
-          />
-          {errors.description && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.description.message}
-            </p>
+          <select
+            id="type"
+            {...register("type")}
+            value={watchedType || ""}
+            className="w-full px-3 py-2 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600 focus:outline-none"
+          >
+            <option value="">Pilih Tipe Kategori</option>
+            {kategoriOptions.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+          {errors.type && (
+            <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>
           )}
         </div>
 
-        {/* Upload Foto */}
-        <div className="w-full">
-          <label className="block font-semibold mb-2 text-gray-800">
-            Gambar Jurusan
+        {/* Warna (input teks biasa) */}
+        <div className="flex flex-col">
+          <label htmlFor="color" className="font-bold text-gray-800">
+            Warna (contoh: #FF6600)
           </label>
-          <label
-            htmlFor="upload"
-            className="flex flex-col items-center justify-center w-full h-fit border-2 border-gray-600 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50"
-          >
-            {preview ? (
-              <img
-                src={preview}
-                alt="Preview"
-                className="h-64 object-contain rounded-lg"
-              />
-            ) : (
-              <div className="py-10 flex flex-col items-center justify-center">
-                <p className="text-gray-600 font-medium">
-                  Klik untuk pilih gambar
-                </p>
-                <p className="text-xs text-gray-400">PNG, JPEG, JPG</p>
-              </div>
-            )}
-
-            <input
-              id="upload"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-          </label>
-          {errors.image && (
-            <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>
+          <input
+            type="text"
+            id="color"
+            placeholder="#FF6600"
+            {...register("color")}
+            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600 focus:outline-none"
+          />
+          {errors.color && (
+            <p className="text-red-500 text-sm mt-1">{errors.color.message}</p>
           )}
         </div>
 
         {/* Tombol */}
-        <div className="flex gap-3 justify-end">
-          <button
-            type="submit"
-            className="bg-orange-500 text-white font-semibold py-1 text-sm md:text-base w-24 rounded-4xl hover:bg-orange-600"
-          >
-            Save
-          </button>
+        <div className="flex gap-3 justify-end mt-6">
           <button
             type="button"
-            onClick={() => reset()}
-            className="py-1 w-24 text-orange-500 text-sm md:text-base font-bold border-[1.9px] border-orange-500 rounded-4xl hover:bg-orange-500 hover:text-white transition duration-300"
+            onClick={handleReset}
+            className="py-2 px-6 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300"
+            disabled={isSubmitting}
           >
             Reset
+          </button>
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </form>
@@ -213,4 +216,4 @@ const EditJurusan = () => {
   );
 };
 
-export default EditJurusan;
+export default EditKategori;

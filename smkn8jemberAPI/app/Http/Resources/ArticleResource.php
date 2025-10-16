@@ -18,6 +18,7 @@ class ArticleResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'status' => $this->status,
             'image' => $this->image,
             'content' => $this->content,
             'views' => $this->views,
@@ -30,6 +31,7 @@ class ArticleResource extends JsonResource
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }

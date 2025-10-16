@@ -16,7 +16,7 @@ const DefaultLayout = ({ children }) => {
             <div className="min-h-screen">
                 <Navbar />
 
-                <main>
+                <main className="min-h-52">
                     {children}
                 </main>
 

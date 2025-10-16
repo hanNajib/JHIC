@@ -15,20 +15,25 @@ class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $articlesPaginated = Article::applyFilters(
+        $articlesPaginated = Article::with(['author', 'categories'])->applyFilters(
             $request,
-            ['title', 'content', 'slug'],
-            ['author_id', 'status']
+            searchable: ['title', 'content', 'slug'],
+            filters: ['author_id', 'status'],
+            relationFilters: [
+                'categories.name' => 'category_name',
+                'author.id' => 'author_id'
+            ],
         );
         return $this->cursorPaginatedResource($articlesPaginated, ArticleResource::class, 'Articles retrieved successfully');
     }
 
     public function show($slug)
     {
-        $article = Article::whereSlug($slug)->first();
+        $article = Article::whereSlug($slug)->with(['author', 'categories'])->first();
         if (!$article) {
             return $this->notFound('Article not found');
         }
+        return $article;
         return $this->success(new ArticleResource($article), 'Article retrieved successfully');
     }
 
@@ -40,6 +45,8 @@ class ArticleController extends Controller
             $validated['image'] = $imagePath;
         }
         $validated['author_id'] = Auth::id();
+        $validated['slug'] = $request->title;
+        $validated['status'] = $request->draft ? 'draft' : (Auth::user()->role === 'superadmin' ? 'published' : 'pending');
         $article = Article::create($validated);
         if (isset($validated['categories'])) {
             $article->categories()->sync($validated['categories']);
@@ -50,7 +57,7 @@ class ArticleController extends Controller
     public function update(ArticleUpdateRequest $request, $id)
     {
         $article = Article::find($id);
-        if (!$article) {
+        if (!$article || $article->author_id !== Auth::id() && Auth::user()->role !== 'superadmin') {
             return $this->notFound('Article not found');
         }
         $validated = $request->validated();
@@ -74,6 +81,10 @@ class ArticleController extends Controller
         if (!$article) {
             return $this->notFound('Article not found');
         }
+
+        if($article->author_id !== Auth::id() || Auth::user()->role !== 'superadmin') {
+            return $this->error('You are not authorized to delete this article', 403);
+        }
         if ($article->image) {
             Storage::disk('public')->delete($article->image);
         }
@@ -89,5 +100,22 @@ class ArticleController extends Controller
         }
         $article->restore();
         return $this->statusMessage("Admin restored successfully");
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,published,rejected',
+        ]);
+
+        $article = Article::find($id);
+        if (!$article) {
+            return $this->notFound('Article not found');
+        }
+
+        $article->status = $request->status;
+        $article->save();
+
+        return $this->success(new ArticleResource($article), 'Article status updated successfully');
     }
 }

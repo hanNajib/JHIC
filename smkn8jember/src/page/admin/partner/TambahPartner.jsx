@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Swal from "sweetalert2";
+import { Multiselect } from "../../../components/ui";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama partner wajib diisi"),
@@ -33,7 +34,15 @@ const TambahPartner = () => {
   const navigate = useNavigate();
   const [preview, setPreview] = useState(null);
 
-  const { data: majorDataRaw = [] } = useMajors();
+  const { data: majorsDataRaw = [] } = useMajors();
+
+  const majorsData = majorsDataRaw?.data || [];
+  const majorOptions = majorsData.map((major) => ({
+    value: major.id?.toString(),
+    label: major.name,
+    color: major.color || "#FF6000",
+  }));
+
 
   const {
     register,
@@ -41,6 +50,7 @@ const TambahPartner = () => {
     formState: { errors, isSubmitting },
     reset,
     setValue,
+    watch,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -49,6 +59,8 @@ const TambahPartner = () => {
       image: null,
     },
   });
+
+  const selectedMajor = watch("major_id");
 
   const createPartner = useCreatePartner({
     onSuccess: () => {
@@ -141,35 +153,30 @@ const TambahPartner = () => {
           )}
         </div>
 
-        {/* Jurusan */}
         <div className="flex flex-col">
-          <label className="font-bold text-gray-800 mb-2">
-            Jurusan <span className="text-red-500">*</span>
-          </label>
-          <div className="flex flex-col gap-2">
-            {majorDataRaw.map((item) => (
-              <label
-                key={item.id}
-                className="flex items-center gap-2 text-sm font-medium text-gray-600"
-              >
-                <input
-                  type="radio"
-                  value={item.id}
-                  {...register("major_id")}
-                  className="accent-orange-500"
-                />
-                {item.name}
+          {majorsData.length === 0 ? (
+            <div className="flex flex-col">
+              <label className="font-bold text-gray-800">
+                Jurusan <span className="text-red-500">*</span>
               </label>
-            ))}
-          </div>
-          {errors.major_id && (
-            <span className="text-red-500 text-sm mt-1">
-              {errors.major_id.message}
-            </span>
+              <div className="w-full px-3 py-2 text-gray-500 border border-gray-300 rounded-lg">
+                Memuat data jurusan...
+              </div>
+            </div>
+          ) : (
+            <Multiselect
+              label="Jurusan"
+              required={true}
+              options={majorOptions}
+              value={selectedMajor}
+              onChange={(value) => setValue("major_id", value)}
+              placeholder="Pilih jurusan..."
+              error={errors.major_id?.message}
+              multiple={false}
+            />
           )}
         </div>
 
-        {/* Upload Gambar */}
         <div className="flex flex-col">
           <label htmlFor="upload" className="font-bold text-gray-800">
             Gambar partner <span className="text-red-500">*</span>

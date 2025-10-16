@@ -30,10 +30,9 @@ const Gallery = () => {
       filtered = filtered.filter((item) => item.category === category);
     }
 
-    // Urutkan berdasarkan tanggal
-    filtered.sort((a, b) => {
-      const dateA = new Date(a?.date ?? a?.created_at ?? 0).getTime();
-      const dateB = new Date(b?.date ?? b?.created_at ?? 0).getTime();
+    filtered = filtered.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
       return sort === "terbaru" ? dateB - dateA : dateA - dateB;
     });
 
