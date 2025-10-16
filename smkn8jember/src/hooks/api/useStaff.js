@@ -1,38 +1,52 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../../constants/queryKeys";
-import * as categoryService from "../../api/services/admin/CategoryService";
-export const useCategories = (filters = {}, options = {}) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.CATEGORIES.LIST, filters],
-    queryFn: async () => {
-      const response = await categoryService.get(filters);
-      return { data: response.data, meta: response.meta, link: response.links };
-    },
-    staleTime: 5 * 60 * 1000,
-    ...options,
-  });
-};
+import * as staffService from "../../api/services/admin/StaffService"
 
-export const useCategory = (id, options = {}) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.CATEGORIES.DETAIL, id],
-    queryFn: async () => {
-      const response = await categoryService.getById(id);
-      return response.data;
-    },
-    staleTime: 5 * 60 * 1000,
-    ...options,
-  });
-};
+export const useStaff = (filters = {}, options = {}) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.STAFF.LIST, filters],
+        queryFn: async () => {
+            const response = await staffService.get(filters);
+            return { data: response.data, meta: response.meta, link: response.links };
+        },
+        staleTime: 5 * 60 * 1000,
+        ...options
+    })
+} 
 
-export const useCreateCategory = (options = {}) => {
+export const useStaffById = (id, options = {}) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.STAFF.DETAIL, id],
+        queryFn: async () => {
+            const response = await staffService.getById(id);
+            return response.data;
+        },
+        staleTime: 5 * 60 * 1000,
+        enabled: !!id,
+        ...options
+    })
+}
+
+export const useStaffStructure = (options = {}) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.STAFF.LIST, 'structure'],
+        queryFn: async () => {
+            const response = await staffService.getStructure();
+            return response.data;
+        },
+        staleTime: 10 * 60 * 1000,
+        ...options
+    })
+}
+
+export const useCreateStaff = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => categoryService.create(data),
+        mutationFn: (data) => staffService.create(data),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.CATEGORIES.LIST],
+                queryKey: [QUERY_KEYS.STAFF.LIST],
                 exact: false 
             });
             
@@ -46,17 +60,17 @@ export const useCreateCategory = (options = {}) => {
             }
         }
     })
-};
+}
 
-export const useUpdateCategory = (id, options = {}) => {
+export const useUpdateStaff = (id, options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => categoryService.update(id, data),
+        mutationFn: (data) => staffService.update(id, data),
         onSuccess: async (data, variables, context) => {
-            await queryClient.invalidateQueries([QUERY_KEYS.CATEGORIES.DETAIL, id]);
+            await queryClient.invalidateQueries([QUERY_KEYS.STAFF.DETAIL, id]);
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.CATEGORIES.LIST],
+                queryKey: [QUERY_KEYS.STAFF.LIST],
                 exact: false 
             });
             
@@ -70,16 +84,16 @@ export const useUpdateCategory = (id, options = {}) => {
             }
         }
     })
-};
+}
 
-export const useDeleteCategory = (options = {}) => {
+export const useDeleteStaff = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (id) => categoryService.deleteData(id),
+        mutationFn: (id) => staffService.deleteData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.CATEGORIES.LIST],
+                queryKey: [QUERY_KEYS.STAFF.LIST],
                 exact: false 
             });
             
@@ -93,16 +107,16 @@ export const useDeleteCategory = (options = {}) => {
             }
         }
     })
-};
+}
 
-export const useRestoreCategory = (options = {}) => {
+export const useRestoreStaff = (options = {}) => {
     const queryClient = useQueryClient();
-    
+
     return useMutation({
-        mutationFn: (id) => categoryService.restoreData(id),
+        mutationFn: (id) => staffService.restoreData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.CATEGORIES.LIST],
+                queryKey: [QUERY_KEYS.STAFF.LIST],
                 exact: false 
             });
             
@@ -116,4 +130,4 @@ export const useRestoreCategory = (options = {}) => {
             }
         }
     })
-};
+}

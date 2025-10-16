@@ -210,7 +210,7 @@ const TambahPengumuman = () => {
               height: 300,
               menubar: false,
               plugins: "lists link image table code",
-              toolbar: "undo redo | bold italic | bullist numlist",
+              toolbar: "undo redo | bold italic | bullist numlist | alignleft aligncenter alignright | link code",
               placeholder: "Masukkan Deskripsi Pengumuman",
             }}
           />

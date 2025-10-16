@@ -1,77 +1,192 @@
-import React from "react";
-import { GrArticle } from "react-icons/gr";
+import React, { useState } from "react";
+import { CiImageOn } from "react-icons/ci";
+import { GrArticle, GrGallery } from "react-icons/gr";
+import { RiMegaphoneFill } from "react-icons/ri";
+import { MdExtension } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { useDebounce } from "../../../hooks/useDebounce";
+import { useArticles } from "../../../hooks/api/useArticle";
+import { useAnnouncements } from "../../../hooks/api/useAnnouncement";
+import { useGalleries } from "../../../hooks/api/useGallery";
+import { useMajors } from "../../../hooks/api/useMajor";
+import { useAuth } from "../../../hooks/useAuth";
 
 const Dashboard = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [search, setSearch] = useState("");
+  const [cursor, setCursor] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [jumlahPage, setJumlahPage] = useState(5);
+  const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
+
+  const navigate = useNavigate();
+  const debouncedSearchTerm = useDebounce(search, 500);
+
+  const { data: articleResponse, isFetching } = useArticles({
+    s: debouncedSearchTerm,
+    trashed: softDeleteFilter === "deleted",
+    cursor: cursor,
+    limit: jumlahPage,
+  });
+  const { user } = useAuth();
+
+  const { data: announcementRes, isFetching: loadingAnnouncement } =
+    useAnnouncements();
+  const { data: galleryRes, isFetching: loadingGallery } = useGalleries();
+  const { data: majorRes, isFetching: loadingMajor } = useMajors();
+
+  const articles = articleResponse?.data || [];
+  const meta = articleResponse?.meta || {};
+  const jumlahArtikel = meta?.total || articles.length;
+  const jumlahPengumuman =
+    announcementRes?.meta?.total || announcementRes?.data?.length || 0;
+  const jumlahGallery =
+    galleryRes?.meta?.total || galleryRes?.data?.length || 0;
+  const jumlahJurusan =
+    majorRes?.meta?.total || majorRes?.data?.length || 0;
+
+  const LoadingDots = () => (
+    <span className="inline-block animate-pulse text-orange-500">
+      ...
+    </span>
+  );
 
   return (
-    <div className="flex flex-col gap-10 ">
+    <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-2">
         <h1 className="font-bold text-2xl md:text-4xl font-poppins text-gray-900">
-          Selamat Datang di Admin, Eskalaber Jaya
+          {user?.username || "Eskalaber Jaya"} Eskalaber Jaya
         </h1>
         <h4 className="text-gray-500 font-medium text-sm md:text-base">
           Web Site merupakan salah satu wujud dari kemajuan teknologi di dunia
         </h4>
       </div>
 
+      {/* Kartu Statistik */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="flex justify-between p-6 md:p-8 items-center w-full rounded-lg bg-white text-gray-900 shadow-md"
-          >
-            <div>
-              <h4 className="font-bold text-base">Artikel Terbit</h4>
-              <h3 className="font-bold text-2xl md:text-3xl">255</h3>
-            </div>
-            <div className="rounded-4xl p-3 bg-orange-500/25 text-orange-500 text-2xl md:text-3xl">
-              <GrArticle />
-            </div>
+        {/* Artikel */}
+        <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+          <div className="flex flex-col gap-1">
+            <h4 className="font-bold text-base">Artikel Terbit</h4>
+            <h3 className="font-bold text-2xl md:text-3xl">
+              {isFetching ? <LoadingDots /> : jumlahArtikel}
+            </h3>
           </div>
-        ))}
+          <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+            <GrArticle />
+          </div>
+        </div>
+
+        {/* Pengumuman */}
+        <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+          <div className="flex flex-col gap-1">
+            <h4 className="font-bold text-base">Pengumuman</h4>
+            <h3 className="font-bold text-2xl md:text-3xl">
+              {loadingAnnouncement ? <LoadingDots /> : jumlahPengumuman}
+            </h3>
+          </div>
+          <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+            <RiMegaphoneFill />
+          </div>
+        </div>
+
+        {/* Gallery */}
+        <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+          <div className="flex flex-col gap-1">
+            <h4 className="font-bold text-base">Gallery Terbit</h4>
+            <h3 className="font-bold text-2xl md:text-3xl">
+              {loadingGallery ? <LoadingDots /> : jumlahGallery}
+            </h3>
+          </div>
+          <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+            <GrGallery />
+          </div>
+        </div>
+
+        {/* Jurusan */}
+        <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+          <div className="flex flex-col gap-1">
+            <h4 className="font-bold text-base">Jurusan</h4>
+            <h3 className="font-bold text-2xl md:text-3xl">
+              {loadingMajor ? <LoadingDots /> : jumlahJurusan}
+            </h3>
+          </div>
+          <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+            <MdExtension />
+          </div>
+        </div>
       </div>
 
-      {/* artikel populer */}
-      <div className="bg-white rounded-lg p-5">
-        <h2 className="font-bold text-xl md:text-2xl mb-4">Artikel Populer</h2>
-
-        <div className="rounded-2xl overflow-hidden overflow-x-auto">
-          <table className="w-full text-sm min-w-[500px]">
-            <thead>
-              <tr className="bg-orange-200">
-                <th className="px-4 py-2 text-center font-extrabold">No</th>
-                <th className="px-4 py-2 text-start font-extrabold">Gambar</th>
-                <th className="px-4 py-2 text-start font-extrabold">Judul</th>
-                <th className="px-4 py-2 w-24 text-start font-extrabold">
-                  Dilihat
-                </th>
+      {/* Tabel Artikel */}
+      <div className="overflow-x-auto shadow-lg rounded-lg relative">
+        <table className="min-w-full bg-white">
+          <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
+            <tr>
+              <th className="py-2 px-4 text-left text-white">No</th>
+              <th className="py-2 px-4 text-left text-white min-w-56">Judul</th>
+              <th className="py-2 px-4 text-left text-white">Kategori</th>
+              <th className="py-2 px-4 text-left text-white">Tanggal</th>
+              <th className="py-2 px-4 text-left text-white">Foto</th>
+              <th className="py-2 px-4 text-left text-white">View</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isFetching ? (
+              <tr>
+                <td colSpan={6} className="text-center py-4 text-gray-500">
+                  Memuat data...
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {Array.from({ length: 10 }).map((_, i) => (
+            ) : articles.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-4 text-gray-500">
+                  Tidak ada data ditemukan.
+                </td>
+              </tr>
+            ) : (
+              articles.map((article, i) => (
                 <tr
-                  key={i}
-                  className="border-t border-gray-300 text-gray-800"
+                  key={article.id}
+                  className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="px-4 py-2 text-center font-semibold">
-                    {i + 1}
+                  <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
+                  <td className="py-2">{article.title}</td>
+                  <td className="py-2 px-4">
+                    <div className="bg-orange-300/30 border border-orange-500 px-2 py-[1px] w-fit rounded-2xl text-sm text-orange-500">
+                      {article.category?.name || "-"}
+                    </div>
                   </td>
-                  <td className="px-4 py-2 w-36">
-                    <img
-                      src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=900&h=500&s=1"
-                      alt="Artikel"
-                      className="w-20 h-14 object-cover rounded"
-                    />
+                  <td className="py-2 px-4">
+                    {article.created_at
+                      ? new Date(article.created_at).toLocaleDateString(
+                          "id-ID",
+                          {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )
+                      : "-"}
                   </td>
-                  <td className="px-4 py-2 font-semibold">
-                    Juara 1 Lomba Kreasi Tingkat Kabupaten Jember
+                  <td className="py-2 px-4">
+                    {article.image ? (
+                      <button
+                        onClick={() => setSelectedImage(article.image)}
+                        className="flex justify-center items-center gap-2 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                      >
+                        <CiImageOn className="text-lg" />
+                        <span>Lihat</span>
+                      </button>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
                   </td>
-                  <td className="px-4 py-2 text-start font-semibold">157</td>
+                  <td className="py-2 px-4">{article.views || 0}</td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

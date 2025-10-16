@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('salary');
-            $table->string('image');
+            $table->string('icon');
             $table->foreignId('major_id')->constrained('majors')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();

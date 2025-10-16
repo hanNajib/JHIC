@@ -6,7 +6,7 @@ import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useDeleteSubject, useSubjects } from "../../../hooks/api/useSubject";
+import { useDeleteSubject, useRestoreSubject, useSubjects } from "../../../hooks/api/useSubject";
 import Swal from "sweetalert2";
 import { Button } from "../../../components/ui";
 import { useMajors } from "../../../hooks/api/useMajor";
@@ -40,6 +40,7 @@ const Mapel = () => {
   const meta = subjectResponse?.meta || {};
 
   const deleteSubject = useDeleteSubject();
+  const restoreSubject = useRestoreSubject();
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -93,7 +94,12 @@ const Mapel = () => {
       cancelButtonText: "Batal"
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log('Restore subject:', subject.id);
+        restoreSubject.mutate(subject.id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire("Diaktifkan!", "Mata pelajaran telah diaktifkan.", "success");
+          }
+        });
       }
     });
   };
@@ -192,7 +198,7 @@ const Mapel = () => {
                   key={subject.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="py-2 px-4">{i + 1}</td>
+                  <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                   <td className="py-2">{subject.name}</td>
                   <td className="py-2 px-4">{subject.description}</td>
                   <td className="py-2 px-4">{subject.major?.name || '-'}</td>

@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { useDeleteMajor, useMajors, useRestoreMajor } from "../../../hooks/api/useMajor";
 import { ImageModal, Button } from "../../../components/ui";
+import { RenderIcon } from "../../../components/ui/RenderIcon";
 
 const Jurusan = () => {
   const [search, setSearch] = useState("");
@@ -67,8 +68,12 @@ const Jurusan = () => {
       icon: "warning",
     }).then((result) => {
       if (result.isConfirmed) {
-        restoreMajor.mutate(major.id)
-        Swal.fire("Diaktifkan!", "Admin telah diaktifkan.", "success");
+        restoreMajor.mutate(major.id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire("Diaktifkan!", "Jurusan telah diaktifkan.", "success");
+          }
+        })
       }
     });
   };
@@ -139,7 +144,7 @@ const Jurusan = () => {
         linkTambah="/admin/jurusan/tambah"
         titleBTN="Tambah Jurusan"
         handleRefresh={() => refetch()}
-        
+
         hasSoftDelete={true}
         softDeleteFilter={softDeleteFilter}
         setSoftDeleteFilter={(val) => {
@@ -159,6 +164,7 @@ const Jurusan = () => {
               <th className="py-2 px-4 text-left text-white min-w-56">Nama</th>
               <th className="py-2 px-4 text-left text-white">Deskripsi</th>
               <th className="py-2 px-4 text-left text-white">Gambar</th>
+              <th className="py-2 px-4 text-left text-white">Icon</th>
               <th className="py-2 px-4 text-left text-white">Aksi</th>
             </tr>
           </thead>
@@ -184,7 +190,7 @@ const Jurusan = () => {
                   <td className="py-2 px-4">{index + 1}</td>
                   <td className="py-2">({major.short_name}) {major.name}</td>
                   <td className="py-2 px-4">
-                    <div 
+                    <div
                       className="line-clamp-2"
                       dangerouslySetInnerHTML={{ __html: major.description }}
                     />
@@ -197,6 +203,11 @@ const Jurusan = () => {
                       <CiImageOn className="text-lg" />
                       Lihat
                     </button>
+                  </td>
+                  <td className="py-2 px-4">
+                    {major.icon && (
+                      <RenderIcon iconName={major.icon} />
+                    )}
                   </td>
                   <td className="py-2 px-4">
                     <div className="flex gap-2 justify-center">
@@ -213,7 +224,7 @@ const Jurusan = () => {
                         className={`${major.deleted_at === null
                           ? 'bg-red-500 hover:bg-red-600'
                           : 'bg-green-500 hover:bg-green-600'
-                        } text-white p-2 rounded-2xl shadow-lg transition`}
+                          } text-white p-2 rounded-2xl shadow-lg transition`}
                       >
                         {major.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
                       </button>
@@ -230,7 +241,7 @@ const Jurusan = () => {
         currentPage={1}
         totalPages={1}
         perPage={jumlahPage}
-        onPageChange={() => {}}
+        onPageChange={() => { }}
         onPerPageChange={(value) => {
           setJumlahPage(value);
           setCursor(null);

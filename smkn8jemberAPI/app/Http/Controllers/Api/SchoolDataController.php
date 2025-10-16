@@ -15,7 +15,7 @@ class SchoolDataController extends Controller
         return $this->success($schoolData, 'School Data retrieved successfully');
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $name)
     {
         $request->validate([
             'type' => 'sometimes|string',
@@ -23,7 +23,7 @@ class SchoolDataController extends Controller
             'value' => 'sometimes|string'
         ]);
 
-        $schoolData = SchoolData::find($id);
+        $schoolData = SchoolData::where("name", $name);
         if (!$schoolData) {
             return $this->notFound('School data not found');
         }
@@ -36,7 +36,7 @@ class SchoolDataController extends Controller
 
     public function show($id)
     {
-        $schoolData = SchoolData::find($id);
+        $schoolData = SchoolData::whereName($id);
         if (!$schoolData) {
             return $this->notFound('School Data not found');
         }

@@ -14,9 +14,10 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
+        User::updateOrCreate([
             'username' => 'superadmin',
             'email' => 'superadmin@smkn8jember.sch.id',
+        ], [
             'password' => Hash::make('supaadminrawr'),
             'role' => 'superadmin',
             'phone_number' => '1234567890',

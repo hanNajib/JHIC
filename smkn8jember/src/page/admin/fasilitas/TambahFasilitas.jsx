@@ -33,10 +33,32 @@ const TambahFasilitas = () => {
   const navigate = useNavigate();
   const [preview, setPreview] = useState(null);
 
+  const createFacility = useCreateFacility({
+    onSuccess: () => {
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Fasilitas berhasil ditambahkan",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate('/admin/fasilitas');
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        title: "Gagal!",
+        text: error.response?.data?.message || "Terjadi kesalahan saat menambahkan fasilitas",
+        icon: "error",
+      });
+    }
+  });
+
+
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setValue,
     reset,
   } = useForm({
@@ -49,48 +71,35 @@ const TambahFasilitas = () => {
     },
   });
 
-  const createFacility = useCreateFacility({
-    onSuccess: () => {
-      Swal.fire({
-        title: "Berhasil!",
-        text: "Data fasilitas berhasil ditambahkan.",
-        icon: "success",
-        confirmButtonColor: "#f97316",
-        confirmButtonText: "OK",
-      }).then(() => {
-        reset();
-        setPreview(null);
-        navigate("/admin/fasilitas");
-      });
-    },
-    onError: (error) => {
-      Swal.fire({
-        icon: "error",
-        title: "Gagal!",
-        text:
-          error?.response?.data?.message ||
-          "Terjadi kesalahan saat menambahkan data.",
-        confirmButtonColor: "#f97316",
-      });
-    },
-  });
-
   const onSubmit = async (data) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("room_total", data.room_total);
-    formData.append("description", data.description);
-    formData.append("image", data.image);
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("room_total", data.room_total);
+      formData.append("description", data.description);
+      formData.append("image", data.image);
 
-    await createFacility.mutateAsync(formData);
+      await createFacility.mutateAsync(formData);
+      reset();
+      setPreview(null);
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setValue("image", file);
     if (file) {
-      setValue("image", file);
       setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
     }
+  };
+
+  const handleReset = () => {
+    reset();
+    setPreview(null);
   };
 
   return (
@@ -99,12 +108,12 @@ const TambahFasilitas = () => {
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 text-3xl lg:text-4xl text-center p-1 rounded-full text-white"
+          className="bg-orange-500 cursor-pointer text-3xl lg:text-4xl text-center p-2 rounded-lg text-white hover:bg-orange-600 transition-colors"
         >
           <IoIosArrowBack />
         </button>
         <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-          Tambah Data Fasilitas
+          Tambah Fasilitas
         </h1>
       </div>
 
@@ -202,23 +211,22 @@ const TambahFasilitas = () => {
           )}
         </div>
 
-        {/* Tombol Aksi */}
-        <div className="flex gap-3 justify-end">
-          <button
-            type="submit"
-            className="bg-orange-500 text-white font-semibold py-1 text-base w-24 rounded-full hover:bg-orange-600"
-          >
-            Save
-          </button>
+        {/* Tombol */}
+        <div className="flex gap-3 justify-end mt-6">
           <button
             type="button"
-            onClick={() => {
-              reset();
-              setPreview(null);
-            }}
-            className="py-1 w-24 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-full hover:bg-orange-500 hover:text-white transition duration-300"
+            onClick={handleReset}
+            className="py-2 px-6 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300"
+            disabled={isSubmitting}
           >
             Reset
+          </button>
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </form>

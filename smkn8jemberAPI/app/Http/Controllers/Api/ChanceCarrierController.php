@@ -13,8 +13,13 @@ class ChanceCarrierController extends Controller
     use ApiResponse;
 
     public function index() {
-        $data = ChanceCarrier::all();
-        return $this->success($data, 'Chance carriers retrieved successfully');
+        $data = ChanceCarrier::with('major')->applyFilters(
+            request(),
+            searchable: ['name', 'salary'],
+            filters: ['major_id'],
+            relationFilters: ['major.name' => 'major_name']
+        );
+        return $this->cursorPaginated($data, 'Chance carriers retrieved successfully');
 
     }
 
@@ -22,11 +27,11 @@ class ChanceCarrierController extends Controller
         $request->validate([
             'name' => 'required|string',
             'salary' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'icon' => 'required|string',
             'major_id' => 'required|exists:majors,id',
         ]);
 
-        $createData = $request->only(['name', 'salary', 'major_id']);
+        $createData = $request->only(['name', 'salary', 'major_id', 'icon']);
 
         if($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('chancecarrier', 'public');
@@ -52,7 +57,7 @@ class ChanceCarrierController extends Controller
         $request->validate([
             'title' => 'sometimes|string',
             'salary' => 'sometimes|required|string',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'icon' => 'sometimes|required|string',
             'major_id' => 'sometimes|exists:majors,id',
         ]);
 
@@ -61,7 +66,7 @@ class ChanceCarrierController extends Controller
             return $this->notFound('Chance carrier not found');
         }
 
-        $updateData = $request->only(['name', 'description', 'major_id']);
+        $updateData = $request->only(['name', 'description', 'major_id', 'icon']);
 
         if ($request->hasFile('image')) {
             if ($chanceCarrier->OriginalImagePath()) {

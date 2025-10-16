@@ -2,7 +2,13 @@
 // components/Sidebar/index.jsx
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaBars, FaRegUser, FaChevronDown, FaRegListAlt, FaRegHandshake } from "react-icons/fa";
+import {
+  FaBars,
+  FaRegUser,
+  FaChevronDown,
+  FaRegListAlt,
+  FaRegHandshake,
+} from "react-icons/fa";
 import {
   MdOutlineDashboard,
   MdOutlineSettings,
@@ -25,6 +31,7 @@ import {
 } from "react-icons/lu";
 import { LiaUserTieSolid } from "react-icons/lia";
 import { RiBriefcaseLine, RiBuilding2Line } from "react-icons/ri";
+import { useAuth } from "../hooks/useAuth";
 
 const NavItem = ({ to, icon: Icon, label, isOpen }) => {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -147,7 +154,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   const artikelItems = [
     { to: "/admin/artikel", icon: PiArticleMedium, label: "Artikel Saya" },
-    { to: "/admin/artikelUser", icon: PiArticleNyTimes, label: "Artikel Review" },
+    {
+      to: "/admin/artikelUser",
+      icon: PiArticleNyTimes,
+      label: "Artikel Review",
+    },
   ];
 
   const manajemenItems = [
@@ -162,152 +173,235 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     },
   ];
 
-  return (
-    <div
-      className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
+  const { user } = useAuth();
+
+  if (user.role == "superadmin") {
+    return (
+      <div
+        className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
         ${
           isOpen ? "w-64 px-6" : "w-16 px-2"
         } fixed md:static top-0 left-0 z-50 `}
-    >
-      <div>
-        <div className="flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <img src="/image/logosmk.png" className="w-10" alt="logo" />
+      >
+        <div>
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-3">
+              <img src="/image/logosmk.png" className="w-10" alt="logo" />
+              {isOpen && (
+                <h1 className="font-bold text-lg tracking-wide boderTeks">
+                  SMKN 8 JEMBER
+                </h1>
+              )}
+            </div>
             {isOpen && (
-              <h1 className="font-bold text-lg tracking-wide boderTeks">
-                SMKN 8 JEMBER
-              </h1>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100 cursor-pointer lg:hidden"
+              >
+                <FaBars className="text-zinc-600" />
+              </button>
             )}
           </div>
-          {isOpen && (
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg hover:bg-gray-100 cursor-pointer lg:hidden"
-            >
-              <FaBars className="text-zinc-600" />
-            </button>
-          )}
+
+          {/* Menu List */}
+          <ul
+            className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${
+              isOpen ? "overflow-y-auto" : ""
+            } max-h-[calc(100vh-71px)] pr-2`}
+          >
+            <NavItem
+              to="/admin/dashboard"
+              icon={MdOutlineDashboard}
+              label="Dashboard"
+              isOpen={isOpen}
+            />
+
+            {/* Berita dan Content */}
+            <div className="">
+              <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
+                <span
+                  className={`transition-all duration-200 whitespace-nowrap ${
+                    isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
+                  } text-zinc-600 `}
+                >
+                  BERITA DAN KONTEN
+                </span>
+              </h2>
+              <Dropdown
+                isOpen={isOpen}
+                open={openArtikel}
+                setOpen={setOpenArtikel}
+                icon={GrArticle}
+                title="Artikel"
+                items={artikelItems}
+              />
+              <NavItem
+                to="/admin/gambar"
+                icon={IoImagesOutline}
+                label="Galeri"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/pengumuman"
+                icon={HiOutlineSpeakerphone}
+                label="Pengumuman"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/kategori"
+                icon={MdOutlineCategory}
+                label="Kategori"
+                isOpen={isOpen}
+              />
+            </div>
+
+            {/* Profil Sekolah */}
+            <div className="pb-2 pt-3 border-b-[1.5px] border-zinc-400">
+              <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
+                <span
+                  className={`transition-all duration-200 whitespace-nowrap ${
+                    isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
+                  } text-zinc-600`}
+                >
+                  PROFIL SEKOLAH
+                </span>
+              </h2>
+              <Dropdown
+                isOpen={isOpen}
+                open={openManajemen}
+                setOpen={setOpenManajemen}
+                icon={LuDatabase}
+                title="Manajemen Data"
+                items={manajemenItems}
+              />
+              <NavItem
+                to="/admin/mapel"
+                icon={FaRegListAlt}
+                label="Mata Pelajaran"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/data-user"
+                icon={LuUserPlus}
+                label="Data User"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/jurusan"
+                icon={MdOutlineCategory}
+                label="Jurusan"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/partner"
+                icon={FaRegHandshake}
+                label="Partner"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/carrier"
+                icon={RiBriefcaseLine}
+                label="Carrier"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/strukturorganisasi"
+                icon={PiTreeStructureBold}
+                label="Struktur Organisasi"
+                isOpen={isOpen}
+              />
+            </div>
+
+            <NavItem
+              to="/admin/websetting"
+              icon={MdOutlineSettings}
+              label="Web Setting"
+              isOpen={isOpen}
+            />
+          </ul>
         </div>
-
-        {/* Menu List */}
-        <ul
-          className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${
-            isOpen ? "overflow-y-auto" : ""
-          } max-h-[calc(100vh-71px)] pr-2`}
-        >
-          <NavItem
-            to="/admin/dashboard"
-            icon={MdOutlineDashboard}
-            label="Dashboard"
-            isOpen={isOpen}
-          />
-
-          {/* Berita dan Content */}
-          <div className="">
-            <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
-              <span
-                className={`transition-all duration-200 whitespace-nowrap ${
-                  isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
-                } text-zinc-600 `}
-              >
-                BERITA DAN KONTEN
-              </span>
-            </h2>
-            <Dropdown
-              isOpen={isOpen}
-              open={openArtikel}
-              setOpen={setOpenArtikel}
-              icon={GrArticle}
-              title="Artikel"
-              items={artikelItems}
-            />
-            <NavItem
-              to="/admin/gambar"
-              icon={IoImagesOutline}
-              label="Galeri"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/pengumuman"
-              icon={HiOutlineSpeakerphone}
-              label="Pengumuman"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/kategori"
-              icon={MdOutlineCategory}
-              label="Kategori"
-              isOpen={isOpen}
-            />
-          </div>
-
-          {/* Profil Sekolah */}
-          <div className="pb-2 pt-3 border-b-[1.5px] border-zinc-400">
-            <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
-              <span
-                className={`transition-all duration-200 whitespace-nowrap ${
-                  isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
-                } text-zinc-600`}
-              >
-                PROFIL SEKOLAH
-              </span>
-            </h2>
-            <Dropdown
-              isOpen={isOpen}
-              open={openManajemen}
-              setOpen={setOpenManajemen}
-              icon={LuDatabase}
-              title="Manajemen Data"
-              items={manajemenItems}
-            />
-            <NavItem
-              to="/admin/mapel"
-              icon={FaRegListAlt}
-              label="Mata Pelajaran"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/data-user"
-              icon={LuUserPlus}
-              label="Data User"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/jurusan"
-              icon={MdOutlineCategory}
-              label="Jurusan"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/partner"
-              icon={FaRegHandshake}
-              label="Partner"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/carrier"
-              icon={RiBriefcaseLine}
-              label="Carrier"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/strukturorganisasi"
-              icon={PiTreeStructureBold}
-              label="Struktur Organisasi"
-              isOpen={isOpen}
-            />
-          </div>
-
-          <NavItem
-            to="/admin/websetting"
-            icon={MdOutlineSettings}
-            label="Web Setting"
-            isOpen={isOpen}
-          />
-        </ul>
       </div>
-    </div>
-  );
+    );
+  } else if (user.role == "admin") {
+    return (
+      <div
+        className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
+        ${
+          isOpen ? "w-64 px-6" : "w-16 px-2"
+        } fixed md:static top-0 left-0 z-50 `}
+      >
+        <div>
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-3">
+              <img src="/image/logosmk.png" className="w-10" alt="logo" />
+              {isOpen && (
+                <h1 className="font-bold text-lg tracking-wide boderTeks">
+                  SMKN 8 JEMBER
+                </h1>
+              )}
+            </div>
+            {isOpen && (
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100 cursor-pointer lg:hidden"
+              >
+                <FaBars className="text-zinc-600" />
+              </button>
+            )}
+          </div>
+
+          {/* Menu List */}
+          <ul
+            className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${
+              isOpen ? "overflow-y-auto" : ""
+            } max-h-[calc(100vh-71px)] pr-2`}
+          >
+            <NavItem
+              to="/admin/dashboard"
+              icon={MdOutlineDashboard}
+              label="Dashboard"
+              isOpen={isOpen}
+            />
+
+            {/* Berita dan Content */}
+            <div className="">
+              <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
+                <span
+                  className={`transition-all duration-200 whitespace-nowrap ${
+                    isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
+                  } text-zinc-600 `}
+                >
+                  BERITA DAN KONTEN
+                </span>
+              </h2>
+              <NavItem
+                to="/admin/artikel"
+                icon={GrArticle}
+                label="Artikel"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/gambar"
+                icon={IoImagesOutline}
+                label="Galeri"
+                isOpen={isOpen}
+              />
+            </div>
+
+            {/* Profil Sekolah */}
+            <div className="pb-2 pt-3 border-t-[1.5px] border-zinc-400">
+              <NavItem
+                to="/admin/websetting"
+                icon={MdOutlineSettings}
+                label="Profil Setting"
+                isOpen={isOpen}
+              />
+            </div>
+          </ul>
+        </div>
+      </div>
+    );
+  }
 };
 
 export default Sidebar;

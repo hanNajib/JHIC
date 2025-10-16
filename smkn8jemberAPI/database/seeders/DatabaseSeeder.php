@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             CategorySeeder::class,
             SchoolSettingsSeeder::class,
+            SchoolDataSeeder::class,
+            StaffSeeder::class
         ]);
     }
 }

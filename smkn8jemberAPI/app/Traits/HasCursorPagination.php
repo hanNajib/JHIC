@@ -23,8 +23,8 @@ trait HasCursorPagination
         $this->validatePaginationParams($request);
 
         $limit = min((int) $request->query('limit', 10), $this->getMaxLimit());
-        $sortBy = $this->sanitizeSortColumn($request->query('sortBy', 'created_at'));
-        $sortDir = strtolower($request->query('sortDir', 'asc')) === 'desc' ? 'desc' : 'asc';
+        $sortBy = $this->sanitizeSortColumn($request->query('sortBy', 'id'));
+        $sortDir = strtolower($request->query('sortDir', 'asc')) === 'desc' ? 'desc' : 'desc';
         $search = trim($request->query('s', ''));
         $trashed = $request->boolean('trashed', false);
         $all = $request->boolean('all', false);
@@ -36,7 +36,7 @@ trait HasCursorPagination
         if ($this->isValidSortColumn($sortBy)) {
             $query = $query->orderBy($sortBy, $sortDir);
         } else {
-            $query = $query->orderBy('created_at', 'asc');
+            $query = $query->orderBy('id', 'asc');
             Log::warning("Invalid sort column attempted: {$sortBy}");
         }
 
@@ -92,6 +92,11 @@ trait HasCursorPagination
 
             $value = $request->query($field);
 
+            if (is_null($value) || $value === '') {
+                continue;
+            }
+
+
             if (!$this->isValidFilterField($field)) {
                 continue;
             }
@@ -103,12 +108,10 @@ trait HasCursorPagination
                         $q->orWhere($field, 'all');
                     }
                 });
-            }
-            elseif (is_string($value) && str_contains($value, ',')) {
+            } elseif (is_string($value) && str_contains($value, ',')) {
                 $values = array_map('trim', explode(',', $value));
                 $query = $query->whereIn($field, $values);
-            }
-            else {
+            } else {
                 $query = $query->where(function ($q) use ($field, $value) {
                     $q->where($field, $value)
                         ->orWhere($field, 'all');

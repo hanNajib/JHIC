@@ -9,16 +9,62 @@ use Illuminate\Support\Facades\Storage;
 
 class StaffController extends Controller
 {
-     public function index(Request $request)
+    /**
+     * List semua staff dengan filter & pagination
+     */
+    public function index(Request $request)
     {
         $staff = Staff::applyFilters(
             $request,
-            ['name', 'role', 'position', 'subjects'],
-            []
+            searchable: ['name', 'role', 'position', 'subjects'],
+            filters: ['role', 'category'],
+            relationFilters: []
         );
+
         return $this->cursorPaginated($staff, 'Staff retrieved successfully');
     }
 
+    /**
+     * Struktur organisasi (untuk tampilan front-end)
+     */
+    public function structure()
+    {
+        // Kepala Sekolah
+        $kepalaSekolah = Staff::where('position', 'Kepala Sekolah')->first();
+
+        // Wakil Kepala Sekolah
+        $waka = Staff::where('position', 'like', 'Waka%')->get();
+
+        // Koordinator & Kaprogli
+        $koordinator = Staff::where(function ($q) {
+            $q->where('position', 'like', 'Koord%')
+              ->orWhere('position', 'like', 'Kaprogli%')
+              ->orWhere('position', 'like', 'Wakaprogli%');
+        })->get();
+
+        // Komite Sekolah
+        $komite = Staff::where('position', 'like', '%Komite%')->get();
+
+        // Jumlah tenaga kerja
+        $jumlah = [
+            'guru' => Staff::where('role', 'teacher')->count(),
+            'staf_tu' => Staff::where('position', 'like', '%Tata Usaha%')->count(),
+            'teknisi' => Staff::where('position', 'like', '%Teknisi%')->count(),
+            'satpam' => Staff::where('position', 'like', '%Satpam%')->count(),
+        ];
+
+        return $this->success([
+            'kepala_sekolah' => $kepalaSekolah,
+            'wakil_kepala' => $waka,
+            'koordinator' => $koordinator,
+            'komite' => $komite,
+            'jumlah_tenaga_kerja' => $jumlah,
+        ], 'Staff structure retrieved successfully');
+    }
+
+    /**
+     * Detail staff by ID
+     */
     public function show($id)
     {
         $staff = Staff::find($id);
@@ -28,6 +74,9 @@ class StaffController extends Controller
         return $this->success($staff);
     }
 
+    /**
+     * Tambah staff baru
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -49,6 +98,9 @@ class StaffController extends Controller
         return $this->created($staff, 'Staff created successfully');
     }
 
+    /**
+     * Update data staff
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -67,7 +119,6 @@ class StaffController extends Controller
         $updateData = $request->only(['name', 'role', 'position', 'subjects']);
 
         if ($request->hasFile('image')) {
-            // Delete old image if exists
             if ($staff->image) {
                 Storage::disk('public')->delete($staff->image);
             }
@@ -79,7 +130,9 @@ class StaffController extends Controller
         return $this->success($staff, 'Staff updated successfully');
     }
 
-
+    /**
+     * Hapus staff (soft delete)
+     */
     public function delete($id)
     {
         $staff = Staff::find($id);
@@ -87,7 +140,6 @@ class StaffController extends Controller
             return $this->notFound('Staff not found');
         }
 
-        // Delete image if exists
         if ($staff->image) {
             Storage::disk('public')->delete($staff->image);
         }
@@ -96,6 +148,9 @@ class StaffController extends Controller
         return $this->success(null, 'Staff deleted successfully');
     }
 
+    /**
+     * Restore staff yang dihapus
+     */
     public function restore($id)
     {
         $staff = Staff::withTrashed()->find($id);

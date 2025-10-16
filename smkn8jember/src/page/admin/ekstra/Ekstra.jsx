@@ -162,7 +162,7 @@ const Ekstra = () => {
               <th className="py-2 px-4 text-left text-white">Pembimbing</th>
               <th className="py-2 px-4 text-left text-white">Deskripsi</th>
               <th className="py-2 px-4 text-left text-white">Foto</th>
-              <th className="py-2 px-4 text-left text-white">Aksi</th>
+              <th className="py-2 px-4 text-center text-white">Aksi</th>
             </tr>
           </thead>
           <tbody>

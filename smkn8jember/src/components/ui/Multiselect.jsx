@@ -15,6 +15,8 @@ const Multiselect = ({
   multiple = true,
   disabled = false,
   className = "",
+  customValue = false,
+  addCustomPlaceholder = "Tekan Enter untuk menambah:",
 }) => {
   const dropdownRef = useRef(null);
   const triggerRef = useRef(null);
@@ -69,6 +71,30 @@ const Multiselect = ({
     }
   };
 
+  const handleAddCustomValue = (customText) => {
+    if (!customText.trim() || disabled) return;
+
+    if (multiple) {
+      const currentValues = Array.isArray(value) ? value : [];
+      if (!currentValues.includes(customText.trim())) {
+        onChange([...currentValues, customText.trim()]);
+      }
+    } else {
+      onChange(customText.trim());
+    }
+    setSearchTerm("");
+    if (!multiple) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter' && customValue && searchTerm.trim()) {
+      e.preventDefault();
+      handleAddCustomValue(searchTerm);
+    }
+  };
+
   const removeItem = (optionValue) => {
     if (disabled) return;
 
@@ -89,9 +115,16 @@ const Multiselect = ({
   const getSelectedItems = () => {
     if (multiple) {
       const currentValues = Array.isArray(value) ? value : [];
-      return options.filter((opt) => currentValues.includes(opt.value));
+      return currentValues.map((val) => {
+        const option = options.find((opt) => opt.value === val);
+        return option || { value: val, label: val, color: null };
+      });
     } else {
-      return value ? options.filter((opt) => opt.value === value) : [];
+      if (value) {
+        const option = options.find((opt) => opt.value === value);
+        return option ? [option] : [{ value, label: value, color: null }];
+      }
+      return [];
     }
   };
 
@@ -101,7 +134,7 @@ const Multiselect = ({
 
   const hasSelectedItems = multiple
     ? Array.isArray(value) && value.length > 0
-    : value !== null && value !== undefined && value !== "";
+    : value !== null && value !== undefined && value !== "" && String(value).trim() !== "";
 
   const selectedCount = multiple
     ? Array.isArray(value)
@@ -114,7 +147,7 @@ const Multiselect = ({
   return (
     <div className={`flex flex-col ${className}`}>
       {label && (
-        <label className="font-bold text-gray-800 mb-1">
+        <label className="font-bold text-gray-800">
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
@@ -201,13 +234,14 @@ const Multiselect = ({
         {isDropdownOpen && !disabled && (
           <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
             {/* Search Input */}
-            {options.length > 5 && (
+            {(options.length > 5 || customValue) && (
               <div className="p-2 border-b border-gray-200">
                 <input
                   type="text"
-                  placeholder={searchPlaceholder}
+                  placeholder={customValue ? `${searchPlaceholder} atau ${addCustomPlaceholder}` : searchPlaceholder}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={handleSearchKeyDown}
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500"
                   onClick={(e) => e.stopPropagation()}
                   autoFocus
@@ -221,6 +255,20 @@ const Multiselect = ({
               role="listbox"
               aria-label="Daftar pilihan"
             >
+              {/* Custom Value Option */}
+              {customValue && searchTerm.trim() && 
+               !filteredOptions.find(opt => opt.label.toLowerCase() === searchTerm.toLowerCase()) &&
+               !(multiple ? (Array.isArray(value) && value.includes(searchTerm.trim())) : value === searchTerm.trim()) && (
+                <div
+                  onClick={() => handleAddCustomValue(searchTerm)}
+                  className="px-4 py-2.5 cursor-pointer transition-colors flex items-center gap-3 text-blue-600 hover:bg-blue-50 border-b border-gray-100"
+                  role="option"
+                >
+                  <span className="text-blue-500">+</span>
+                  <span>Tambah "{searchTerm.trim()}"</span>
+                </div>
+              )}
+
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => {
                   const isSelected = multiple
@@ -255,13 +303,13 @@ const Multiselect = ({
                     </div>
                   );
                 })
-              ) : (
+              ) : !customValue || !searchTerm.trim() ? (
                 <div className="px-4 py-8 text-center text-gray-500 text-sm">
                   {searchTerm
                     ? `Tidak ada hasil untuk "${searchTerm}"`
                     : "Tidak ada pilihan tersedia"}
                 </div>
-              )}
+              ) : null}
             </div>
 
             {/* Footer - Selected Count */}

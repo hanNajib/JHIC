@@ -179,7 +179,7 @@ const Gambar = () => {
                   key={a.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="py-2 px-4">{i + 1}</td>
+                  <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                   <td className="py-2">{a.title}</td>
                   <td className="py-2 px-4">
                     {a.categories.map((cat, idx) => (

@@ -7,7 +7,7 @@ export const useGalleries = (filters = {}, options = {}) => {
         queryKey: [QUERY_KEYS.GALLERY.LIST, filters],
         queryFn: async () => {
             const response = await galleryService.get(filters);
-            return { data: response.data, meta: response.meta, link: response.link };
+            return { data: response.data, meta: response.meta, link: response.links };
         },
         staleTime: 5 * 60 * 1000,
         ...options,

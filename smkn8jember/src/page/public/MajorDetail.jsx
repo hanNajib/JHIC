@@ -17,13 +17,14 @@ import { useCareers } from "../../hooks/api/useCareer";
 import parse from "html-react-parser";
 import TextLoading from "../../components/ui/TextLoading";
 import DefaultLayout from "../../components/layout/DefaultLayout";
+import { RenderIcon } from "../../components/ui/RenderIcon";
 
 const MajorDetail = () => {
   const { name } = useParams();
   const { data: major, isLoading } = useMajorByName(name);
-  const { data: subjects = [] } = useSubjects({ major_id: major?.id });
-  const { data: careers = [] } = useCareers({ major_id: major?.id });
-  const { data: partner = [] } = usePartners({ major_id: major?.id });
+  const subjects = major?.subjects;
+  const careers = major?.chance_carriers;
+  const partner = major?.partners;
   const sliderRef = useRef(null);
 
   useEffect(() => {
@@ -157,8 +158,8 @@ const MajorDetail = () => {
                 key={index}
                 className="flex flex-col items-center text-center gap-3"
               >
-                <div className="bg-[#FF6000] text-white p-2 rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
-                  {item.icon}
+                <div className="bg-[#FF6000] text-white p-5 rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
+                  <RenderIcon iconName={item.icon} className="w-8 h-8"/>
                 </div>
                 <h2 className="font-semibold text-lg text-white leading-tight">
                   {item.name}

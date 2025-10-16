@@ -13,6 +13,7 @@ import { useDebounce } from "../../../hooks/useDebounce";
 import { useAnnouncements, useDeleteAnnouncement, useRestoreAnnouncement } from "../../../hooks/api/useAnnouncement";
 import Swal from "sweetalert2";
 import { useCategories } from "../../../hooks/api/useCategory";
+import { getCategoryStyle } from "../../../utils/helpers";
 
 const Pengumuman = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -25,7 +26,7 @@ const Pengumuman = () => {
 
   const navigate = useNavigate();
   const debouncedSearchTerm = useDebounce(search, 500);
-  
+
   const {
     data: announcementResponse,
     refetch,
@@ -43,7 +44,7 @@ const Pengumuman = () => {
   const meta = announcementResponse?.meta || {};
   const { data: kategoriesResponse } = useCategories({ type: "announcements", limit: 1000 });
   const kategori = kategoriesResponse?.data || [];
-  
+
 
   const deleteAnnouncement = useDeleteAnnouncement();
   const restoreData = useRestoreAnnouncement();
@@ -165,7 +166,7 @@ const Pengumuman = () => {
         linkTambah="/admin/pengumuman/tambah"
         titleBTN="Tambah Pengumuman"
         handleRefresh={() => refetch()}
-        
+
         hasSoftDelete={true}
         softDeleteFilter={softDeleteFilter}
         setSoftDeleteFilter={(val) => {
@@ -178,108 +179,111 @@ const Pengumuman = () => {
         setFilterKategori={(val) => {
           setFilterKategori(val);
           setCursor(null);
-          setCurrentPage(1);
-        }}
+            setCurrentPage(1);
+          }}
 
-        filterOptions={{
-          filterKategori: [...(kategori ? kategori.map((cat) => cat.name) : [])]
-        }}
-      />
+          filterOptions={{
+            filterKategori: [...(kategori ? kategori.map((cat) => cat.name) : [])]
+          }}
+          />
 
-      <div className="overflow-x-auto shadow-lg rounded-lg relative">
-        <table className="min-w-full bg-white">
-          <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
+          <div className="overflow-x-auto shadow-lg rounded-lg relative">
+          <table className="min-w-full bg-white">
+            <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white min-w-56">Judul</th>
               <th className="py-2 px-4 text-left text-white">Kategori</th>
               <th className="py-2 px-4 text-left text-white">Tanggal</th>
               <th className="py-2 px-4 text-left text-white">Foto</th>
-              <th className="py-2 px-4 text-left text-white">Aksi</th>
+              <th className="py-2 px-4 text-center text-white">Aksi</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {isFetching ? (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
-                  Memuat data...
-                </td>
+              <td colSpan={6} className="text-center py-4 text-gray-500">
+                Memuat data...
+              </td>
               </tr>
             ) : announcements.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
-                  Tidak ada data ditemukan.
-                </td>
+              <td colSpan={6} className="text-center py-4 text-gray-500">
+                Tidak ada data ditemukan.
+              </td>
               </tr>
             ) : (
               announcements.map((announcement, i) => (
-                <tr
-                  key={announcement.id}
-                  className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
-                >
-                  <td className="py-2 px-4">{i + 1}</td>
-                  <td className="py-2">{announcement.title}</td>
-                  <td className="py-2 px-4">
-                    <div className="flex gap-2">
-                      <div className="bg-orange-300/30 border border-orange-500 px-2 py-[1px] w-fit rounded-2xl text-sm text-orange-500">
-                        {announcement.category?.name || '-'}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-2 px-4">
-                    {announcement.created_at ? new Date(announcement.created_at).toLocaleDateString('id-ID', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric'
-                    }) : '-'}
-                  </td>
-                  <td className="py-2 px-4">
-                    {announcement.image ? (
-                      <button
-                        onClick={() => setSelectedImage(announcement.image)}
-                        className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
-                      >
-                        <CiImageOn className="text-xl" />
-                        Lihat
-                      </button>
-                    ) : (
-                      <span className="text-gray-400">-</span>
-                    )}
-                  </td>
-                  <td className="py-2 px-4">
-                    <div className="flex gap-2 justify-center">
-                      {announcement.deleted_at === null && (
-                        <Button
-                          onClick={() => handleEdit(announcement.id)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
-                        >
-                          <FaRegEdit className="text-lg" />
-                        </Button>
-                      )}
-                      <button
-                        onClick={() => announcement.deleted_at === null ? handleDelete(announcement.id) : handleRestore(announcement)}
-                        className={`${announcement.deleted_at === null
-                          ? 'bg-red-500 hover:bg-red-600'
-                          : 'bg-green-500 hover:bg-green-600'
-                        } text-white p-2 rounded-2xl shadow-lg transition`}
-                      >
-                        {announcement.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+              <tr
+                key={announcement.id}
+                className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
+              >
+                <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
+                <td className="py-2">{announcement.title}</td>
+                <td className="py-2 px-4">
+                {announcement?.category && (
+                  <span
+                  style={getCategoryStyle(announcement.category.color)}
+                  className={`border px-2 py-[1px] w-fit rounded-2xl text-sm ${announcement.category.color ? `` : 'bg-orange-100 text-orange-700 border-orange-300'} mr-1 mb-1 inline-block font-medium`}
+                  >
+                  {announcement.category.name}
+                  </span>
+                )}
+                </td>
+                <td className="py-2 px-4">
+                {announcement.created_at ? new Date(announcement.created_at).toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric'
+                }) : '-'}
+                </td>
+                <td className="py-2 px-4">
+                {announcement.image ? (
+                  <button
+                  onClick={() => setSelectedImage(announcement.image)}
+                  className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                  >
+                  <CiImageOn className="text-xl" />
+                  Lihat
+                  </button>
+                ) : (
+                  <span className="text-gray-400">-</span>
+                )}
+                </td>
+                <td className="py-2 px-4">
+                <div className="flex gap-2 justify-center">
+                  {announcement.deleted_at === null && (
+                  <Button
+                    onClick={() => handleEdit(announcement.id)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
+                  >
+                    <FaRegEdit className="text-lg" />
+                  </Button>
+                  )}
+                  <button
+                  onClick={() => announcement.deleted_at === null ? handleDelete(announcement.id) : handleRestore(announcement)}
+                  className={`${announcement.deleted_at === null
+                    ? 'bg-red-500 hover:bg-red-600'
+                    : 'bg-green-500 hover:bg-green-600'
+                    } text-white p-2 rounded-2xl shadow-lg transition`}
+                  >
+                  {announcement.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
+                  </button>
+                </div>
+                </td>
+              </tr>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
+          </div>
 
-      <PaginationAdmin
-        currentPage={1}
-        totalPages={1}
-        perPage={jumlahPage}
-        onPageChange={() => {}}
-        onPerPageChange={(value) => {
+          <PaginationAdmin
+          currentPage={1}
+          totalPages={1}
+          perPage={jumlahPage}
+          onPageChange={() => { }}
+          onPerPageChange={(value) => {
           setJumlahPage(value);
           setCursor(null);
           setCurrentPage(1);

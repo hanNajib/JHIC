@@ -2,6 +2,8 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { IoCalendarClearOutline } from "react-icons/io5";
+import parse from 'html-react-parser'
+import { getCategoryStyle } from "../../utils/helpers";
 
 const PengumumanPopUp = ({ pengumuman, onClose }) => {
   if (!pengumuman) return null; // kalau belum ada data, jangan tampilkan popup
@@ -33,13 +35,13 @@ const PengumumanPopUp = ({ pengumuman, onClose }) => {
           </div>
 
           <div className="bg-gray-200 rounded-sm p-3 h-72 overflow-y-scroll mb-4">
-            <p className="tracking-wide text-justify whitespace-pre-wrap ">{pengumuman.content}</p>
+            <div className="tracking-wide prose prose-neutral text-justify whitespace-pre-wrap ">{pengumuman.content ? parse(pengumuman.content) : ""}</div>
           </div>
 
           {/* Info */}
           <div className="flex flex-col justify-center">
-            <h3 className="bg-orange-500 text-white font-medium text-xs lg:text-sm px-3 py-0.5 w-fit rounded-4xl">
-              {pengumuman.type}
+            <h3 style={getCategoryStyle(pengumuman.category.color)} className="bg-orange-500 text-white font-medium text-xs lg:text-sm px-3 py-0.5 w-fit rounded-4xl">
+              {pengumuman.category.name}
             </h3>
             <h2 className="text-xl lg:text-2xl font-bold text-gray-800 text-start">
               {pengumuman.title}
