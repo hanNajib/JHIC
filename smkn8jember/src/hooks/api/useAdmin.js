@@ -26,6 +26,18 @@ export const useAdmin = (id, options = {}) => {
     })
 }
 
+export const useAdminByName = (name, options = {}) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.ADMINS.DETAIL, name],
+        queryFn: async () => {
+            const response = await adminService.getByName(name);
+            return response.data;
+        },
+        staleTime: 5 * 60 * 1000,
+        ...options
+    })
+}
+
 export const useCreateUser = (options = {}) => {
     const queryClient = useQueryClient();
 

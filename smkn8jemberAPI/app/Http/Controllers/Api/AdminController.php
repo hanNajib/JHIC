@@ -21,6 +21,13 @@ class AdminController extends Controller
         }
         return $this->success($admin, 'Admin retrieved successfully');
     }
+        public function getByName($name){
+            $admin = User::where('username', $name)->first();
+            if(!$admin) {
+                return $this->notFound('Admin not found');
+            }
+            return $this->success($admin, 'Admin retrieved successfully');
+        }
 
     public function create(Request $request) {
         $validated = $request->validate([

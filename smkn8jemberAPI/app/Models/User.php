@@ -56,10 +56,7 @@ class User extends Authenticatable
         return $this->hasMany(Announcement::class, 'author_id');
     }
 
-    public function getProfileImageAttribute($value): ?string
-    {
-        return $value ? url(Storage::url($value)) : null;
-    }
+   
     /**
      * Find user by email or username.
      *

@@ -164,5 +164,7 @@ Route::middleware('web')->group(function () {
         });
     });
 
+   Route::get('admins/name/{name}', [AdminController::class, 'getByName']);
+
 
 });

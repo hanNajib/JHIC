@@ -1,6 +1,4 @@
 import { apiClient, axiosClient } from "./ApiClient";
-import { updateStatus } from "./services/admin/ArticleService";
-import { getByShortName } from "./services/admin/MajorService";
 
 export const AuthApi = {
   csrf: () => axiosClient.get("/sanctum/csrf-cookie"),
@@ -14,6 +12,7 @@ export const AuthApi = {
 export const AdminApi = {
   get: (params) => apiClient.get("/admins", { params }),
   getById: (id) => apiClient.get(`/admins/${id}`),
+  getByName: (name) => apiClient.get(`/admins/name/${name}`),
   create: (data) => apiClient.post("/admins", data),
   update: (id, data) => apiClient.post(`/admins/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/admins/${id}`),

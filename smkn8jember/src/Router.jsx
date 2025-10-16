@@ -188,7 +188,7 @@ function Router() {
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:slug" element={<Profile />} />
         <Route path="/major/:name" element={<MajorDetail />} />
         <Route path="/detail" element={<DetailArtikel />} />
         <Route path="/visi-misi" element={<VisiMisi />} />
