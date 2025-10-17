@@ -10,12 +10,11 @@ const HeadMaster = () => {
   const kataSambutan =
     webSettings.find((item) => item.title === "kata_sambutan")?.value || "";
 
-  const { data: staffResponse } = useStaff();
-  const staffList = staffResponse?.data || [];
-
-  const kepalaSekolah = staffList.find(
-    (item) => item.position?.toLowerCase() === "kepala sekolah"
-  );
+  const { data: staffResponse } = useStaff({
+    role: 'principal'
+  });
+  const kepalaSekolah = staffResponse?.data[0];
+  console.log(kepalaSekolah)
 
   return (
     <>
