@@ -5,30 +5,20 @@ import Footer from "../components/Footer";
 import { ArticleCard } from "../components/ui";
 import { useArticles } from "../hooks/api/useArticle";
 import { useAdminByName } from "../hooks/api/useAdmin";
+import DefaultLayout from "../components/layout/DefaultLayout";
 
 const Profile = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
   const { data: author, isLoading: authorLoading } = useAdminByName(slug);
-  const { data: articleResponse, isLoading: articleLoading } = useArticles();
-  const articles = articleResponse?.data || articleResponse?.articles || [];
+  const articles = author?.articles || [];
 
-  const userArticles = useMemo(() => {
-    if (!author) return [];
-    return articles.filter(
-      (a) =>
-        a.author?.username?.toLowerCase() ===
-        author?.username?.toLowerCase()
-    );
-  }, [articles, author]);
 
-  const totalLoading = authorLoading || articleLoading;
+  const totalLoading = authorLoading;
 
   return (
-    <>
-      <Navbar />
-
+    <DefaultLayout>
       {/* ===== PROFIL PENULIS ===== */}
       <div className="flex flex-col lg:flex-row justify-center items-center lg:items-start px-6 md:px-10 lg:px-16 py-12 gap-10 lg:gap-16 bg-white">
         {/* Foto Profil */}
@@ -78,11 +68,10 @@ const Profile = () => {
                 </h4>
               </div>
 
-              {/* Statistik */}
               <div className="flex justify-center lg:justify-start items-center gap-4 mt-3">
                 <div className="flex flex-col justify-center items-center font-bold bg-orange-500/20 rounded-lg w-32 h-20 border-2 border-orange-500">
                   <h3 className="text-orange-500 text-2xl">
-                    {userArticles.length}
+                    {articles.length}
                   </h3>
                   <h4 className="text-gray-800 text-sm">Artikel</h4>
                 </div>
@@ -116,8 +105,8 @@ const Profile = () => {
                   className="h-60 bg-gray-300 rounded-xl animate-pulse"
                 />
               ))
-          ) : userArticles.length > 0 ? (
-            userArticles.map((article) => (
+          ) : articles.length > 0 ? (
+            articles.map((article) => (
               <div
                 key={article.id}
                 onClick={() => navigate(`/artikel/${article.slug}`)}
@@ -134,8 +123,7 @@ const Profile = () => {
         </div>
       </div>
 
-      <Footer />
-    </>
+    </DefaultLayout>
   );
 };
 

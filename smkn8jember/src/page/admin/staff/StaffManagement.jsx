@@ -12,20 +12,26 @@ import { useStaff, useDeleteStaff, useRestoreStaff } from "../../../hooks/api/us
 import { Button } from "../../../components/ui";
 import Swal from "sweetalert2";
 
-const Karyawan = () => {
+const StaffManagement = ({ 
+  role = null, // null = semua, "teacher", "employee", "principal"
+  title = "Data Staff",
+  description = "Kelola data staff",
+  addButtonText = "Tambah Staff",
+  addRoute = "/admin/staff/add"
+}) => {
   const [search, setSearch] = useState("");
   const [cursor, setCursor] = useState(null);
   const [jumlahPage, setJumlahPage] = useState(5);
   const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [roleFilter, setRoleFilter] = useState(null);
+  const [roleFilter, setRoleFilter] = useState(role);
 
-  // Helper function to convert category value to readable label
+  // Helper function untuk mengkonversi category ke label
   const getCategoryLabel = (category) => {
     const categoryLabels = {
       kepala_sekolah: "Kepala Sekolah",
-      waka: "Wakil Kepala Sekolah",
+      waka: "Wakil Kepala Sekolah", 
       koordinator: "Koordinator",
       koordinator_jurusan: "Koordinator Jurusan",
       komite: "Komite",
@@ -34,10 +40,30 @@ const Karyawan = () => {
     return categoryLabels[category] || category;
   };
 
+  // Helper function untuk mengkonversi role ke label
+  const getRoleLabel = (role) => {
+    const roleLabels = {
+      teacher: "Guru",
+      employee: "Karyawan", 
+      principal: "Kepala Sekolah"
+    };
+    return roleLabels[role] || role;
+  };
+
+  // Helper function untuk badge color berdasarkan role
+  const getRoleBadgeColor = (role) => {
+    const colors = {
+      teacher: "bg-blue-100 text-blue-800",
+      employee: "bg-gray-100 text-gray-800",
+      principal: "bg-purple-100 text-purple-800"
+    };
+    return colors[role] || "bg-gray-100 text-gray-800";
+  };
+
   const debouncedSearchTerm = useDebounce(search, 500);
   const navigate = useNavigate();
 
-  // Prepare API parameters with proper validation
+  // Prepare API parameters
   const apiParams = {
     s: debouncedSearchTerm,
     trashed: softDeleteFilter === "deleted",
@@ -45,7 +71,8 @@ const Karyawan = () => {
     cursor: cursor,
   };
 
-  if (roleFilter && roleFilter !== "Semua" && ["teacher", "employee"].includes(roleFilter)) {
+  // Add role filter jika diperlukan
+  if (roleFilter && roleFilter !== "Semua" && ["teacher", "employee", "principal"].includes(roleFilter)) {
     apiParams.role = roleFilter;
   }
 
@@ -54,8 +81,6 @@ const Karyawan = () => {
     isFetching,
     refetch,
   } = useStaff(apiParams);
-
-  
 
   const staff = staffResponse?.data || [];
   const meta = staffResponse?.meta || {};
@@ -100,7 +125,7 @@ const Karyawan = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/admin/datakaryawan/edit/${id}`);
+    navigate(`/admin/staff/edit/${id}`);
   };
 
   const handleRestore = (staffMember) => {
@@ -118,7 +143,7 @@ const Karyawan = () => {
         restoreStaff.mutate(staffMember.id, {
           onSuccess: () => {
             refetch();
-            Swal.fire("Diaktifkan!", "Data karyawan telah diaktifkan.", "success");
+            Swal.fire("Diaktifkan!", "Data staff telah diaktifkan.", "success");
           }
         });
       }
@@ -130,7 +155,9 @@ const Karyawan = () => {
     setSoftDeleteFilter("active");
     setCursor(null);
     setCurrentPage(1);
-    setRoleFilter(null);
+    if (role === null) {
+      setRoleFilter(null);
+    }
   };
 
   const handleNextPage = () => {
@@ -152,6 +179,13 @@ const Karyawan = () => {
     setCurrentPage(1);
   };
 
+  // Konfigurasi filter role hanya jika tidak ada role yang ditentukan
+  const roleFilterOptions = role === null ? [
+    { value: "teacher", label: "Guru" },
+    { value: "employee", label: "Karyawan" },
+    { value: "principal", label: "Kepala Sekolah" }
+  ] : null;
+
   return (
     <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
       <FilterAdmin
@@ -162,10 +196,10 @@ const Karyawan = () => {
           setCurrentPage(1);
         }}
         handleReset={handleReset}
-        titleHalaman="Data Karyawan"
-        descHalaman="Kelola data karyawan"
-        linkTambah="/admin/datakaryawan/tambah"
-        titleBTN="Tambah Karyawan"
+        titleHalaman={title}
+        descHalaman={description}
+        linkTambah={addRoute}
+        titleBTN={addButtonText}
         handleRefresh={() => refetch()}
         
         hasSoftDelete={true}
@@ -176,19 +210,16 @@ const Karyawan = () => {
           setCurrentPage(1);
         }}
 
-        setFilterJurusan={(val) => {
+        // Role filter hanya muncul jika tidak ada role spesifik
+        setFilterJurusan={roleFilterOptions ? (val) => {
           setRoleFilter(val);
           setCursor(null);
           setCurrentPage(1);
-        }}
-        filterJurusan={roleFilter}
-        
-        filterOptions={{
-          filterJurusan: [
-            {value: "teacher", label: "Guru"},
-            {value: "employee", label: "Karyawan"}
-          ]
-        }}
+        } : undefined}
+        filterJurusan={roleFilterOptions ? roleFilter : undefined}
+        filterOptions={roleFilterOptions ? {
+          filterJurusan: roleFilterOptions
+        } : undefined}
       />
 
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
@@ -197,7 +228,9 @@ const Karyawan = () => {
             <tr>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white min-w-56">Nama</th>
-              <th className="py-2 px-4 text-left text-white">Role</th>
+              {role === null && (
+                <th className="py-2 px-4 text-left text-white">Role</th>
+              )}
               <th className="py-2 px-4 text-left text-white">Jabatan</th>
               <th className="py-2 px-4 text-left text-white">Kategori</th>
               <th className="py-2 px-4 text-left text-white">Mata Pelajaran</th>
@@ -208,13 +241,13 @@ const Karyawan = () => {
           <tbody>
             {isFetching ? (
               <tr>
-                <td colSpan={8} className="text-center py-4 text-gray-500">
+                <td colSpan={role === null ? 8 : 7} className="text-center py-4 text-gray-500">
                   Memuat data...
                 </td>
               </tr>
             ) : staff.length === 0 ? (
               <tr>
-                <td colSpan={8} className="text-center py-4 text-gray-500">
+                <td colSpan={role === null ? 8 : 7} className="text-center py-4 text-gray-500">
                   Tidak ada data ditemukan.
                 </td>
               </tr>
@@ -223,15 +256,13 @@ const Karyawan = () => {
                 <tr key={staffMember.id} className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
                   <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + index + 1}</td>
                   <td className="py-2 px-4 font-medium">{staffMember.name}</td>
-                  <td className="py-2 px-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      staffMember.role === 'teacher' 
-                        ? 'bg-blue-100 text-blue-800' 
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {staffMember.role === 'teacher' ? 'Guru' : 'Karyawan'}
-                    </span>
-                  </td>
+                  {role === null && (
+                    <td className="py-2 px-4">
+                      <span className={`px-2 py-1 rounded-full text-xs ${getRoleBadgeColor(staffMember.role)}`}>
+                        {getRoleLabel(staffMember.role)}
+                      </span>
+                    </td>
+                  )}
                   <td className="py-2 px-4">{staffMember.position || '-'}</td>
                   <td className="py-2 px-4">
                     <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
@@ -302,4 +333,4 @@ const Karyawan = () => {
   );
 };
 
-export default Karyawan;
+export default StaffManagement;

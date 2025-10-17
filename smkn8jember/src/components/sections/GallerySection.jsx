@@ -3,10 +3,12 @@ import { Section, Button, GalleryCard, Icon } from "../ui";
 import { useGalleries } from "../../hooks/api/useGallery";
 import { useCategories } from "../../hooks/api/useCategory";
 import GalleryPopUp from "../ui/GalleryPopUp";
+import { useNavigate } from "react-router-dom";
 
 const GallerySection = ({ className = "" }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [activeFilter, setFilter] = useState("all");
+  const navigate = useNavigate();
 
   const { data: galleryResponse = {}, isLoading } = useGalleries({
     limit: 6,
@@ -77,7 +79,7 @@ const GallerySection = ({ className = "" }) => {
       </div>
 
       <div className="flex justify-center items-center w-full pt-5">
-        <Button onClick={() => (window.location.href = "/gallery")} className="cursor-pointer">
+        <Button onClick={() => (navigate("/gallery"))} className="cursor-pointer">
           Lihat Semua Galeri
         </Button>
       </div>

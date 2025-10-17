@@ -21,7 +21,8 @@ class ArticleController extends Controller
             filters: ['author_id', 'status'],
             relationFilters: [
                 'categories.name' => 'category_name',
-                'author.id' => 'author_id'
+                'author.id' => 'author_id',
+                'author.username' => 'author',
             ],
         );
         return $this->cursorPaginatedResource($articlesPaginated, ArticleResource::class, 'Articles retrieved successfully');
@@ -30,13 +31,28 @@ class ArticleController extends Controller
 
     public function show($slug)
     {
-        $article = Article::whereSlug($slug)->with(['author', 'categories'])->first();
+        $article = Article::whereSlug($slug)
+            ->with(['author', 'categories'])
+            ->first();
+
         if (!$article) {
             return $this->notFound('Article not found');
         }
-        return $article;
-        return $this->success(new ArticleResource($article), 'Article retrieved successfully');
+
+        $ip = request()->ip();
+        $cacheKey = 'article_viewed_' . $article->id . '_' . $ip;
+
+        if (!cache()->has($cacheKey)) {
+            $article->increment('views');
+            cache()->put($cacheKey, true, now()->addMinutes(30)); 
+        }
+
+        return $this->success(
+            new ArticleResource($article->fresh()), 
+            'Article retrieved successfully'
+        );
     }
+
 
     public function store(ArticleStoreRequest $request)
     {

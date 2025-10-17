@@ -8,7 +8,7 @@ import { Loading } from "../../../components/ui";
 const Siswa = () => {
   const navigate = useNavigate();
   const { data: studentResponseHook, isLoading } = useStudentData();
-  const studentResponse = studentResponseHook?.data || [];
+  const studentResponse = studentResponseHook?.data?.data || [];
   const updateStudentData = useUpdateStudentData();
   
   const [formData, setFormData] = useState({});

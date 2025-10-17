@@ -44,7 +44,7 @@ class User extends Authenticatable
 
     public function articles()
     {
-        return $this->hasMany(Article::class);
+        return $this->hasMany(Article::class, 'author_id');
     }
 
     public function isSuperAdmin()
@@ -83,6 +83,14 @@ class User extends Authenticatable
     public static function whereRole($role): Builder
     {
         return self::where('role', $role);
+    }
+
+    public function getProfileImageAttribute($value)
+    {
+        if ($value) {
+            return url(Storage::url($value));
+        }
+        return null;
     }
 
 

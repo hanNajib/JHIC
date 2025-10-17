@@ -1,8 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Card from '../ui/Card';
 import Icon from '../ui/Icon';
 
 const StatCard = ({ stat, className = '', position = 'left' }) => {
+  const [count, setCount] = React.useState(0);
+  const targetValue = parseInt(stat.value) || 0;
+
+  useEffect(() => {
+    let start = 0;
+    const duration = 2000; 
+    const increment = targetValue / (duration / 16);
+    
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= targetValue) {
+        setCount(targetValue);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [targetValue]);
+
   return (
     <div
       className={`relative w-full shadow-lg md:rounded-xl flex items-center justify-center md:px-5 px-2 py-6 rounded-full md:py-4 md:gap-5 cursor-pointer group ${className}`}
@@ -14,14 +35,14 @@ const StatCard = ({ stat, className = '', position = 'left' }) => {
       </div>
       
       <div className='hidden md:flex flex-col justify-center items-center'>
-        <h1 className='text-[#ff6000] font-poppins font-bold text-3xl'>{stat.value}</h1>
+        <h1 className='text-[#ff6000] font-poppins font-bold text-3xl'>{count}+</h1>
         <h1 className='text-[#272727] font-poppins font-medium text-sm'>{stat.label}</h1>
       </div>
 
       {/* Mobile hover tooltip */}
       <div className={`absolute hidden group-hover:flex group-hover:md:hidden group-active:flex group-active:md:hidden justify-center items-center flex-col bg-white shadow-lg p-4 rounded-xl top-full mt-2 z-10  w-56 ${position === 'left' ? 'left-0' : 'right-0'}`}>
         <div className='flex flex-col justify-center items-center'>
-          <h1 className='text-[#ff6000] font-poppins font-bold text-2xl'>{stat.value}</h1>
+          <h1 className='text-[#ff6000] font-poppins font-bold text-2xl'>{count}</h1>
           <h1 className='text-[#272727] font-poppins font-medium text-sm'>{stat.label}</h1>
         </div>  
       </div>

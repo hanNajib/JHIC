@@ -14,7 +14,9 @@ const EditGuru = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
+    position: "",
     subjects: "",
+    category: "lainnya",
     image: null,
   });
   const [errors, setErrors] = useState({});
@@ -29,11 +31,22 @@ const EditGuru = () => {
     color: subject.color || "gray",
   })) || [];
 
+  const categoryOptions = [
+    { value: "kepala_sekolah", label: "Kepala Sekolah" },
+    { value: "waka", label: "Wakil Kepala Sekolah" },
+    { value: "koordinator", label: "Koordinator" },
+    { value: "koordinator_jurusan", label: "Koordinator Jurusan" },
+    { value: "komite", label: "Komite" },
+    { value: "lainnya", label: "Lainnya" },
+  ];
+
 
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Nama wajib diisi"),
+    position: Yup.string().nullable(),
     subjects: Yup.string().required("Mata pelajaran wajib diisi"),
+    category: Yup.string().required("Kategori wajib diisi"),
     image: Yup.mixed()
       .nullable()
       .test("fileSize", "Ukuran file maksimal 2MB", (value) => {
@@ -54,7 +67,9 @@ const EditGuru = () => {
       const teacherData = staff;
       setFormData({
         name: teacherData.name || "",
+        position: teacherData.position || "",
         subjects: teacherData.subjects || "",
+        category: teacherData.category || "lainnya",
         image: null,
       });
       
@@ -104,10 +119,10 @@ const EditGuru = () => {
 
     const submitFormData = new FormData();
     submitFormData.append("name", formData.name);
-    submitFormData.append("position", "");
-    submitFormData.append("subjects", formData.subjects);
-    submitFormData.append("category", "lainnya");
     submitFormData.append("role", "teacher");
+    if (formData.position) submitFormData.append("position", formData.position);
+    submitFormData.append("subjects", formData.subjects);
+    submitFormData.append("category", formData.category);
     
     if (formData.image) {
       submitFormData.append("image", formData.image);
@@ -212,6 +227,29 @@ const EditGuru = () => {
           )}
         </div>
 
+        {/* Jabatan */}
+        <div className="flex flex-col">
+          <label htmlFor="position" className="font-bold text-gray-800">
+            Jabatan
+          </label>
+          <input
+            id="position"
+            type="text"
+            name="position"
+            placeholder="Masukkan jabatan (opsional)"
+            value={formData.position}
+            onChange={handleInputChange}
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
+              errors.position
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+            }`}
+          />
+          {errors.position && (
+            <span className="text-red-500 text-sm mt-1">{errors.position}</span>
+          )}
+        </div>
+
         <div className="flex flex-col">
           <Multiselect
             label="Mata Pelajaran"
@@ -225,6 +263,23 @@ const EditGuru = () => {
             addCustomPlaceholder="Tekan Enter untuk menggunakan nama mata pelajaran yang diketik"
             multiple={false}
             error={errors.subjects}
+          />
+        </div>
+
+        {/* Kategori */}
+        <div className="flex flex-col">
+          <Multiselect
+            label="Kategori"
+            required={true}
+            options={categoryOptions}
+            value={formData.category}
+            onChange={(value) => {
+              setFormData(prev => ({ ...prev, category: value }));
+              validateField("category", value);
+            }}
+            placeholder="Pilih kategori guru"
+            multiple={false}
+            error={errors.category}
           />
         </div>
 

@@ -19,6 +19,7 @@ class SchoolSettingsController extends Controller
 
     public function update(Request $request, $title) {
         $setting = SchoolSetting::whereSetting($title)->first();
+        return $setting;
 
         if(!$setting) {
             return $this->notFound('Setting not found');

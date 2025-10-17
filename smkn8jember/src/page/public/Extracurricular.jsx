@@ -3,14 +3,15 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import CardFE from "../../components/ui/CardFE";
 import { useExtarculiculars } from "../../hooks/api/useExtarculicular";
+import DefaultLayout from "../../components/layout/DefaultLayout";
 
 const Extracurricular = () => {
-  const {data: ekstra = [], isLoading, isError} = useExtarculiculars();
-console.log(ekstra);
+  const {data: ekstraResponse, isLoading, isError} = useExtarculiculars();
+  const ekstra = ekstraResponse?.data || [];
+
 
   return (
-    <>
-      <Navbar />
+    <DefaultLayout>
 
       <section
         style={{
@@ -43,25 +44,24 @@ console.log(ekstra);
           ))}
         </div>
 
-      {/* VErsi 2 */}
-      {/* <section className="flex flex-col items-center py-10 px-4 lg:px-16">
+      {/* VErsi 2
+      <section className="flex flex-col items-center py-10 px-4 lg:px-16">
         <h2 className="font-bold text-2xl lg:text-4xl text-gray-800">Ekstrakulikuler</h2>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 mt-10">
           {ekstra.map((item, index) => (
             <CardFE
               key={index}
-              data1={item.foto}
-              data2={item.nama}
-              data3={item.pembimbing}
+              data1={item.image}
+              data2={item.name}
+              data3={item.mentor_name}
               data4={item.deskripsi}
             />
           ))}
         </div>
       </section> */}
 
-      <Footer />
-    </>
+    </DefaultLayout>
   );
 };
 

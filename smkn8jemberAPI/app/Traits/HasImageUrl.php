@@ -8,7 +8,15 @@ trait HasImageUrl
 {
     public function getImageAttribute($value): ?string
     {
-        return $value ? url(Storage::url($value)) : null;
+        if (!$value) {
+            return null;
+        }
+
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+
+        return url(Storage::url($value));
     }
 
     public function OriginalImagePath(): ?string

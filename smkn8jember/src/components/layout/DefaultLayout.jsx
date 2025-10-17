@@ -1,11 +1,14 @@
+import { useEffect } from "react";
 import { useWebSettingByTitle, useWebSettings } from "../../hooks/api/useWebSettings";
 import Footer from "../Footer"
 import Navbar from "../Navbar"
 import { LoadingTransition } from "../ui/TextLoading";
 
 const DefaultLayout = ({ children }) => {
-    const { data, isLoading } = useWebSettings();
-
+    const { isLoading } = useWebSettings();
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [window.location.pathname]);
     return (
         <LoadingTransition
             loading={isLoading}
@@ -20,7 +23,7 @@ const DefaultLayout = ({ children }) => {
                     {children}
                 </main>
 
-                <Footer data={data?.data} />
+                <Footer />
             </div>
         </LoadingTransition>
     )

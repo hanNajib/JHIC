@@ -87,7 +87,8 @@ class AuthController extends Controller
 
 
         $currentUser->update($updateData);
+        $currentUser->refresh();
 
-        return $this->success($currentUser->fresh(), 'User updated successfully');
+        return $this->success($currentUser, 'User updated successfully');
     }
 }
