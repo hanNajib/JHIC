@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../../constants/queryKeys";
 import * as articleService from "../../api/services/admin/ArticleService";
 export const useArticles = (filters = {}, options = {}) => {
@@ -6,7 +6,24 @@ export const useArticles = (filters = {}, options = {}) => {
     queryKey: [QUERY_KEYS.ARTICLE.LIST, filters],
     queryFn: async () => {
       const response = await articleService.get(filters);
-      return { data: response.data, meta: response.meta, link: response.link };
+      return { data: response.data, meta: response.meta, link: response.links };
+    },
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+};
+
+export const useArticlesPublic = (filters = {}, options = {}) => {
+  return useInfiniteQuery({
+    queryKey: [QUERY_KEYS.ARTICLE.LIST, filters],
+    queryFn: async ({ pageParam = null }) => {
+      const params = { ...filters };
+      if (pageParam) params.cursor = pageParam;
+      const response = await articleService.get(params);
+      return { data: response.data, meta: response.meta, link: response.links };
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage.meta?.next_cursor || undefined;
     },
     staleTime: 5 * 60 * 1000,
     ...options,

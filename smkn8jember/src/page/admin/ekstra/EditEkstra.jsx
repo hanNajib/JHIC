@@ -37,8 +37,33 @@ const EditEkstra = () => {
   const { id } = useParams();
   const [preview, setPreview] = useState(null);
 
-  const { data: ekstra, isLoading } = useExtarculicular(id);
-  const updateExtraculicular = useUpdateExtarculicular(id);
+  const { data: currentEkstra, isLoading, error } = useExtarculicular(id);
+  
+  // Debug logging
+  console.log("Ekstra ID:", id);
+  console.log("Current Ekstra:", currentEkstra);
+  console.log("Loading:", isLoading);
+  console.log("Error:", error);
+  
+  const updateExtraculicular = useUpdateExtarculicular(id, {
+    onSuccess: () => {
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Ekstrakurikuler berhasil diperbarui",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate('/admin/ekstrakulikuler');
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        title: "Gagal!",
+        text: error.response?.data?.message || "Terjadi kesalahan saat memperbarui ekstrakurikuler",
+        icon: "error",
+      });
+    }
+  });
 
 
   const {
@@ -58,16 +83,16 @@ const EditEkstra = () => {
   });
 
   useEffect(() => {
-    if (ekstra) {
-      reset({
-        name: ekstra.name || "",
-        mentor_name: ekstra.mentor_name || "",
-        description: ekstra.description || "",
-        image: null,
-      });
-      setPreview(ekstra.image);
+    if (currentEkstra) {
+      console.log("Setting form values:", currentEkstra); // Debug log
+      setValue("name", currentEkstra.name || "");
+      setValue("mentor_name", currentEkstra.mentor_name || "");
+      setValue("description", currentEkstra.description || "");
+      
+      // Set preview image
+      setPreview(currentEkstra.image_url || currentEkstra.image || null);
     }
-  }, [ekstra, reset]);
+  }, [currentEkstra, setValue]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -77,56 +102,77 @@ const EditEkstra = () => {
       
     }
   };
-const onSubmit = async (data) => {
-  try {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("mentor_name", data.mentor_name);
-    formData.append("description", data.description);
-    if (data.image) formData.append("image", data.image);
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("mentor_name", data.mentor_name);
+      formData.append("description", data.description);
+      
+      // Handle image - only append if a new image is selected
+      if (data.image && data.image instanceof File) {
+        formData.append("image", data.image);
+      }
 
-    await updateExtraculicular.mutateAsync(formData);
+      await updateExtraculicular.mutateAsync(formData);
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
+  };
 
-    await Swal.fire({
-      icon: "success",
-      title: "Berhasil!",
-      text: "Data ekstrakurikuler berhasil diperbarui.",
-      confirmButtonColor: "#f97316",
-      timer: 1800,
-      showConfirmButton: false,
-    });
-
-    navigate('/admin/ekstrakulikuler');
-  } catch (error) {
-    console.error("Gagal update ekstrakurikuler:", error);
-
-    Swal.fire({
-      icon: "error",
-      title: "Gagal!",
-      text:
-        error?.response?.data?.message ||
-        "Terjadi kesalahan saat memperbarui data.",
-      confirmButtonColor: "#f97316",
-    });
-  }
-};
+  const handleReset = () => {
+    if (currentEkstra) {
+      setValue("name", currentEkstra.name || "");
+      setValue("mentor_name", currentEkstra.mentor_name || "");
+      setValue("description", currentEkstra.description || "");
+      setValue("image", null);
+      setPreview(currentEkstra.image_url || currentEkstra.image || null);
+    }
+  };
 
 
   if (isLoading) {
-    return <p className="text-center py-10">Memuat data...</p>;
+    return (
+      <div className="text-center text-gray-500 py-10">
+        Memuat data ekstrakurikuler...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center text-red-500">
+          <h3 className="text-lg font-semibold mb-2">Error Loading Data</h3>
+          <p>{error?.message || "Gagal memuat data ekstrakurikuler"}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentEkstra && !isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg p-5">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold mb-2">Data Tidak Ditemukan</h3>
+          <p className="text-gray-600">Ekstrakurikuler dengan ID tersebut tidak ditemukan.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
+      {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 cursor-pointer text-3xl lg:text-4xl text-center p-1 rounded-4xl text-white"
+          className="bg-orange-500 cursor-pointer text-3xl lg:text-4xl text-center p-2 rounded-lg text-white hover:bg-orange-600 transition-colors"
         >
           <IoIosArrowBack />
         </button>
         <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-          Edit Data Ekstrakurikuler
+          Edit Ekstrakurikuler
         </h1>
       </div>
 
@@ -217,20 +263,21 @@ const onSubmit = async (data) => {
         </div>
 
         {/* Tombol */}
-        <div className="flex gap-3 justify-end mt-4">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-orange-500 text-white font-semibold py-1 text-base w-24 rounded-4xl hover:bg-orange-600 disabled:opacity-50"
-          >
-            {isSubmitting ? "Menyimpan..." : "Update"}
-          </button>
+        <div className="flex gap-3 justify-end mt-6">
           <button
             type="button"
-            onClick={() => reset()}
-            className="py-1 w-24 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-4xl hover:bg-orange-500 hover:text-white transition duration-300"
+            onClick={handleReset}
+            className="py-2 px-6 text-orange-500 text-base font-bold border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300"
+            disabled={isSubmitting}
           >
             Reset
+          </button>
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </form>

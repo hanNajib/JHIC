@@ -7,7 +7,7 @@ export const useAdmins = (filters = {}, options = {}) => {
         queryKey: [QUERY_KEYS.ADMINS.LIST, filters],
         queryFn: async () => {
             const response = await adminService.get(filters);
-            return { data: response.data, meta: response.meta, link: response.link };
+            return { data: response.data, meta: response.meta, link: response.links };
         },
         staleTime: 5 * 60 * 1000,
         ...options
@@ -19,6 +19,18 @@ export const useAdmin = (id, options = {}) => {
         queryKey: [QUERY_KEYS.ADMINS.DETAIL, id],
         queryFn: async () => {
             const response = await adminService.getById(id);
+            return response.data;
+        },
+        staleTime: 5 * 60 * 1000,
+        ...options
+    })
+}
+
+export const useAdminByName = (name, options = {}) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.ADMINS.DETAIL, name],
+        queryFn: async () => {
+            const response = await adminService.getByName(name);
             return response.data;
         },
         staleTime: 5 * 60 * 1000,

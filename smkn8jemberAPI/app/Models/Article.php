@@ -7,6 +7,7 @@ use App\Traits\HasCursorPagination;
 use App\Traits\HasImageUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class Article extends Model
@@ -51,7 +52,10 @@ class Article extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('status', 'published');
+        if(!Auth::user()) {
+            return $query->where('status', 'published');
+        }
+        return $query;
     }
 
     public function scopeDraft($query)
@@ -76,4 +80,6 @@ class Article extends Model
         
         $this->attributes['slug'] = $slug;
     }
+
+    
 }

@@ -12,6 +12,31 @@ class Staff extends Model
     use SoftDeletes, HasImageUrl, HasCursorPagination;
 
     protected $fillable = [
-        'name', 'role', 'position', 'image', 'subjects'
+        'name',
+        'role',
+        'position',
+        'image',
+        'subjects',
+        'category',
+        'parent_id',
+    ];
+
+    public function parent()
+    {
+        return $this->belongsTo(Staff::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Staff::class, 'parent_id');
+    }
+
+    public function scopeCategory($query, string $category)
+    {
+        return $query->where('category', $category);
+    }
+
+    protected $casts = [
+        'category' => 'string',
     ];
 }

@@ -24,7 +24,14 @@ const WebSetting = () => {
         initialData[setting.title] = setting.value;
       });
       setFormData(initialData);
-      setOriginalData(initialData); 
+      setOriginalData(initialData);
+      
+      if (initialData.logo_sekolah) {
+        setPreviewLogo(initialData.logo_sekolah);
+      }
+      if (initialData.hero_image) {
+        setPreviewHero(initialData.hero_image);
+      }
     }
   }, [webSettings]);
 
@@ -64,23 +71,16 @@ const WebSetting = () => {
     e.preventDefault();
     
     try {
-      // Filter hanya field yang berubah
       const changedFields = Object.entries(formData).filter(([title, value]) => {
-        // Skip jika value kosong
         if (!value) return false;
         
-        // Jika value adalah File (gambar baru di-upload), pasti berubah
         if (value instanceof File) return true;
         
-        // Skip jika value adalah URL http (gambar existing tidak diubah)
         if (typeof value === 'string' && value.startsWith('http')) return false;
         
-        // Bandingkan dengan original data
-        // Jika value berbeda dengan original, berarti ada perubahan
         return value !== originalData[title];
       });
 
-      // Jika tidak ada perubahan, tampilkan pesan dan return
       if (changedFields.length === 0) {
         Swal.fire({
           icon: "info",
@@ -90,7 +90,6 @@ const WebSetting = () => {
         return;
       }
 
-      // Map changed fields ke promises untuk update API
       const updatePromises = changedFields.map(([title, value]) => {
         if (value instanceof File) {
           const data = new FormData();
@@ -105,7 +104,6 @@ const WebSetting = () => {
 
       await Promise.all(updatePromises);
       
-      // Update originalData setelah sukses update
       setOriginalData({ ...formData });
       
       Swal.fire({
@@ -129,7 +127,6 @@ const WebSetting = () => {
 
   return (
     <div className="flex flex-col justify-center gap-10 w-full h-fit bg-white rounded-lg p-5">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}

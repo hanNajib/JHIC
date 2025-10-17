@@ -15,27 +15,44 @@ class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $articlesPaginated = Article::with(['author', 'categories'])->applyFilters(
+        $articlesPaginated = Article::published()->with(['author', 'categories'])->applyFilters(
             $request,
             searchable: ['title', 'content', 'slug'],
             filters: ['author_id', 'status'],
             relationFilters: [
                 'categories.name' => 'category_name',
-                'author.id' => 'author_id'
+                'author.id' => 'author_id',
+                'author.username' => 'author',
             ],
         );
         return $this->cursorPaginatedResource($articlesPaginated, ArticleResource::class, 'Articles retrieved successfully');
     }
 
+
     public function show($slug)
     {
-        $article = Article::whereSlug($slug)->with(['author', 'categories'])->first();
+        $article = Article::whereSlug($slug)
+            ->with(['author', 'categories'])
+            ->first();
+
         if (!$article) {
             return $this->notFound('Article not found');
         }
-        return $article;
-        return $this->success(new ArticleResource($article), 'Article retrieved successfully');
+
+        $ip = request()->ip();
+        $cacheKey = 'article_viewed_' . $article->id . '_' . $ip;
+
+        if (!cache()->has($cacheKey)) {
+            $article->increment('views');
+            cache()->put($cacheKey, true, now()->addMinutes(30)); 
+        }
+
+        return $this->success(
+            new ArticleResource($article->fresh()), 
+            'Article retrieved successfully'
+        );
     }
+
 
     public function store(ArticleStoreRequest $request)
     {
@@ -57,10 +74,21 @@ class ArticleController extends Controller
     public function update(ArticleUpdateRequest $request, $id)
     {
         $article = Article::find($id);
-        if (!$article || $article->author_id !== Auth::id() && Auth::user()->role !== 'superadmin') {
+
+        if (
+            !$article ||
+            ($article->author_id !== Auth::id() && Auth::user()->role !== 'superadmin')
+        ) {
             return $this->notFound('Article not found');
         }
+
         $validated = $request->validated();
+
+        if ($request->has('draft')) {
+            $isDraft = filter_var($request->draft, FILTER_VALIDATE_BOOLEAN);
+            $validated['status'] = $isDraft ? 'draft' : 'pending';
+        }
+
         if ($request->hasFile('image')) {
             if ($article->image) {
                 Storage::disk('public')->delete($article->image);
@@ -68,12 +96,16 @@ class ArticleController extends Controller
             $imagePath = $request->file('image')->store('articles', 'public');
             $validated['image'] = $imagePath;
         }
+
         $article->update($validated);
+
         if (isset($validated['categories'])) {
             $article->categories()->sync($validated['categories']);
         }
+
         return $this->success(new ArticleResource($article), 'Article updated successfully');
     }
+
 
     public function delete($id)
     {
@@ -82,7 +114,7 @@ class ArticleController extends Controller
             return $this->notFound('Article not found');
         }
 
-        if($article->author_id !== Auth::id() || Auth::user()->role !== 'superadmin') {
+        if ($article->author_id !== Auth::id() || Auth::user()->role !== 'superadmin') {
             return $this->error('You are not authorized to delete this article', 403);
         }
         if ($article->image) {

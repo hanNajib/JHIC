@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars */
 // components/Sidebar/index.jsx
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   FaBars,
   FaRegUser,
   FaChevronDown,
   FaRegListAlt,
   FaRegHandshake,
+  FaUserTie,
 } from "react-icons/fa";
 import {
   MdOutlineDashboard,
@@ -80,77 +81,90 @@ const NavItem = ({ to, icon: Icon, label, isOpen }) => {
   );
 };
 
-const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => (
-  <div className="relative">
-    <button
-      onClick={() => setOpen(!open)}
-      className="flex items-center text-start text-sm text-zinc-600 justify-between w-full py-2.5 px-2.5 rounded-lg font-medium transition-all group"
-    >
-      <div className="flex items-center gap-2">
-        <Icon className="text-xl absolute" />
-        <span
-          className={`transition-all ml-8 duration-200 whitespace-nowrap ${
-            isOpen ? "opacity-100" : "opacity-0 -translate-x-10"
-          }`}
+const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
+  const location = useLocation();
+  
+  // Check if any of the dropdown items is active
+  const isAnyItemActive = items.some(item => 
+    location.pathname === item.to || 
+    location.pathname.startsWith(item.to + '/')
+  );
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className={`flex items-center text-start text-sm justify-between w-full py-2.5 px-2.5 rounded-lg font-medium transition-all group ${
+          isAnyItemActive 
+            ? "bg-orange-500 text-white" 
+            : "text-zinc-600 hover:bg-gray-100"
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <Icon className="text-xl absolute" />
+          <span
+            className={`transition-all ml-8 duration-200 whitespace-nowrap ${
+              isOpen ? "opacity-100" : "opacity-0 -translate-x-10"
+            }`}
+          >
+            {title}
+          </span>
+        </div>
+        {isOpen && (
+          <FaChevronDown
+            className={`transition-transform duration-300 ${
+              open ? "rotate-180" : ""
+            }`}
+          />
+        )}
+        <div
+          className={`bg-white absolute left-full top-0 ml-2 w-40 py-2 rounded-lg shadow-lg z-50 ${
+            !open ? "block md:hidden" : "hidden"
+          } md:group-hover:block`}
         >
-          {title}
-        </span>
-      </div>
-      {isOpen && (
-        <FaChevronDown
-          className={`transition-transform duration-300 ${
-            open ? "rotate-180" : ""
-          }`}
-        />
-      )}
+          {items.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `block px-4 py-2 ${
+                  isActive
+                    ? "bg-orange-500 text-white"
+                    : "text-zinc-600 hover:bg-gray-100"
+                }`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
+      </button>
+
       <div
-        className={`bg-white absolute left-full top-0 ml-2 w-40 py-2 rounded-lg shadow-lg z-50 ${
-          !open ? "block md:hidden" : "hidden"
-        } md:group-hover:block`}
+        className={`ml-8 mt-1 flex-col gap-1 overflow-hidden transition-all duration-200 ${
+          !isOpen
+            ? "hidden"
+            : open
+            ? "max-h-0 opacity-0 ease-out"
+            : "max-h-96 opacity-100 ease-in"
+        }`}
       >
         {items.map((item) => (
-          <NavLink
+          <NavItem
             key={item.to}
             to={item.to}
-            className={({ isActive }) =>
-              `block px-4 py-2 ${
-                isActive
-                  ? "bg-orange-500 text-white"
-                  : "text-zinc-600 hover:bg-gray-100"
-              }`
-            }
-          >
-            {item.label}
-          </NavLink>
+            icon={item.icon}
+            label={item.label}
+            isOpen={isOpen}
+          />
         ))}
       </div>
-    </button>
-
-    <div
-      className={`ml-8 mt-1 flex-col gap-1 overflow-hidden transition-all duration-200 ${
-        !isOpen
-          ? "hidden"
-          : open
-          ? "max-h-0 opacity-0 ease-out"
-          : "max-h-96 opacity-100 ease-in"
-      }`}
-    >
-      {items.map((item) => (
-        <NavItem
-          key={item.to}
-          to={item.to}
-          icon={item.icon}
-          label={item.label}
-          isOpen={isOpen}
-        />
-      ))}
     </div>
-  </div>
-);
-
-const Sidebar = ({ isOpen, setIsOpen }) => {
+  );
+};const Sidebar = ({ isOpen, setIsOpen }) => {
   const [openArtikel, setOpenArtikel] = useState(true);
   const [openManajemen, setOpenManajemen] = useState(true);
+  const [openStaff, setOpenStaff] = useState(true);
 
   const artikelItems = [
     { to: "/admin/artikel", icon: PiArticleMedium, label: "Artikel Saya" },
@@ -161,9 +175,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     },
   ];
 
+  const staffItems = [
+    { to: "/admin/staff/teacher", icon: LiaUserTieSolid, label: "Data Guru" },
+    { to: "/admin/staff/employee", icon: LuUserRoundCog, label: "Data Karyawan" },
+    { to: "/admin/staff/principal", icon: FaUserTie, label: "Kepala Sekolah" },
+  ];
+
   const manajemenItems = [
-    { to: "/admin/dataguru", icon: LiaUserTieSolid, label: "Data Guru" },
-    { to: "/admin/datakaryawan", icon: LuUserRoundCog, label: "Data Karyawan" },
     { to: "/admin/siswa", icon: LuUserRoundPen, label: "Data Siswa" },
     { to: "/admin/fasilitas", icon: RiBuilding2Line, label: "Data Fasilitas" },
     {
@@ -174,7 +192,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   ];
 
   const { user } = useAuth();
-  console.log(user);
 
   if (user.role == "superadmin") {
     return (
@@ -267,6 +284,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   PROFIL SEKOLAH
                 </span>
               </h2>
+              <Dropdown
+                isOpen={isOpen}
+                open={openStaff}
+                setOpen={setOpenStaff}
+                icon={FaRegUser}
+                title="Data Staff"
+                items={staffItems}
+              />
               <Dropdown
                 isOpen={isOpen}
                 open={openManajemen}

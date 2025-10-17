@@ -18,16 +18,13 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  // Jika belum login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Role checking
   const isSuperAdmin = user.role === "superadmin";
   const isAdmin = user.role === "admin";
 
-  // Daftar halaman yang boleh diakses oleh admin biasa
   const adminAllowedPaths = [
     "/admin/dashboard",
     "/admin/artikel",
@@ -38,7 +35,6 @@ const ProtectedRoute = ({ children }) => {
     "/admin/gambar/edit/",
   ];
 
-  // Cek apakah path sekarang boleh diakses oleh admin biasa
   if (isAdmin) {
     const currentPath = location.pathname;
     const canAccess = adminAllowedPaths.some((path) =>
@@ -50,12 +46,10 @@ const ProtectedRoute = ({ children }) => {
     }
   }
 
-  // Superadmin bisa akses semua halaman
   if (isSuperAdmin || isAdmin) {
     return children;
   }
 
-  // Jika role tidak dikenal
   return <Navigate to="/login" replace />;
 };
 

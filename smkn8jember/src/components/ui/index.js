@@ -14,3 +14,5 @@ export { default as ImageModal } from './ImageModal';
 export { default as Loading } from './Loading';
 export { default as AdminLoading } from './AdminLoading';
 export { default as SimpleLoading } from './SimpleLoading';
+export { default as MajorDetailSkeleton } from './MajorDetailSkeleton';
+export * from './SkeletonComponents';

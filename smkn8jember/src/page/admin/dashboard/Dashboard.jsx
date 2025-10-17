@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [search, setSearch] = useState("");
   const [cursor, setCursor] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [jumlahPage, setJumlahPage] = useState(10);
+  const [jumlahPage, setJumlahPage] = useState(5);
   const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
 
   const navigate = useNavigate();
@@ -149,7 +149,7 @@ const Dashboard = () => {
                   key={article.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="py-2 px-4">{i + 1}</td>
+                  <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                   <td className="py-2">{article.title}</td>
                   <td className="py-2 px-4">
                     <div className="bg-orange-300/30 border border-orange-500 px-2 py-[1px] w-fit rounded-2xl text-sm text-orange-500">

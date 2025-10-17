@@ -27,14 +27,14 @@ import EditPengumuman from "./page/admin/pengumuman/EditPengumuman";
 import Gambar from "./page/admin/galeri/Gambar";
 import EditGambar from "./page/admin/galeri/EditGambar";
 import TambahGambar from "./page/admin/galeri/TambahGambar";
-// Admin - Guru
-import Guru from "./page/admin/guru/Guru";
-import TambahGuru from "./page/admin/guru/TambahGuru";
-import EditGuru from "./page/admin/guru/EditGuru";
-// Admin - Karyawan
-import Karyawan from "./page/admin/karyawan/Karyawan";
-import TambahKaryawan from "./page/admin/karyawan/TambahKaryawan";
-import EditKaryawan from "./page/admin/karyawan/EditKaryawan";
+// Admin - Staff (New Unified)
+import AllStaff from "./page/admin/staff/AllStaff";
+import Principal from "./page/admin/staff/Principal";
+import StaffForm from "./page/admin/staff/StaffForm";
+// Admin - Guru (Legacy - using new components)
+import GuruNew from "./page/admin/guru/GuruNew";
+// Admin - Karyawan (Legacy - using new components)  
+import KaryawanNew from "./page/admin/karyawan/KaryawanNew";
 // Admin - Siswa
 import Siswa from "./page/admin/siswa/Siswa";
 // Admin - Fasilitas
@@ -65,7 +65,6 @@ import StrukturOrganisasiTrash from "./page/admin/struktur/StrukturOrganisasiTra
 // Admin - Settings
 import TambahJabatan from "./page/admin/settings/TambahJabatan";
 import WebSetting from "./page/admin/settings/WebSetting";
-import VisiMisi from "./page/public/VisiMisi";
 import StudentData from "./page/public/StudentData";
 import Struktur from "./page/public/Struktur";
 import DetailArtikel from "./page/public/DetailArtikel";
@@ -83,7 +82,9 @@ import EditPartner from "./page/admin/partner/EditPartner";
 import Carrier from "./page/admin/Carrier/Carrier";
 import TambahCarrier from "./page/admin/Carrier/TambahCarrier";
 import EditCarrier from "./page/admin/Carrier/EditCarrier";
-
+import ProfileSetting from "./page/admin/settings/ProfileSetting";
+import VisiMisi from "./page/public/VisiMisi";
+  
 function Router() {
   return (
     <BrowserRouter>
@@ -113,15 +114,23 @@ function Router() {
           <Route path="gambar/tambah" element={<TambahGambar />} />
           <Route path="gambar/edit/:id" element={<EditGambar />} />
 
-          {/* Data Guru */}
-          <Route path="dataguru" element={<Guru />} />
-          <Route path="dataguru/tambah" element={<TambahGuru />} />
-          <Route path="dataguru/edit/:id" element={<EditGuru />} />
+          {/* Staff Management - New Unified Routes */}
+          <Route path="staff" element={<AllStaff />} />
+          <Route path="staff/teacher" element={<GuruNew />} />
+          <Route path="staff/employee" element={<KaryawanNew />} />
+          <Route path="staff/principal" element={<Principal />} />
+          <Route path="staff/add" element={<StaffForm />} />
+          <Route path="staff/add/:role" element={<StaffForm />} />
+          <Route path="staff/edit/:id" element={<StaffForm />} />
 
-          {/* Data Karyawan */}
-          <Route path="datakaryawan" element={<Karyawan />} />
-          <Route path="datakaryawan/tambah" element={<TambahKaryawan />} />
-          <Route path="datakaryawan/edit/:id" element={<EditKaryawan />} />
+          {/* Legacy Routes - Redirected to new structure */}
+          <Route path="dataguru" element={<GuruNew />} />
+          <Route path="dataguru/tambah" element={<Navigate to="/admin/staff/add/teacher" />} />
+          <Route path="dataguru/edit/:id" element={<StaffForm />} />
+
+          <Route path="datakaryawan" element={<KaryawanNew />} />
+          <Route path="datakaryawan/tambah" element={<Navigate to="/admin/staff/add/employee" />} />
+          <Route path="datakaryawan/edit/:id" element={<StaffForm />} />
 
           {/* Siswa */}
           <Route path="siswa" element={<Siswa />} />
@@ -174,19 +183,20 @@ function Router() {
 
           {/* Web Setting */}
           <Route path="websetting" element={<WebSetting />} />
+          <Route path="profilesetting" element={<ProfileSetting />} />
 
         </Route>
 
         {/* Public Routes */}
         <Route path="/history" element={<History />} />
         <Route path="/teacher" element={<Teacher />} />
-        <Route path="/employee" element={<Employee />} />
+        <Route path="/karyawan" element={<Employee />} />
         <Route path="/fasilitas" element={<Facilitas />} />
-        <Route path="/extracurricular" element={<Extracurricular />} />
+        <Route path="/ekstrakurikuler" element={<Extracurricular />} />
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:slug" element={<Profile />} />
         <Route path="/major/:name" element={<MajorDetail />} />
         <Route path="/detail" element={<DetailArtikel />} />
         <Route path="/visi-misi" element={<VisiMisi />} />

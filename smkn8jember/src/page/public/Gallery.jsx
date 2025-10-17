@@ -5,47 +5,41 @@ import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 import { GalleryCard } from "../../components/ui";
 import GalleryPopUp from "../../components/ui/GalleryPopUp";
 import { useGalleries } from "../../hooks/api/useGallery";
+import { all } from "axios";
+import { useCategories } from "../../hooks/api/useCategory";
+import { useDebounce } from "../../hooks/useDebounce";
+import DefaultLayout from "../../components/layout/DefaultLayout";
 
 const Gallery = () => {
   const [sort, setSort] = useState("terbaru");
   const [category, setCategory] = useState("All");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const debouncedSearchTerm = useDebounce(searchText, 500);
 
-  // Ambil data dari backend
-  const { data: galleryResponse = [], isLoading, isError } = useGalleries();
+  const { data: galleryResponse, isLoading, isError } = useGalleries({
+    category: category === "all" ? undefined : category,
+    sortDir: sort === "terbaru" ? "asc" : "desc",
+    s: debouncedSearchTerm,
+  });
+  const galleryData = galleryResponse?.data || [];
 
-  // Normalisasi: pastikan datanya berbentuk array
-  const galleries = Array.isArray(galleryResponse)
-    ? galleryResponse
-    : Array.isArray(galleryResponse?.data)
-    ? galleryResponse.data
-    : [];
+  
 
-  // Filter dan sort data
-  const filteredGallery = useMemo(() => {
-    let filtered = Array.isArray(galleries) ? [...galleries] : [];
+  const { data: categoriesResponse } = useCategories({ type: "gallery", all: true });
+  const categories = categoriesResponse?.data || [];
 
-    // Filter berdasarkan kategori
-    if (category && category !== "All") {
-      filtered = filtered.filter((item) => item.category === category);
-    }
 
-    filtered = filtered.sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      return sort === "terbaru" ? dateB - dateA : dateA - dateB;
-    });
 
-    return filtered;
-  }, [galleries, category, sort]);
+  const handleOpenPopup = (image) => {
+    setSelectedImage(image);
+  };
 
-  // Popup handler
-  const handleOpenPopup = (image) => setSelectedImage(image);
-  const handleClosePopup = () => setSelectedImage(null);
+  const handleClosePopup = () => {
+    setSelectedImage(null);
+  };
 
-  // Loading & error states
-  if (isLoading) return <p className="text-center py-20">Memuat galeri...</p>;
-  if (isError)
+  if (isError) {
     return (
       <p className="text-center py-20 text-red-500">
         Gagal memuat galeri. Silakan coba lagi.
@@ -53,10 +47,7 @@ const Gallery = () => {
     );
 
   return (
-    <>
-      <Navbar />
-
-      {/* Header */}
+    <DefaultLayout>
       <section
         className="flex flex-col items-center justify-center py-20 relative text-center"
         style={{
@@ -79,62 +70,49 @@ const Gallery = () => {
       {/* Filter Section */}
       <section className="bg-[#f9fafb] pt-10 pb-5 px-6 md:px-16 border-b border-gray-200">
         <div className="max-w-6xl mx-auto w-full flex flex-col gap-6">
-          {/* Search */}
-          <form
-            action=""
-            className="border-b border-gray-200 pb-10 px-10"
-            onSubmit={(e) => e.preventDefault()}
-          >
+          <div className="border-b border-gray-200 pb-10 px-10">
             <label
               htmlFor="search"
               className="block font-semibold text-2xl text-gray-600 mb-2"
-            >
-              Cari Artikel
+              >
+              Cari Gambar
             </label>
             <div className="flex items-center rounded-full border border-gray-300 overflow-hidden transition focus-within:ring-1 focus-within:ring-orange-400 focus-within:border-orange-400">
               <input
                 type="text"
                 id="search"
+                name="search"
                 placeholder="Telusuri artikel..."
-                className="flex-1 px-4 py-2.5 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
-              />
-              <button
-                type="submit"
-                className="bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-8 py-2.5 transition"
-              >
-                Cari
-              </button>
-            </div>
-          </form>
+                value={searchText}
+                onChange={(e) => {
+                    setSearchText(e.target.value);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
+                  />
+                </div>
+                </div>
 
-          {/* Tabs & Sort */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            {/* Tabs */}
-            <div className="flex flex-wrap gap-3 text-gray-700 font-medium">
-              {["All", "RPL", "TKJ", "DKV", "TKR", "TSM", "APTH", "APT"].map(
-                (tab, i) => (
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex flex-wrap gap-4 md:gap-8 text-gray-700 font-medium overflow-x-auto">
+                  {[{ name: "All" }, ...categories].map((tab, i) => (
                   <button
                     key={i}
-                    onClick={() => setCategory(tab)}
-                    className={`w-16 border-b-2 transition duration-200 ${
-                      category === tab
-                        ? "border-orange-500 text-orange-500"
-                        : "border-transparent hover:border-gray-600"
+                    onClick={() => setCategory(tab.name === "All" ? "" : tab.name)}
+                    className={`px-3 py-1 whitespace-nowrap border-b-2 transition duration-200 ${
+                    (tab.name === "All" && category === "") || tab.name === category
+                      ? "border-orange-500 text-orange-500"
+                      : "border-transparent hover:border-gray-600"
                     }`}
                   >
-                    {tab}
+                    {tab.name}
                   </button>
-                )
-              )}
-            </div>
+                  ))}
+                </div>
 
-            {/* Sort Dropdown */}
+                {/* Terbaru/lama */}
             <div className="flex items-center gap-2">
-              <label
-                htmlFor="sort"
-                className="text-sm font-medium text-gray-600"
-              >
-                Urutkan:
+              <label htmlFor="sort" className="text-sm font-medium text-gray-600">
+                Sort by:
               </label>
               <select
                 id="sort"
@@ -142,38 +120,45 @@ const Gallery = () => {
                 onChange={(e) => setSort(e.target.value)}
                 className="border border-orange-500 rounded-md py-2 px-10 focus:outline-none focus:ring-1 focus:ring-orange-400"
               >
-                <option value="terbaru">Terbaru</option>
-                <option value="terlama">Terlama</option>
+                <option value="terbaru">Newest</option>
+                <option value="terlama">Oldest</option>
               </select>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Gallery Grid */}
       <section className="bg-white py-10">
-        {filteredGallery.length === 0 ? (
-          <p className="text-center text-gray-500">
-            Tidak ada galeri ditemukan.
-          </p>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-16">
-            {filteredGallery.map((image) => (
-              <GalleryCard
-                key={image.id}
-                image={image}
-                onClick={() => handleOpenPopup(image)}
-              />
-            ))}
-          </div>
-        )}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-16">
+          {isLoading
+            ? Array(6)
+                .fill(0)
+                .map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-60 bg-gray-200 animate-pulse rounded-md"
+                  />
+                ))
+            : galleryData.length > 0 ? (
+              galleryData.map((image) => (
+                <GalleryCard
+                  key={image.id}
+                  image={image}
+                  onClick={() => handleOpenPopup(image)}
+                />
+              ))
+            ) : (
+              <p className="col-span-full text-center text-gray-500 text-lg">
+                Tidak ada galeri ditemukan
+              </p>
+            )}
+        </div>
       </section>
 
       {/* Popup */}
       <GalleryPopUp image={selectedImage} onClose={handleClosePopup} />
 
-      <Footer />
-    </>
+    </DefaultLayout>
   );
 };
 

@@ -3,15 +3,14 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import CardFE from "../../components/ui/CardFE";
 import { useFacilities } from "../../hooks/api/useFacility";
+import DefaultLayout from "../../components/layout/DefaultLayout";
 
 const Facilitas = () => {
   const { data: fasilitasResponse = [], isLoading, isError } = useFacilities();
   const fasilitas = fasilitasResponse?.data || [];
   
   return (
-    <>
-      <Navbar />
-
+    <DefaultLayout>
       <section
         style={{
           backgroundImage: "url('/assets/images/header-history.png')",
@@ -60,8 +59,7 @@ const Facilitas = () => {
         </div>
       </section> */}
 
-      <Footer />
-    </>
+    </DefaultLayout>
   );
 };
 

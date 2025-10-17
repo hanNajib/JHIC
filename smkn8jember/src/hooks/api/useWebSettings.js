@@ -7,7 +7,7 @@ export const useWebSettings = (options = {}) => {
         queryKey: [QUERY_KEYS.WEB_SETTINGS],
         queryFn: async () => {
             const response = await webSettingsService.getSettings();
-            return { data: response.data, meta: response.meta, link: response.link };
+            return { data: response.data, meta: response.meta, link: response.links };
         },
         ...options
     });
@@ -18,7 +18,7 @@ export const useWebSettingByTitle = (title, options = {}) => {
         queryKey: [QUERY_KEYS.WEB_SETTINGS, title],
         queryFn: async () => {
             const response = await webSettingsService.getByTitle(title);
-            return { data: response.data, meta: response.meta, link: response.link };
+            return { data: response.data, meta: response.meta, link: response.links };
         },
         ...options
     });

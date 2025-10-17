@@ -17,14 +17,23 @@ import { useCareers } from "../../hooks/api/useCareer";
 import parse from "html-react-parser";
 import TextLoading from "../../components/ui/TextLoading";
 import DefaultLayout from "../../components/layout/DefaultLayout";
+import { RenderIcon } from "../../components/ui/RenderIcon";
+import { useArticle } from "../../hooks/api/useArticle";
+import MajorDetailSkeleton from "../../components/ui/MajorDetailSkeleton";
 
 const MajorDetail = () => {
+  const {slug} = useParams();
   const { name } = useParams();
   const { data: major, isLoading } = useMajorByName(name);
-  const { data: subjects = [] } = useSubjects({ major_id: major?.id });
-  const { data: careers = [] } = useCareers({ major_id: major?.id });
-  const { data: partner = [] } = usePartners({ major_id: major?.id });
+  const subjects = major?.subjects;
+  const careers = major?.chance_carriers;
+  const partner = major?.partners;
+  const {data: article} = useArticle(slug);
+  console.log(article);
+  
+  
   const sliderRef = useRef(null);
+  
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -48,48 +57,9 @@ const MajorDetail = () => {
     return () => cancelAnimationFrame(animationFrame);
   }, []);
 
-  const carieers = [
-    {
-      icon: <MdCode size={40} />,
-      title: "Software Development",
-      salary: "Gaji: Rp 8-25 juta/bulan",
-    },
-    {
-      icon: <MdWeb size={40} />,
-      title: "Web Development",
-      salary: "Gaji: Rp 8-25 juta/bulan",
-    },
-    {
-      icon: <AiOutlineMobile size={40} />,
-      title: "Mobile Developer",
-      salary: "Gaji: Rp 8-25 juta/bulan",
-    },
-    {
-      icon: <MdOutlineLightbulb size={40} />,
-      title: "Pengusaha Teknologi",
-      salary: "Gaji: Rp 8-25 juta/bulan",
-    },
-  ];
-
-  const logoItems = [
-    { src: "/assets/images/smartlogy-logo.png", alt: "Smartlogy" },
-    { src: "/assets/images/hummatect.png", alt: "Hummatect" },
-    { src: "/assets/images/mascitra.png", alt: "Mascitra" },
-    { src: "/assets/images/ubig.png", alt: "UBIG" },
-    { src: "/assets/images/tamara.png", alt: "Tamara" },
-    { src: "/assets/images/pringapus.png", alt: "Pringapus" },
-    { src: "/assets/images/mitra1.png", alt: "Mitra 1" },
-    { src: "/assets/images/mitra2.png", alt: "Mitra 2" },
-    { src: "/assets/images/mitra3.png", alt: "Mitra 3" },
-    { src: "/assets/images/mitra4.png", alt: "Mitra 4" },
-  ];
-
+  
   if (isLoading) {
-    return (
-      <DefaultLayout>
-        <TextLoading text={name} fullscreen={false}/>
-      </DefaultLayout>
-    );
+    return <MajorDetailSkeleton />;
   }
 
   return (
@@ -157,8 +127,8 @@ const MajorDetail = () => {
                 key={index}
                 className="flex flex-col items-center text-center gap-3"
               >
-                <div className="bg-[#FF6000] text-white p-2 rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
-                  {item.icon}
+                <div className="bg-[#FF6000] text-white p-5 rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
+                  <RenderIcon iconName={item.icon} className="w-8 h-8"/>
                 </div>
                 <h2 className="font-semibold text-lg text-white leading-tight">
                   {item.name}

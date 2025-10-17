@@ -168,6 +168,14 @@ const Partner = () => {
       />
 
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
+         {isFetching && (
+          <div className="absolute inset-0 bg-white/80 z-10 flex items-center justify-center">
+            <div className="bg-white rounded-lg shadow-xl p-6 flex items-center gap-3">
+              <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-gray-700 font-medium">Memuat data...</span>
+            </div>
+          </div>
+        )}
         <table className="min-w-full bg-white ">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
@@ -197,7 +205,7 @@ const Partner = () => {
                   key={partner.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="py-2 px-4">{i + 1}</td>
+                  <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                   <td className="py-2">{partner.name}</td>
                   <td className="py-2 px-4">{partner.major?.name || '-'}</td>
                   <td className="py-2 px-4">

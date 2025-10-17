@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import CardGK from "../../components/ui/CardGK";
+import { useStaff } from "../../hooks/api/useStaff";
 
 const Teacher = () => {
-  const [guru, setGuru] = useState([]);
+  const { data: guruResponse, isLoading } = useStaff({
+    role: "teacher",
+    all: true,
+  });
 
-  useEffect(() => {
-    fetch("/guru.json")
-      .then((res) => res.json())
-      .then((data) => setGuru(data));
-  }, []);
+  const guru = guruResponse?.data || [];
 
   return (
     <>
@@ -18,13 +18,13 @@ const Teacher = () => {
 
       <section
         style={{
-          backgroundImage: "url('/assets/images/header-history.png')",
+          backgroundImage: "url('/assets/images/header-staf.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
         className="flex flex-col items-center justify-center py-12 md:py-14 lg:py-20 relative"
       >
-        <div className="bg-gradient-to-r from-[#24201f9a] to-transparent w-full h-full absolute"></div>
+        <div className="absolute inset-0 bg-orange-700 opacity-40"></div>
         <h1 className="font-poppins font-bold text-[#F8F9FA] text-3xl md:text-[4rem] z-10">
           Data Guru
         </h1>
@@ -34,35 +34,35 @@ const Teacher = () => {
         </p>
       </section>
 
-      {/* Versi 1 */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4 lg:p-16 lg:gap-7">
-        {guru.map((item, index) => (
-          <CardGK
-            key={index}
-            data1={item.nama}
-            data2={item.mapel}
-            data3={item.foto}
-          />
-        ))}
-      </div>
-
-      {/* Versi 2 */}
-      {/* <section className="flex flex-col items-center py-10 px-4 lg:px-16">
-        <h2 className="font-bold text-2xl lg:text-4xl text-gray-800">
-          Guru Guru Hebat Kami
-        </h2>
-
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 mt-10">
-          {guru.map((item, index) => (
+        {isLoading ? (
+          Array(6)
+            .fill(0)
+            .map((_, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center bg-white shadow-md rounded-xl p-4 animate-pulse"
+              >
+                <div className="w-32 h-32 bg-gray-300 rounded-full mb-4"></div>
+                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            ))
+        ) : guru.length > 0 ? (
+          guru.map((item, index) => (
             <CardGK
               key={index}
-              data1={item.nama}
-              data2={item.mapel}
-              data3={item.foto}
+              data1={item.name}
+              data2={item.subjects}
+              data3={item.image}
             />
-          ))}
-        </div>
-      </section> */}
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-500 text-lg">
+            Belum ada data guru.
+          </p>
+        )}
+      </div>
 
       <Footer />
     </>

@@ -3,8 +3,17 @@ import { Section, Button, ArticleCard } from "../ui";
 import { useArticles } from "../../hooks/api/useArticle";
 
 const ArticlesSection = ({ className = "" }) => {
-  const { data: articlesResponse, isLoading, isError } = useArticles();
-  const articles = articlesResponse?.data || [];
+  const { data: articleResponse, isLoading } = useArticles();
+
+  const articles = articleResponse?.data || [];
+  
+  if (isLoading) {
+    return (
+      <Section title="Artikel Terbaru" className={className}>
+        <p className="text-center text-gray-500">Memuat artikel...</p>
+      </Section>
+    );
+  }
 
   return (
     <Section
@@ -17,13 +26,11 @@ const ArticlesSection = ({ className = "" }) => {
       className={className}
     >
       <div className="grid md:grid-cols-2 lg:grid-cols-3 w-full pt-10 gap-6 items-stretch pb-4">
-        {articles.map((article, index) => (
+        {articles.slice(0, 6).map((article, index) => (
           <ArticleCard
             key={article.id}
             article={article}
-            className={
-              index >= 6 ? "hidden " : ""
-            }
+            className={index >= 3 ? "hidden md:flex md:flex-col md:flex-none" : ""}
           />
         ))}
       </div>

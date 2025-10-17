@@ -46,6 +46,7 @@ const ArtikelUser = () => {
 
   const articles = articleResponse?.data || [];
   const meta = articleResponse?.meta || {};
+console.log(articles);
 
   const {data: categoriesResponse} = useCategories({ type: ['major', 'article'] });
   const categoryData =  categoriesResponse?.data || [];
@@ -282,7 +283,7 @@ const ArtikelUser = () => {
                 key={article.id}
                 className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
               >
-                <td className="py-2 px-4">{i + 1}</td>
+                <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                 <td className="py-2">{article.title}</td>
                 <td className="py-2 px-4">
                 {article.categories.map((cat, idx) => (

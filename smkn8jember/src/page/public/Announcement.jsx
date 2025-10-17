@@ -6,24 +6,29 @@ import TextLoading from "../../components/ui/TextLoading";
 import PengumumanPopUp from "../../components/ui/PengumumanPopUp";
 
 const Announcement = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const handleOpenPopup = (image) => setSelectedImage(image);
-  const handleClosePopup = () => setSelectedImage(null);
-
-  const {
-    data,
-    isLoading,
-    isError,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    refetch,
-  } = useAnnouncementsPublic({ limit: 10 });
+  const { 
+    data, 
+    isLoading, 
+    isError, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage, 
+    refetch 
+  } = useAnnouncementsPublic({limit: 5});
 
   const announcements = useMemo(
     () => data?.pages.flatMap((page) => page.data) || [],
     [data]
   );
+
+  const [pengumumanPopUp, setPengumumanPopUp] = useState(null);
+  const handleOpenPopUp = (announcement) => {
+    setPengumumanPopUp(announcement);
+  }
+
+  const handleClosePopUp = () => {
+    setPengumumanPopUp(null);
+  }
 
   if (isError)
     return (
@@ -42,7 +47,6 @@ const Announcement = () => {
 
   return (
     <DefaultLayout>
-      {/* Hero Section */}
       <section
         className="relative flex flex-col items-center justify-center py-20 text-center"
         style={{
@@ -71,26 +75,9 @@ const Announcement = () => {
               <TextLoading text="Loading" />
             </div>
           ) : announcements.length > 0 ? (
-            <>
-              {/* Pengumuman Terbaru */}
-              <AnnouncementCard
-                announcement={latestAnnouncement}
-                variant="large"
-                onClick={() => handleOpenPopup(latestAnnouncement)}
-              />
-
-              {/* Pengumuman Lainnya */}
-              <div className="grid md:grid-cols-3 gap-6">
-                {otherAnnouncements.map((announcement) => (
-                  <AnnouncementCard
-                    key={announcement.id}
-                    announcement={announcement}
-                    variant="small"
-                    onClick={() => handleOpenPopup(announcement)}
-                  />
-                ))}
-              </div>
-            </>
+            announcements.map((announcement) => (
+              <AnnouncementCard key={announcement.id} announcement={announcement} onClick={() => handleOpenPopUp(announcement)} />
+            ))
           ) : (
             <p className="text-center text-gray-500">
               Belum ada pengumuman saat ini 📭
@@ -99,7 +86,6 @@ const Announcement = () => {
         </div>
       </section>
 
-      {/* Load More */}
       {!isLoading && hasNextPage && (
         <div className="py-8">
           <div className="max-w-6xl mx-auto flex justify-center px-6 md:px-16">
@@ -115,7 +101,7 @@ const Announcement = () => {
         </div>
       )}
 
-      <PengumumanPopUp pengumuman={selectedImage} onClose={handleClosePopup} />
+      <PengumumanPopUp pengumuman={pengumumanPopUp} onClose={handleClosePopUp} />
     </DefaultLayout>
   );
 };

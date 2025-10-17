@@ -6,13 +6,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMajors } from "../../../hooks/api/useMajor";
 import { useCareer, useUpdateCareer } from "../../../hooks/api/useCareer";
-import { Multiselect } from "../../../components/ui";
+import { Multiselect} from "../../../components/ui";
 import Swal from "sweetalert2";
+import IconPicker from "../../../components/ui/IconPicker";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama pekerjaan wajib diisi"),
   salary: yup.string().required("Gaji wajib diisi"),
   major_id: yup.string().required("Jurusan wajib diisi"),
+  icon: yup.string().nullable(),
   image: yup
     .mixed()
     .nullable()
@@ -43,7 +45,7 @@ const EditCareer = () => {
         icon: "success",
         confirmButtonText: "OK",
       }).then(() => {
-        navigate('/admin/career');
+        navigate(-1);
       });
     },
     onError: (error) => {
@@ -77,6 +79,7 @@ const EditCareer = () => {
       name: "",
       salary: "",
       major_id: "",
+      icon: "",
       image: null,
     },
   });
@@ -89,6 +92,7 @@ const EditCareer = () => {
       setValue("name", currentCareer.name || "");
       setValue("salary", currentCareer.salary || "");
       setValue("major_id", currentCareer.major_id?.toString() || "");
+      setValue("icon", currentCareer.icon || "");
       setValue("image", null);
       setPreview(currentCareer.image);
     }
@@ -109,6 +113,7 @@ const EditCareer = () => {
     formData.append("name", data.name);
     formData.append("salary", data.salary);
     formData.append("major_id", data.major_id);
+    formData.append("icon", data.icon);
     if (data.image) formData.append("image", data.image);
 
     await updateCareer.mutateAsync(formData);
@@ -119,6 +124,7 @@ const EditCareer = () => {
       setValue("name", currentCareer.name || "");
       setValue("salary", currentCareer.salary || "");
       setValue("major_id", currentCareer.major_id?.toString() || "");
+      setValue("icon", currentCareer.icon || "");
       setValue("image", null);
       setPreview(currentCareer.image);
     }
@@ -223,6 +229,18 @@ const EditCareer = () => {
               {errors.major_id.message}
             </span>
           )}
+        </div>
+
+        {/* Icon Picker */}
+        <div className="flex flex-col">
+          <IconPicker
+            label="Icon Karir"
+            value={watch("icon")}
+            onChange={(iconName) => setValue("icon", iconName)}
+            placeholder="Pilih icon untuk karir"
+            error={errors.icon?.message}
+            iconLibraries={["io5", "md", "fa", "hi", "bi"]}
+          />
         </div>
 
         {/* Upload Foto */}

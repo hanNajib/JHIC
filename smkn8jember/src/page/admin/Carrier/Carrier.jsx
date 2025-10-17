@@ -9,6 +9,7 @@ import { useDebounce } from "../../../hooks/useDebounce";
 import { useCareers, useDeleteCareer } from "../../../hooks/api/useCareer";
 import Swal from "sweetalert2";
 import { Button } from "../../../components/ui";
+import { RenderIcon } from "../../../components/ui/RenderIcon";
 
 const Carrier = () => {
   const [search, setSearch] = useState("");
@@ -149,11 +150,11 @@ const Carrier = () => {
         <table className="min-w-full bg-white">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th className="py-2 px-4 text-center text-white">No</th>
-              <th className="py-2 px-4 text-center text-white min-w-56">Nama</th>
-              <th className="py-2 px-4 text-center text-white">Gaji</th>
-              <th className="py-2 px-4 text-center text-white">Jurusan</th>
-              <th className="py-2 px-4 text-center text-white">Icon</th>
+              <th className="py-2 px-4 text-left text-white">No</th>
+              <th className="py-2 px-4 text-left text-white min-w-56">Nama</th>
+              <th className="py-2 px-4 text-left text-white">Gaji</th>
+              <th className="py-2 px-4 text-left text-white">Jurusan</th>
+              <th className="py-2 px-4 text-left text-white">Icon</th>
               <th className="py-2 px-4 text-center text-white">Aksi</th>
             </tr>
           </thead>
@@ -176,13 +177,13 @@ const Carrier = () => {
                   key={career.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="py-2 px-4">{i + 1}</td>
+                  <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                   <td className="py-2">{career.name}</td>
                   <td className="py-2 px-4">{career.salary}</td>
                   <td className="py-2 px-4">{career.major?.name || '-'}</td>
                   <td className="py-2 px-4">
                     {career.icon && (
-                      <div className="text-2xl">{career.icon}</div>
+                      <RenderIcon iconName={career.icon} />
                     )}
                   </td>
                   <td className="py-2 px-4">

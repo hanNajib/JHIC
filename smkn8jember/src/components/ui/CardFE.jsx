@@ -1,4 +1,4 @@
-import React from "react";
+import parse from "html-react-parser";
 
 const CardFE = ({ data1, data2, data3, data4 }) => {
   return (
@@ -15,9 +15,9 @@ const CardFE = ({ data1, data2, data3, data4 }) => {
         <h5 className="text-orange-500 text-sm lg:text-lg font-semibold">
           {data3}
         </h5>
-        <p className="text-center text-xs lg:text-base text-gray-600">
-          {data4}
-        </p>
+        <div className="text-center text-xs lg:text-base text-gray-600">
+          {parse(data4)}
+        </div>
       </div>
     </div>
   );
