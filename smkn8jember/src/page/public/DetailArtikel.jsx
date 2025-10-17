@@ -11,8 +11,8 @@ import { useCategories } from "../../hooks/api/useCategory";
 function DetailArtikel() {
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { data: allArticles } = useArticles();
-  const { data: categoriesData } = useCategories();
+  const { data: allArticles } = useArticles({ limit: 6, status: "published" });
+  const { data: categoriesData } = useCategories({ type: ['major', 'articles'], limit: 16 });
 
   const categories = Array.isArray(categoriesData)
     ? categoriesData
@@ -29,14 +29,12 @@ function DetailArtikel() {
     .slice(0, 5);
 
   const { data: articleResponse, isLoading } = useArticle(slug);
-  const article = articleResponse || {};
+  const article = articleResponse?.data || {};
 
   if (isLoading) {
     return (
-      <>
-        <Navbar />
+      <DefaultLayout>
         <div className="flex flex-col lg:flex-row w-full bg-[#F8F9FA] px-2 md:px-10 py-6 md:py-8 gap-4 animate-pulse">
-          {/* Skeleton Artikel Utama */}
           <div className="w-full lg:w-5/7 bg-white p-4 md:p-6 rounded-2xl shadow-lg">
             <div className="flex gap-3 flex-wrap mb-4">
               {[1, 2, 3].map((i) => (
@@ -99,15 +97,12 @@ function DetailArtikel() {
             </div>
           </div>
         </div>
-        <Footer />
-      </>
+      </DefaultLayout>
     );
   }
 
-  // ✅ Tampilan Normal
   return (
-    <>
-      <Navbar />
+    <DefaultLayout>
       <div className="flex flex-col lg:flex-row w-full bg-[#F8F9FA] px-2 md:px-10 py-6 md:py-8 gap-4">
         <div className="w-full lg:w-5/7 bg-white p-4 md:p-6 rounded-2xl shadow-lg">
           {/* kategori */}
@@ -168,9 +163,7 @@ function DetailArtikel() {
                 <h1
                   className="text-[#212529] font-poppins font-bold text-xl cursor-pointer hover:text-orange-500"
                   onClick={() =>
-                    (window.location.href = `/profile/${
-                      article.author.username || article.author?.id
-                    }`)
+                    (navigate(`/profile/${article.author.username || article.author?.id}`))
                   }
                 >
                   {article.author.username}
@@ -232,8 +225,8 @@ function DetailArtikel() {
               Kategori
             </h1>
             <div className="flex flex-col pt-5">
-              {articleCategories.length > 0 ? (
-                articleCategories.map((cat) => (
+              {categories.length > 0 ? (
+                categories.map((cat) => (
                   <div
                     key={cat.id}
                     className="border-b-[1px] text-[#212529] font-poppins text-lg py-2 border-[#D0CFCF] cursor-pointer hover:text-[#ff6000] transition"
@@ -250,8 +243,7 @@ function DetailArtikel() {
           </div>
         </div>
       </div>
-      <Footer />
-    </>
+    </DefaultLayout>
   );
 }
 

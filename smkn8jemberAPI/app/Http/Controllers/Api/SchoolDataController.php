@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Major;
 use App\Models\SchoolData;
+use App\Models\Staff;
 use Illuminate\Http\Request;
 
 class SchoolDataController extends Controller
@@ -11,8 +13,14 @@ class SchoolDataController extends Controller
     public function index()
     {
         $schoolData = SchoolData::all();
+        $majorCount = Major::count();
+        $teacherCount = Staff::where('role', 'teacher')->count();
 
-        return $this->success($schoolData, 'School Data retrieved successfully');
+        return $this->success([
+            'data' => $schoolData,
+            'major_count' => $majorCount,
+            'teacher_count' => $teacherCount
+        ], 'School Data retrieved successfully');
     }
 
     public function update(Request $request, $name)

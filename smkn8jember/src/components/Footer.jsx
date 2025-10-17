@@ -7,8 +7,19 @@ import { FaPhone } from "react-icons/fa6";
 import { FaClock } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import parse from "html-react-parser";
+import { Link } from "react-router-dom";
+import { useMajors } from "../hooks/api/useMajor";
+import { useWebSettings } from "../hooks/api/useWebSettings";
 
 const Footer = ({ data }) => {
+  const { data: majorResponse } = useMajors();
+  const majors = majorResponse?.data || [];
+  const { data: websetting } = useWebSettings();
+  const { youtube_link, instagram_link, facebook_link, telepon, email, alamat, deskripsi_footer } = websetting?.data?.reduce((acc, setting) => {
+    acc[setting.title] = setting.value;
+    return acc;
+  }, {}) || {};
+
   return (
     <>
       <div className="flex flex-col bg-[#212529] p-8 md:p-20 w-full justify-center items-center">
@@ -19,20 +30,17 @@ const Footer = ({ data }) => {
             </h1>
             <p className="font-poppins text-[#A0A0A0] text-sm">
               {data
-                ? parse(
-                    data?.find((item) => item.title === "deskripsi_footer")
-                      ?.value
-                  )
+                ? parse(deskripsi_footer)
                 : "Sekolah Menengah Kejuruan yang berkomitmen menghasilkan lulusan berkualitas dan siap kerja di era digital."}
             </p>
             <div className="flex items-center gap-2">
-              <a href="">
+              <a href={youtube_link || ""}>
                 <FaYoutube className="text-white bg-[#ff6000] text-[2rem] p-2 rounded-full" />
               </a>
-              <a href="">
+              <a href={instagram_link || ""}>
                 <FaInstagram className="text-white bg-[#ff6000] text-[2rem] p-2 rounded-full" />
               </a>
-              <a href="">
+              <a href={facebook_link || ""}>
                 <FaFacebook className="text-white bg-[#ff6000] text-[2rem] p-2 rounded-full" />
               </a>
             </div>
@@ -66,27 +74,11 @@ const Footer = ({ data }) => {
               Program Keahlian
             </h1>
             <div className="flex flex-col gap-2">
-              <a href="" className="font-poppins text-[#A0A0A0] text-md">
-                Teknik Kendaraan Ringan
-              </a>
-              <a href="" className="font-poppins text-[#A0A0A0] text-md">
-                Teknik Sepeda Motor
-              </a>
-              <a href="" className="font-poppins text-[#A0A0A0] text-md">
-                Rekayasa Perangkat Lunak
-              </a>
-              <a href="" className="font-poppins text-[#A0A0A0] text-md">
-                Teknik Komputer dan Jaringan
-              </a>
-              <a href="" className="font-poppins text-[#A0A0A0] text-md">
-                Desain komunikasi Visual
-              </a>
-              <a href="" className="font-poppins text-[#A0A0A0] text-md">
-                Agribisnis Perbenihan Tanaman
-              </a>
-              <a href="" className="font-poppins text-[#A0A0A0] text-md">
-                Agribisnis Tanaman Pangan dan Holtikultura
-              </a>
+              {majors.map((major) => (
+                <Link to={`/major/${major.short_name}`} className="font-poppins text-[#A0A0A0] text-md">
+                  {major.name}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -97,20 +89,20 @@ const Footer = ({ data }) => {
             <div className="flex flex-col gap-3">
               <div className="flex gap-3">
                 <IoMdPin className="text-[#ff6000] text-2xl" />
-                <p className="font-poppins text-[#A0A0A0] text-md">
-                  Jl. Pelita no 27 Sidomekar
+                <p className="font-poppins text-[#A0A0A0] text-md max-w-xs">
+                  {alamat || 'Jl. Pelita no 27 Sidomekar'}
                 </p>
               </div>
               <div className="flex gap-3">
                 <FaPhone className="text-[#ff6000] text-2xl" />
                 <p className="font-poppins text-[#A0A0A0] text-md">
-                  (0336)444112
+                  {telepon || '(0336)444112'}
                 </p>
               </div>
               <div className="flex gap-3">
                 <IoMdMail className="text-[#ff6000] text-2xl" />
                 <p className="font-poppins text-[#A0A0A0] text-md">
-                  smknegeri08jember@gmail.com
+                  {email || 'smknegeri08jember@gmail.com'}
                 </p>
               </div>
               <div className="flex gap-3">
@@ -124,13 +116,13 @@ const Footer = ({ data }) => {
         </div>
 
         <div className="flex justify-center bg-white md:w-2/3 lg:w-1/2 mt-14 rounded-2xl">
-                <img src="assets/images/Logo Jagoan Hosting, Komdigi, Maspion IT, Garuda Spark.png" alt=""  className=""/>
-            </div>
+          <img src="assets/images/Logo Jagoan Hosting, Komdigi, Maspion IT, Garuda Spark.png" alt="" className="" />
+        </div>
 
 
         <div className="flex border-t-2 w-full border-[#495057] justify-center items-center mt-8 text-center">
           <p className="font-poppins text-[#A0A0A0] text-sm pt-8">
-            © 2025 SMK Negeri 8 Jember. Semua hak dilindungi undang-undang.
+            © {new Date().getFullYear()} SMK Negeri 8 Jember. Semua hak dilindungi undang-undang.
           </p>
         </div>
       </div>

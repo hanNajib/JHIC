@@ -6,7 +6,6 @@ const ArticlesSection = ({ className = "" }) => {
   const { data: articleResponse, isLoading } = useArticles();
 
   const articles = articleResponse?.data || [];
-  console.log(articles);
   
   if (isLoading) {
     return (

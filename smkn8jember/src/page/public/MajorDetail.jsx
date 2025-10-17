@@ -19,6 +19,7 @@ import TextLoading from "../../components/ui/TextLoading";
 import DefaultLayout from "../../components/layout/DefaultLayout";
 import { RenderIcon } from "../../components/ui/RenderIcon";
 import { useArticle } from "../../hooks/api/useArticle";
+import MajorDetailSkeleton from "../../components/ui/MajorDetailSkeleton";
 
 const MajorDetail = () => {
   const {slug} = useParams();
@@ -58,11 +59,7 @@ const MajorDetail = () => {
 
   
   if (isLoading) {
-    return (
-      <DefaultLayout>
-        <TextLoading text={name} fullscreen={false}/>
-      </DefaultLayout>
-    );
+    return <MajorDetailSkeleton />;
   }
 
   return (

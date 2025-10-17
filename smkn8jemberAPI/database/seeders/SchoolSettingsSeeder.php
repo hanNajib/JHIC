@@ -16,7 +16,7 @@ class SchoolSettingsSeeder extends Seeder
         $listSettings = [
             [
                 'title' => 'judul_halaman',
-                'value' => 'SMK Negeri 8 Jember WES TOP',
+                'value' => 'SMK Negeri 8 Jember<br>WES TOP',
             ],
             [
                 'title' => 'deskripsi_halaman',
@@ -36,7 +36,7 @@ class SchoolSettingsSeeder extends Seeder
             ],
             [
                 'title' => 'tahun_berdiri',
-                'value' => '1996',
+                'value' => '2008',
             ],
             [
                 'title' => 'logo_sekolah',
@@ -62,7 +62,7 @@ class SchoolSettingsSeeder extends Seeder
             ],
             [
                 'title' => 'email',
-                'value' => 'smkn8jember@gmail.com'
+                'value' => 'smknegeri08jember@gmail.com'
             ],
             [
                 'title' => 'telepon',

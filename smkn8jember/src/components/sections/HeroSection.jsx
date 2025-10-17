@@ -37,7 +37,6 @@ const HeroSection = ({ className = '', judul = "SMK NEGERI 8 JEMBER <br /> WES T
     }, 500);
   };
 
-  // 🧭 Scroll otomatis ke bawah ketika ada pesan baru
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({
@@ -47,7 +46,6 @@ const HeroSection = ({ className = '', judul = "SMK NEGERI 8 JEMBER <br /> WES T
     }
   }, [chatHistory, isTyping]);
 
-  // 🎯 Pantau posisi scroll — tampilkan FAB kalau user scroll ke atas
   const handleScroll = () => {
     if (!chatContainerRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
@@ -55,7 +53,6 @@ const HeroSection = ({ className = '', judul = "SMK NEGERI 8 JEMBER <br /> WES T
     setShowFab(!isAtBottom);
   };
 
-  // 🚀 Fungsi scroll ke bawah saat FAB ditekan
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({
@@ -104,7 +101,6 @@ const HeroSection = ({ className = '', judul = "SMK NEGERI 8 JEMBER <br /> WES T
 
       <div className="absolute flex md:flex-col md:right-14 bottom-10 gap-3 justify-center lg:justify-end w-full lg:w-auto">
 
-        {/* Tombol Chat */}
         <div className="relative flex items-center justify-end rounded-full overflow-hidden group">
           <div className="bg-white flex items-center justify-end rounded-full">
             <Button

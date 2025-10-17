@@ -2,11 +2,13 @@ import { Section, Button, AnnouncementCard, Icon } from '../ui';
 import { useAnnouncementsPublic } from '../../hooks/api/useAnnouncement';
 import PengumumanPopUp from '../ui/PengumumanPopUp';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AnnouncementsSection = ({ className = '' }) => {
   const { data: announcementsResponse = [] } = useAnnouncementsPublic({ limit: 3 });
   const announcements = announcementsResponse?.pages?.flatMap(page => page.data) || [];
   const [pengumuman, setPengumuman] = useState(null);
+  const navigate = useNavigate();
 
   const handleClosePopUp = () => {
     setPengumuman(null);
@@ -45,7 +47,7 @@ const AnnouncementsSection = ({ className = '' }) => {
               ))}
             </div>
             <div className="flex justify-center items-center w-full py-3 md:py-0 md:pt-5">
-              <Button onClick={() => window.location.href = '/announcement'}>
+              <Button onClick={() => navigate('/announcement')}>
                 Lihat Semua Pengumuman
               </Button>
             </div>

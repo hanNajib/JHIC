@@ -1,48 +1,65 @@
-import React, { useState, useMemo } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { ArticleCard, Button } from "../../components/ui";
-import { useArticles } from "../../hooks/api/useArticle";
+import { useArticlesPublic } from "../../hooks/api/useArticle";
+import DefaultLayout from "../../components/layout/DefaultLayout";
+import { useDebounce } from "../../hooks/useDebounce";
+import { useCategories } from "../../hooks/api/useCategory";
 
 const ArtikelPage = () => {
+  const [searchParams] = useSearchParams();
+  const queryCategory = searchParams.get('category') || '';
   const [sort, setSort] = useState("terbaru");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(queryCategory);
   const [searchText, setSearchText] = useState("");
-  const [visibleCount, setVisibleCount] = useState(6);
+  const debouncedSearchTerm = useDebounce(searchText, 500);
 
-  // Ambil semua artikel dari API
-  const { data: articleResponse, isLoading } = useArticles();
-  const articles = articleResponse?.data || articleResponse?.articles || [];
+  const { 
+    data: articleResponse, 
+    isLoading, 
+    isError,
+    error,
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage 
+  } = useArticlesPublic({
+    s: debouncedSearchTerm,
+    sortDir: sort === "terbaru" ? "desc" : "asc",
+    category_name : category === "All" ? undefined : category,
+    status: "published",
+  });
 
-  // Filter & sort artikel
-  const filteredArticles = useMemo(() => {
-    let filtered = articles;
+  const { data: categoriesResponse } = useCategories({ type: ['articles', 'major'], all: true });
+  const categories = categoriesResponse?.data || [];
+  
+  useEffect(() => {
+    const queryCategory = searchParams.get('category') || '';
+    setCategory(queryCategory);
+  }, [searchParams]);
+  
+  const articles = useMemo(() => {
+    if (!articleResponse?.pages) return [];
+    return articleResponse.pages.flatMap(page => page.data || []);
+  }, [articleResponse]);
 
-    if (category) {
-      filtered = filtered.filter((a) => a.category_id === category);
-    }
-
-    if (searchText) {
-      filtered = filtered.filter((a) =>
-        a.title.toLowerCase().includes(searchText.toLowerCase())
-      );
-    }
-
-    filtered = filtered.sort((a, b) => {
-      if (sort === "terbaru") return new Date(b.created_at) - new Date(a.created_at);
-      return new Date(a.created_at) - new Date(b.created_at);
-    });
-
-    return filtered;
-  }, [articles, category, searchText, sort]);
-
-  // Artikel yang ditampilkan sekarang
-  const visibleArticles = filteredArticles.slice(0, visibleCount);
+  if (isError) {
+    return (
+      <DefaultLayout>
+        <div className="flex flex-col items-center justify-center py-20">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Terjadi Kesalahan</h2>
+          <p className="text-gray-600 mb-4">
+            {error?.message || 'Gagal memuat artikel. Silakan coba lagi.'}
+          </p>
+          <Button onClick={() => window.location.reload()}>
+            Muat Ulang
+          </Button>
+        </div>
+      </DefaultLayout>
+    );
+  }
 
   return (
-    <>
-      <Navbar />
+    <DefaultLayout>
       <section
         className="flex flex-col items-center justify-center py-20 relative text-center"
         style={{
@@ -62,15 +79,13 @@ const ArtikelPage = () => {
         </div>
       </section>
 
-      {/* Filter Section */}
       <section className="bg-[#f9fafb] pt-10 pb-5 px-6 md:px-16 border-b border-gray-200">
         <div className="max-w-6xl mx-auto w-full flex flex-col gap-6">
-          {/* Cari Artikel */}
           <div className="border-b border-gray-200 pb-10 px-10">
             <label
               htmlFor="search"
               className="block font-semibold text-2xl text-gray-600 mb-2"
-            >
+              >
               Cari Artikel
             </label>
             <div className="flex items-center rounded-full border border-gray-300 overflow-hidden transition focus-within:ring-1 focus-within:ring-orange-400 focus-within:border-orange-400">
@@ -81,37 +96,31 @@ const ArtikelPage = () => {
                 placeholder="Telusuri artikel..."
                 value={searchText}
                 onChange={(e) => {
-                  setSearchText(e.target.value);
-                  setVisibleCount(6); // reset visible count saat search berubah
-                }}
-                className="flex-1 px-4 py-2.5 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
-              />
-            </div>
-          </div>
+                    setSearchText(e.target.value);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
+                  />
+                </div>
+                </div>
 
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex flex-wrap gap-3 text-gray-700 font-medium">
-              {["All", "RPL", "TKJ", "DKV", "TKR", "TSM", "APTH", "APT"].map(
-                (tab, i) => (
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex flex-wrap gap-4 md:gap-8 text-gray-700 font-medium overflow-x-auto">
+                  {[{ name: "All" }, ...categories].map((tab, i) => (
                   <button
                     key={i}
-                    onClick={() => {
-                      setCategory(tab === "All" ? "" : tab);
-                      setVisibleCount(6);
-                    }}
-                    className={`w-16 border-b-2 transition duration-200 ${
-                      (tab === "All" && category === "") || tab === category
-                        ? "border-orange-500 text-orange-500"
-                        : "border-transparent hover:border-gray-600"
+                    onClick={() => setCategory(tab.name === "All" ? "" : tab.name)}
+                    className={`px-3 py-1 whitespace-nowrap border-b-2 transition duration-200 ${
+                    (tab.name === "All" && category === "") || tab.name.toLowerCase() === category.toLowerCase()
+                      ? "border-orange-500 text-orange-500"
+                      : "border-transparent hover:border-gray-600"
                     }`}
                   >
-                    {tab}
+                    {tab.name}
                   </button>
-                )
-              )}
-            </div>
+                  ))}
+                </div>
 
-            {/* Terbaru/lama */}
+                {/* Terbaru/lama */}
             <div className="flex items-center gap-2">
               <label htmlFor="sort" className="text-sm font-medium text-gray-600">
                 Sort by:
@@ -142,35 +151,45 @@ const ArtikelPage = () => {
                     className="h-60 bg-gray-200 animate-pulse rounded-md"
                   />
                 ))
-            : visibleArticles.length > 0 ? (
-                visibleArticles.map((article, index) => (
-                  <ArticleCard
-                    key={article.id}
-                    article={article}
-                    className={index >= 3 ? "hidden md:flex md:flex-col md:flex-none" : ""}
-                  />
-                ))
-              ) : (
-                <p className="col-span-full text-center text-gray-500 text-lg">
-                  Artikel tidak ditemukan
-                </p>
-              )}
+            : articles.length > 0 ? (
+              articles.map((article, index) => (
+                <ArticleCard
+                  key={article.id}
+                  article={article}
+                  className={index >= 3 ? "hidden md:flex md:flex-col md:flex-none" : ""}
+                />
+              ))
+            ) : (
+              <p className="col-span-full text-center text-gray-500 text-lg">
+                Artikel tidak ditemukan
+              </p>
+            )}
         </div>
       </section>
 
-      {/* Tampilkan Lebih Banyak */}
-      {visibleCount < filteredArticles.length && (
+      {/* Loading indicator untuk pagination */}
+      {isFetchingNextPage && (
         <div className="w-full py-6 bg-white">
-          <div className="w-full max-w-6xl mx-auto px-6 md:px-16 flex justify-center">
-            <Button onClick={() => setVisibleCount(visibleCount + 6)}>
-              Tampilkan Lebih Banyak Artikel
-            </Button>
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
           </div>
         </div>
       )}
 
-      <Footer />
-    </>
+      {/* Tampilkan Lebih Banyak */}
+      {hasNextPage && (
+        <div className="w-full py-6 bg-white">
+          <div className="w-full max-w-6xl mx-auto px-6 md:px-16 flex justify-center">
+            <Button 
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+            >
+              {isFetchingNextPage ? 'Loading...' : 'Tampilkan Lebih Banyak Artikel'}
+            </Button>
+          </div>
+        </div>
+      )}
+      </DefaultLayout>
   );
 };
 

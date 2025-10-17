@@ -9,7 +9,6 @@ import * as yup from "yup";
 import Swal from "sweetalert2";
 import { Loading } from "../../../components/ui";
 
-// 🔸 Validasi Yup
 const schema = yup.object().shape({
   username: yup.string().required("Nama wajib diisi"),
   bio: yup.string().required("Bio wajib diisi"),
@@ -43,6 +42,7 @@ const ProfileSetting = () => {
   const { user, update } = useAuth();
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  console.log(preview)
 
   const {
     register,
@@ -61,7 +61,6 @@ const ProfileSetting = () => {
     },
   });
 
-  // 🔸 Set default value user saat data sudah ada
   useEffect(() => {
     if (user) {
       reset({
@@ -75,7 +74,6 @@ const ProfileSetting = () => {
     }
   }, [user, reset]);
 
-  // 🔸 Cleanup URL blob saat unmount
   useEffect(() => {
     return () => {
       if (preview && preview.startsWith("blob:")) {
@@ -262,6 +260,7 @@ const ProfileSetting = () => {
                 </div>
               )}
               <input
+                {...register("profile_image")}
                 id="profile_image"
                 type="file"
                 accept="image/*"

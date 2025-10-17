@@ -11,7 +11,7 @@ import { useStudentData } from "../../hooks/api/useStudentData";
 
 const StudentData = () => {
   const { data: studentResponseHook, isLoading } = useStudentData();
-  const studentResponse = studentResponseHook?.data || [];
+  const studentResponse = studentResponseHook?.data?.data || [];
 
   if (isLoading) {
     return (
@@ -21,12 +21,10 @@ const StudentData = () => {
     );
   }
 
-  // Ambil nilai dari API (pastikan key-nya sesuai field di backend)
   const data = {};
   studentResponse.forEach((item) => {
     data[item.name?.toLowerCase()] = item.value;
   });
-  console.log(data);
   
 
   const totalSiswa =
