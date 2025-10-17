@@ -2,10 +2,6 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 
-body {
-  font-family: "Poppins", sans-serif;
-}
-
 .ScorllBar{
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -19,6 +15,7 @@ body {
 * {
   scrollbar-width: none; /* sembunyikan */
   -ms-overflow-style: none; /* IE & Edge lama */
+  scroll-behavior: smooth;
 }
 
 *::webkit-scrollbar {

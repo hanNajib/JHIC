@@ -51,6 +51,7 @@ const AboutSection = ({ className = '', deskripsi = "SMK Negeri 8 Jember adalah 
     <Section
       background="gray"
       className={className}
+      id="about"
     >
       <div className="flex flex-col lg:flex-row justify-center items-center gap-5 w-full">
         <div className="lg:w-1/2 flex flex-col items-center lg:items-start">

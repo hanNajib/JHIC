@@ -22,7 +22,7 @@ const Extracurricular = () => {
         className="flex flex-col items-center justify-center py-12 md:py-14 lg:py-20 relative"
       >
         <div className="bg-gradient-to-r from-[#24201f9a] to-transparent w-full h-full absolute"></div>
-        <h1 className="font-poppins font-bold text-[#F8F9FA] text-3xl md:text-[4rem] z-10">
+        <h1 className="font-poppins font-bold text-center  text-[#F8F9FA] text-3xl md:text-[4rem] z-10">
           Ekstrakulikuler Sekolah
         </h1>
         <p className="font-poppins text-[#F8F9FA] text-sm text-center md:text-lg z-10 pt-2 md:pt-0">
