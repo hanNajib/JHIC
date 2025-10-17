@@ -182,7 +182,7 @@ function Router() {
         {/* Public Routes */}
         <Route path="/history" element={<History />} />
         <Route path="/teacher" element={<Teacher />} />
-        <Route path="/employee" element={<Employee />} />
+        <Route path="/karyawan" element={<Employee />} />
         <Route path="/fasilitas" element={<Facilitas />} />
         <Route path="/extracurricular" element={<Extracurricular />} />
         <Route path="/headmaster" element={<HeadMaster />} />

@@ -57,7 +57,7 @@ class User extends Authenticatable
         return $this->hasMany(Announcement::class, 'author_id');
     }
 
-   
+
     /**
      * Find user by email or username.
      *

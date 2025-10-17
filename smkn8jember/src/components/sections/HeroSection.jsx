@@ -123,6 +123,7 @@ const HeroSection = ({ className = '', judul = "SMK NEGERI 8 JEMBER <br /> WES T
         <div className="relative flex items-center justify-end rounded-full overflow-hidden group">
           <div className="bg-white flex items-center justify-end rounded-full">
             <Button
+            onClick={()=> window.open('https://app.lapentor.com/sphere/smkn-8-jember')}
               className="z-10 w-16 h-16 flex items-center justify-center bg-[#ff6000] text-white rounded-full cursor-pointer"
             >
               <IoCompassOutline className='text-2xl' />
