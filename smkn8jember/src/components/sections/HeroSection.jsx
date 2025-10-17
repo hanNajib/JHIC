@@ -11,13 +11,32 @@ const HeroSection = ({ className = '', judul = "SMK NEGERI 8 JEMBER <br /> WES T
   const [isTyping, setIsTyping] = useState(false);
   const [showFab, setShowFab] = useState(false);
   const chatContainerRef = useRef(null);
+ 
+ 
 
-  const questions = [
+const questions = [
     { q: "Apa jurusan yang ada di SMKN 8 Jember?", a: "Kami memiliki beberapa jurusan seperti TKR, TSM, RPL, DKV, TKJ, APT, dan ATPH." },
-    { q: "Siapa nama cowo terganteng di SMKN 8 Jember?", a: "Tentu saja mas Gathan dari 12 RPL 1😎." },
-    { q: "Apa nama tim IT paling kece di SMKN 8 Jember?", a: "Tentu saja Mie Ayam 4 Porsi🍜😎." },
-    { q: "Dimana lokasi SMKN 8 Jember?", a: "Sekolah kami beralamat di sebelah puskesmas semboro." },
-    { q: "Bagaimana cara mendaftar?", a: "Pendaftaran bisa dilakukan melalui jalur PPDB online sesuai jadwal Dinas Pendidikan Jawa Timur." }
+    { q: "Siapa nama kepala sekolah di SMKN 8 Jember?", a: "Kepala sekolah yang menjabat di SMKN 8 Jember saat ini adalah Hj.Rahmad Hidana (gelar lupa)." },
+    { q: "Dimanakah alamat SMKN 8 Jember?", a: "SMKN 8 Jember berlokasi di jl.Pelita No 27 Sidomekar Semboro Jember Jawa Timur ." },
+    { q: "Bagaimana cara mendaftar?", a: "Pendaftaran bisa dilakukan melalui jalur PPDB online sesuai jadwal Dinas Pendidikan Jawa Timur." },
+
+    // Pertanyaan Pengertian (Definisi) Per Jurusan
+    { q: "Apa itu jurusan TKR dan apa yang dipelajari?", a: "TKR (Teknik Kendaraan Ringan) adalah keahlian yang mempelajari perbaikan, perawatan, dan pemeliharaan mobil (kendaraan ringan) secara menyeluruh." },
+    { q: "Apa fokus utama dari jurusan TSM?", a: "TSM (Teknik Sepeda Motor) fokus pada penguasaan keterampilan di bidang perbaikan dan perawatan sepeda motor, baik dari segi mesin maupun kelistrikan." },
+    { q: "Apa definisi dari RPL?", a: "RPL (Rekayasa Perangkat Lunak) adalah keahlian yang mendalami proses pengembangan aplikasi, pemrograman, dan pembuatan perangkat lunak (software)." },
+    { q: "Apa yang dimaksud dengan DKV?", a: "DKV (Desain Komunikasi Visual) adalah keahlian yang berfokus pada penyampaian pesan atau informasi melalui media visual seperti desain grafis, ilustrasi, dan multimedia." },
+    { q: "Apa itu jurusan TKJ?", a: "TKJ (Teknik Komputer dan Jaringan) adalah keahlian yang mempelajari instalasi, konfigurasi, dan pemeliharaan jaringan komputer, termasuk administrasi server." },
+    { q: "Apa fokus keahlian dari APT?", a: "APT (Agribisnis Pengolahan Hasil Pertanian) fokus pada pengolahan bahan baku pertanian menjadi produk bernilai tambah, seperti makanan, minuman, atau produk non-pangan." },
+    { q: "Apa pengertian jurusan ATPH?", a: "ATPH (Agribisnis Tanaman Pangan dan Hortikultura) adalah keahlian yang mendalami budidaya, perawatan, dan pengelolaan tanaman pangan (misalnya padi) serta hortikultura (sayuran, buah, bunga)." },
+
+    // Pertanyaan Peluang Kerja Per Jurusan
+    { q: "Apa peluang kerja untuk lulusan TKR?", a: "Lulusan TKR dapat bekerja sebagai mekanik di bengkel resmi/umum, teknisi perbaikan mobil, atau membuka usaha bengkel sendiri." },
+    { q: "Prospek kerja lulusan TSM apa saja?", a: "Lulusan TSM berpeluang menjadi mekanik sepeda motor, teknisi di dealer resmi, atau wirausaha bengkel dan penjualan suku cadang." },
+    { q: "Peluang karir apa yang menanti lulusan RPL?", a: "Lulusan RPL banyak dicari sebagai Web Developer, Mobile App Developer, programmer, atau tester aplikasi di perusahaan teknologi." },
+    { q: "Peluang kerja apa yang tersedia bagi lulusan DKV?", a: "Lulusan DKV bisa menjadi Desainer Grafis, Ilustrator, Content Creator, Fotografer, atau Videografer di berbagai agensi maupun perusahaan." },
+    { q: "Apa saja pekerjaan yang cocok untuk lulusan TKJ?", a: "Lulusan TKJ dapat bekerja sebagai Teknisi Jaringan, Administrator Jaringan, Teknisi Komputer, atau IT Support di berbagai instansi." },
+    { q: "Di mana lulusan APT biasanya bekerja?", a: "Lulusan APT dapat bekerja di industri makanan dan minuman (Quality Control/R&D), sebagai pengawas mutu hasil pertanian, atau menjadi wirausaha produk olahan pangan." },
+    { q: "Peluang kerja apa yang relevan bagi lulusan ATPH?", a: "Lulusan ATPH dapat bekerja sebagai tenaga ahli budidaya, operator di perkebunan/pertanian modern, atau menjadi wirausaha di bidang tanaman dan hortikultura." }
   ];
 
   const handleQuestionClick = (question) => {
@@ -87,10 +106,10 @@ const HeroSection = ({ className = '', judul = "SMK NEGERI 8 JEMBER <br /> WES T
         </p>
         
         <div className="flex flex-col md:flex-row gap-5 md:justify-center lg:justify-start">
-          <Button variant="primary">
+          <Button onClick={() => location.href="#about"} variant="primary">
             Baca Selengkapnya
           </Button>
-          <Button variant="secondary">
+          <Button onClick={() => location.href="#pengumuman"} variant="secondary">
             Pengumuman Terbaru
           </Button>
         </div>
@@ -119,7 +138,7 @@ const HeroSection = ({ className = '', judul = "SMK NEGERI 8 JEMBER <br /> WES T
         <div className="relative flex items-center justify-end rounded-full overflow-hidden group">
           <div className="bg-white flex items-center justify-end rounded-full">
             <Button
-            onClick={()=> window.open('https://app.lapentor.com/sphere/smkn-8-jember')}
+            onClick={()=> window.open('https://app.lapentor.com/sphere/smkn8jember')}
               className="z-10 w-16 h-16 flex items-center justify-center bg-[#ff6000] text-white rounded-full cursor-pointer"
             >
               <IoCompassOutline className='text-2xl' />

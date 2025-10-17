@@ -79,10 +79,7 @@ const Profile = () => {
                   <h4 className="text-gray-800 text-sm">Artikel</h4>
                 </div>
 
-                <div className="flex flex-col justify-center items-center font-bold bg-orange-500/20 rounded-lg w-32 h-20 border-2 border-orange-500">
-                  <h3 className="text-orange-500 text-2xl">5740</h3>
-                  <h4 className="text-gray-800 text-sm">Dilihat</h4>
-                </div>
+                
               </div>
             </>
           )}

@@ -137,3 +137,6 @@ export const ArticleApi = {
     updateStatus: (id, status) => apiClient.post(`/articles/${id}/status?_method=PATCH`, status)
 }
 
+export const SearchApi = {
+  search: (params) => apiClient.get(`/search`, { params })
+}

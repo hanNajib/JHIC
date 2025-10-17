@@ -84,6 +84,7 @@ import TambahCarrier from "./page/admin/Carrier/TambahCarrier";
 import EditCarrier from "./page/admin/Carrier/EditCarrier";
 import ProfileSetting from "./page/admin/settings/ProfileSetting";
 import VisiMisi from "./page/public/VisiMisi";
+import Search from "./page/public/Search";
   
 function Router() {
   return (
@@ -204,6 +205,7 @@ function Router() {
         <Route path="/artikel" element={<ArtikelPage />} />
         <Route path="/artikel/:slug" element={<DetailArtikel />} />
         <Route path="/struktur" element={<Struktur />} />
+        <Route path="/search" element={<Search />} />
 
 
         {/* Not Found */}
