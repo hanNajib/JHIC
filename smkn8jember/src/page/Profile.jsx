@@ -12,10 +12,13 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const { data: author, isLoading: authorLoading } = useAdminByName(slug);
-  const articles = author?.articles || [];
+  const { data: articlesResponse, isLoading: articlesLoading } = useArticles({
+    authorId: author?.id,
+  });
+  const articles = articlesResponse?.data || [];
 
 
-  const totalLoading = authorLoading;
+  const totalLoading = authorLoading || articlesLoading;
 
   return (
     <DefaultLayout>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Extracurricular;
+use App\Models\Facility;
 use App\Models\Major;
 use App\Models\SchoolData;
 use App\Models\Staff;
@@ -15,11 +17,15 @@ class SchoolDataController extends Controller
         $schoolData = SchoolData::all();
         $majorCount = Major::count();
         $teacherCount = Staff::where('role', 'teacher')->count();
+        $ekstraCount = Extracurricular::count();
+        $facilityCount = Facility::count();
 
         return $this->success([
             'data' => $schoolData,
             'major_count' => $majorCount,
-            'teacher_count' => $teacherCount
+            'teacher_count' => $teacherCount,
+            'ekstra_count' => $ekstraCount,
+            'facility_count' => $facilityCount,
         ], 'School Data retrieved successfully');
     }
 

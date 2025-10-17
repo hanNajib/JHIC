@@ -24,7 +24,7 @@ trait HasCursorPagination
 
         $limit = min((int) $request->query('limit', 10), $this->getMaxLimit());
         $sortBy = $this->sanitizeSortColumn($request->query('sortBy', 'id'));
-        $sortDir = $request->query('sortDir', 'asc');
+        $sortDir = $request->query('sortDir', 'desc');
         $search = trim($request->query('s', ''));
         $trashed = $request->boolean('trashed', false);
         $all = $request->boolean('all', false);

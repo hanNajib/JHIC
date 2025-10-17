@@ -25,7 +25,7 @@ class AdminController extends Controller
     }
     public function getByName($name)
     {
-        $admin = User::where('username', $name)->with(['articles.categories'])->first();
+        $admin = User::where('username', $name)->first();
         if (!$admin) {
             return $this->notFound('Admin not found');
         }

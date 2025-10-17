@@ -77,7 +77,7 @@ const VisiMisi = () => {
             </div>
             <h2 className="font-bold text-2xl mb-4">Visi</h2>
             <p className="text-gray-700 leading-relaxed italic max-w-md">
-              {parse(visi?.data.value || "tes")}
+              {parse(visi?.data.value || "")}
             </p>
           </div>
 

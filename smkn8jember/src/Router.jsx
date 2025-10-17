@@ -65,7 +65,6 @@ import StrukturOrganisasiTrash from "./page/admin/struktur/StrukturOrganisasiTra
 // Admin - Settings
 import TambahJabatan from "./page/admin/settings/TambahJabatan";
 import WebSetting from "./page/admin/settings/WebSetting";
-import VisiMisi from "./page/public/VisiMisi";
 import StudentData from "./page/public/StudentData";
 import Struktur from "./page/public/Struktur";
 import DetailArtikel from "./page/public/DetailArtikel";
@@ -84,8 +83,8 @@ import Carrier from "./page/admin/Carrier/Carrier";
 import TambahCarrier from "./page/admin/Carrier/TambahCarrier";
 import EditCarrier from "./page/admin/Carrier/EditCarrier";
 import ProfileSetting from "./page/admin/settings/ProfileSetting";
-import { useEffect } from "react";
-
+import VisiMisi from "./page/public/VisiMisi";
+  
 function Router() {
   return (
     <BrowserRouter>

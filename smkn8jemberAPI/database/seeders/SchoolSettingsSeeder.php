@@ -41,12 +41,12 @@ class SchoolSettingsSeeder extends Seeder
             [
                 'title' => 'logo_sekolah',
                 'type' => 'image',
-                'value' => 'default-logo.png',
+                'value' => 'https://raw.githubusercontent.com/hanNajib/AssetsJHIC/refs/heads/main/Logo%20SMKN%208%20Jember%20Vektor.png',
             ],
             [
                 'title' => 'hero_image',
                 'type' => 'image',
-                'value' => 'default-hero.jpg',
+                'value' => 'https://raw.githubusercontent.com/hanNajib/AssetsJHIC/refs/heads/main/hero.png',
             ],
             [
                 'title' => 'youtube_link',

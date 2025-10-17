@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Icon } from "../../components/ui";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useArticle, useArticles } from "../../hooks/api/useArticle";
 import parse from "html-react-parser";
 import DefaultLayout from "../../components/layout/DefaultLayout";
@@ -231,7 +231,7 @@ function DetailArtikel() {
                     key={cat.id}
                     className="border-b-[1px] text-[#212529] font-poppins text-lg py-2 border-[#D0CFCF] cursor-pointer hover:text-[#ff6000] transition"
                   >
-                    <a href={`/kategori/${cat.slug || cat.id}`}>{cat.name}</a>
+                    <Link to={`/artikel?category=${cat.name}`}>{cat.name}</Link>
                   </div>
                 ))
               ) : (
