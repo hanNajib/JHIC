@@ -14,8 +14,8 @@ return new class extends Migration
          Schema::create('chance_carrier', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('description');
-            $table->string('image');
+            $table->string('salary');
+            $table->string('icon');
             $table->foreignId('major_id')->constrained('majors')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();

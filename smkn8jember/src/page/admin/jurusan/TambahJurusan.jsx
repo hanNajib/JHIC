@@ -4,13 +4,16 @@ import { Editor } from "@tinymce/tinymce-react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useCreateMajor } from "../../../hooks/api/useMajor";
+import IconPicker from "../../../components/ui/IconPicker";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama jurusan wajib diisi"),
+  short_name: yup.string().required("Singkatan jurusan wajib diisi"),
   description: yup.string().required("Deskripsi jurusan wajib diisi"),
+  icon: yup.string().required("Icon jurusan wajib dipilih"),
   image: yup
     .mixed()
     .required("Gambar jurusan wajib diisi")
@@ -41,7 +44,9 @@ const TambahJurusan = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
+      short_name: "",
       description: "",
+      icon: "",
       image: null,
     },
   });
@@ -63,7 +68,9 @@ const TambahJurusan = () => {
   const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append("name", data.name);
+    formData.append("short_name", data.short_name);
     formData.append("description", data.description);
+    formData.append("icon", data.icon);
     formData.append("image", data.image);
 
     await createMajor.mutateAsync(formData);
@@ -103,14 +110,31 @@ const TambahJurusan = () => {
             type="text"
             {...register("name")}
             placeholder="Masukkan Nama Jurusan"
-            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${
-              errors.name
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${errors.name
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-            }`}
+              }`}
           />
           {errors.name && (
             <span className="text-red-500 text-sm mt-1">{errors.name.message}</span>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <label htmlFor="short_name" className="font-bold text-gray-800">
+            Nama Singkatan Jurusan <span className="text-red-500">*</span>
+          </label>
+          <input
+            id="short_name"
+            type="text"
+            {...register("short_name")}
+            placeholder="Masukkan Nama Singkat Jurusan"
+            className={`w-full px-3 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-1 ${errors.short_name
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+              }`}
+          />
+          {errors.short_name && (
+            <span className="text-red-500 text-sm mt-1">{errors.short_name.message}</span>
           )}
         </div>
 
@@ -128,7 +152,7 @@ const TambahJurusan = () => {
               menubar: false,
               plugins: "lists link table code",
               toolbar:
-                "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist",
+                "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
               content_style:
                 "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
             }}
@@ -138,6 +162,19 @@ const TambahJurusan = () => {
           )}
         </div>
 
+        {/* Icon Picker */}
+        <div className="flex flex-col">
+          <IconPicker
+            label="Icon Jurusan"
+            required={true}
+            value={watch("icon")}
+            onChange={(iconName) => setValue("icon", iconName)}
+            placeholder="Pilih icon untuk jurusan"
+            error={errors.icon?.message}
+            iconLibraries={["io5", "md", "fa", "hi"]}
+          />
+        </div>
+
         {/* Upload Gambar */}
         <div className="flex flex-col">
           <label htmlFor="upload" className="font-bold text-gray-800">
@@ -145,11 +182,10 @@ const TambahJurusan = () => {
           </label>
           <label
             htmlFor="upload"
-            className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
-              preview
+            className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer transition-colors ${preview
                 ? "border-orange-300 bg-orange-50"
                 : "border-gray-300 bg-white hover:bg-gray-50"
-            }`}
+              }`}
           >
             {preview ? (
               <div className="relative p-4">

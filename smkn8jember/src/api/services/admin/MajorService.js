@@ -53,3 +53,12 @@ export const restoreData = async (id) => {
         throw error;
     }
 }
+
+export const getByShortName = async (short_name) => {
+    try {
+        const response = await MajorsApi.getByShortName(short_name);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

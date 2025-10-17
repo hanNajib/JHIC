@@ -3,42 +3,66 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\Major;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class MajorsController extends Controller
 {
-    use ApiResponse;
     public function index(Request $request)
     {
-        $major = Major::applyFilters(
+        $major = Major::with('subjects')->applyFilters(
             $request,
-            ['name', 'description'],
+            ['name', 'description', 'short_name'],
             []
         );
         return $this->cursorPaginated($major, 'Majors retrieved successfully');
+    }
+
+    public function getByShortName($short_name)
+    {
+        $major = Major::where('short_name', $short_name)->with(['subjects', 'partners', 'chanceCarriers'])->first();
+        if (!$major) {
+            return $this->notFound('Major not found');
+        }
+        return $this->success($major, 'Major retrieved successfully');
     }
 
     public function create(Request $request)
     {
         $request->validate([
             'name' => 'required|string|unique:majors,name',
+            'short_name' => 'required|string|unique:majors,short_name',
             'description' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $createData = $request->only(['name', 'description']);
+        $createData = $request->only(['name', 'description', 'short_name', 'icon']);
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('majors', 'public');
-            $createData['image'] = $imagePath;
+        try {
+            DB::beginTransaction();
+
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('majors', 'public');
+                $createData['image'] = $imagePath;
+            }
+
+            $major = Major::create($createData);
+            $kategori = Category::create([
+                'type' => 'major',
+                'name' => $major->short_name,
+                'color' => '#ff6900'
+            ]);
+            DB::commit();
+            return $this->created($major, 'Major created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->error('Failed to create major');
         }
 
-        $major = Major::create($createData);
-
-        return $this->created($major, 'Major created successfully');
     }
 
     public function show($id)
@@ -54,6 +78,7 @@ class MajorsController extends Controller
     {
         $request->validate([
             'name' => 'sometimes|string|unique:majors,name,' . $id,
+            'short_name' => 'sometimes|string|unique:majors,short_name,' . $id,
             'description' => 'sometimes|string',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -62,18 +87,18 @@ class MajorsController extends Controller
         if (!$major) {
             return $this->notFound('Major not found');
         }
-        
-        $updateData = $request->only(['name', 'description']);
-        
+
+        $updateData = $request->only(['name', 'short_name', 'description', 'icon']);
+
         if ($request->hasFile('image')) {
             if ($major->OriginalImagePath()) {
                 Storage::disk('public')->delete($major->OriginalImagePath());
             }
-            
+
             $imagePath = $request->file('image')->store('majors', 'public');
             $updateData['image'] = $imagePath;
         }
-        
+
         $major->update($updateData);
 
         return $this->updated($major, 'Major updated successfully');
@@ -93,15 +118,12 @@ class MajorsController extends Controller
         return $this->deleted('Major deleted successfully');
     }
 
-    public function restore($id) {
+    public function restore($id){
         $major = Major::withTrashed()->find($id);
         if (!$major) {
-            return $this->notFound('Major not found');
-        }
-        if (!$major->trashed()) {
-            return $this->badRequest('Major is not deleted');
+            return $this->notFound("Major not found");
         }
         $major->restore();
-        return $this->success($major, 'Major restored successfully');
+        return $this->statusMessage("Major restored successfully");
     }
 }

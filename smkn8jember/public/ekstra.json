@@ -4,13 +4,104 @@
     "nama": "Pramuka Reguler",
     "pembimbing": "Sumardiono",
     "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
-    "foto": "/image/logosmk.png"
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 2,
     "nama": "Paskibraka",
     "pembimbing": "Yanuar Rizal P.",
     "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
-    "foto": "/image/logosmk.png"
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 3,
+    "nama": "PMR (Palang Merah Remaja)",
+    "pembimbing": "Siti Haryani",
+    "deskripsi": "Melatih siswa untuk sigap dan terampil dalam bidang pertolongan pertama.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 4,
+    "nama": "OSIS",
+    "pembimbing": "Hendri Santoso",
+    "deskripsi": "Wadah pengembangan kepemimpinan dan tanggung jawab siswa.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 5,
+    "nama": "KIR (Karya Ilmiah Remaja)",
+    "pembimbing": "Nur Aini",
+    "deskripsi": "Mengembangkan kemampuan riset dan berpikir ilmiah di kalangan siswa.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 6,
+    "nama": "Paduan Suara",
+    "pembimbing": "Rini Astuti",
+    "deskripsi": "Mengembangkan bakat seni suara dan kerja sama dalam harmoni.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 7,
+    "nama": "Teater Sekolah",
+    "pembimbing": "Agus Widodo",
+    "deskripsi": "Meningkatkan kemampuan ekspresi dan kepercayaan diri siswa lewat seni peran.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 8,
+    "nama": "Basket",
+    "pembimbing": "Dwi Rahmanto",
+    "deskripsi": "Membentuk kerja sama tim dan kedisiplinan lewat olahraga bola basket.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 9,
+    "nama": "Futsal",
+    "pembimbing": "Ahmad Syaifuddin",
+    "deskripsi": "Menumbuhkan semangat sportivitas dan kebugaran fisik melalui futsal.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 10,
+    "nama": "English Club",
+    "pembimbing": "Dewi Lestari",
+    "deskripsi": "Meningkatkan kemampuan berbahasa Inggris dengan kegiatan interaktif.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 11,
+    "nama": "Japanese Club",
+    "pembimbing": "Fajar Setiawan",
+    "deskripsi": "Memperkenalkan budaya Jepang dan meningkatkan kemampuan bahasa Jepang.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 12,
+    "nama": "Komputer Club",
+    "pembimbing": "Wahyu Saputra",
+    "deskripsi": "Tempat belajar coding, desain, dan teknologi informasi.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 13,
+    "nama": "Fotografi",
+    "pembimbing": "Rama Nugraha",
+    "deskripsi": "Mengasah keterampilan dalam seni memotret dan dokumentasi.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 14,
+    "nama": "Seni Tari",
+    "pembimbing": "Indah Permata",
+    "deskripsi": "Menyalurkan kreativitas dan melestarikan budaya lewat gerak tari.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 15,
+    "nama": "Pencak Silat",
+    "pembimbing": "Eko Prasetyo",
+    "deskripsi": "Membangun mental dan fisik tangguh dengan seni bela diri tradisional.",
+    "foto": "/image/fasil.jpg"
   }
 ]

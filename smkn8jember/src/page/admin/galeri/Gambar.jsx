@@ -1,152 +1,246 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
-import { FiFilter } from "react-icons/fi";
-import ImageModal from "../../../components/ui/ImageModal";
 import { CiImageOn } from "react-icons/ci";
 import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
+import ImageModal from "../../../components/ui/ImageModal";
+import { useDebounce } from "../../../hooks/useDebounce";
+import { useDeleteGallery, useGalleries } from "../../../hooks/api/useGallery";
+import Swal from "sweetalert2";
+import { Button } from "../../../components/ui";
+import { useNavigate } from "react-router-dom";
+import { useCategories } from "../../../hooks/api/useCategory";
+import { getCategoryStyle } from "../../../utils/helpers";
 
 const Gambar = () => {
-  const [gambar, setGambar] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  // pagantion
-  const [halamanKe, setHalamanKe] = useState(1);
-  const [jumlahPage, setJumlahPage] = useState(5);
-
-  // Search & Filter
   const [search, setSearch] = useState("");
   const [filterKategori, setFilterKategori] = useState("Semua");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [cursor, setCursor] = useState(null);
+  const [jumlahPage, setJumlahPage] = useState(5);
+  const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    fetch("/gambar.json")
-      .then((res) => res.json())
-      .then((data) => setGambar(data));
-  }, []);
+  const debouncedSearchTerm = useDebounce(search, 500);
+  const navigate = useNavigate();
 
-  // Filter dan search
-  const filteredGambar = gambar.filter((a) => {
-    const matchSearch = a.judul.toLowerCase().includes(search.toLowerCase());
-    const matchKategori =
-      filterKategori === "Semua" || a.kategori.includes(filterKategori);
-    return matchSearch && matchKategori;
+  const {
+    data: galleryResponse,
+    isFetching,
+    refetch,
+  } = useGalleries({
+    s: debouncedSearchTerm,
+    trashed: softDeleteFilter === "deleted",
+    category_name: filterKategori === "Semua" ? undefined : filterKategori,
+    limit: jumlahPage,
+    cursor: cursor,
   });
 
-  const jumlahHalaman = Math.ceil(filteredGambar.length / jumlahPage);
+  const gallery = galleryResponse?.data || [];
+  const meta = galleryResponse?.meta || {};
 
-  const arrayTerakhir = halamanKe * jumlahPage;
-  const arrayAwal = arrayTerakhir - jumlahPage;
-  const dataHasil = filteredGambar.slice(arrayAwal, arrayTerakhir);
+  const { data: kategoriesResponse } = useCategories({ type: "gallery", limit: 1000 });
+  const kategori = kategoriesResponse?.data || [];
 
-  const handlePageChange = (page) => {
-    setHalamanKe(page);
+  const deleteGallery = useDeleteGallery();
+
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Yakin ingin menghapus?",
+      text: "Data yang dihapus tidak dapat dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteGallery.mutate(id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire({
+              title: "Terhapus!",
+              text: "Data berhasil dihapus.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat menghapus data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/admin/gambar/edit/${id}`);
   };
 
   const handleReset = () => {
     setSearch("");
     setFilterKategori("Semua");
-    setHalamanKe(1);
+    setSoftDeleteFilter("active");
+    setCursor(null);
+    setCurrentPage(1);
+  };
+
+  const handleNextPage = () => {
+    if (meta.next_cursor) {
+      setCursor(meta.next_cursor);
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (meta.previous_cursor) {
+      setCursor(meta.previous_cursor);
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  const handleFirstPage = () => {
+    setCursor(null);
+    setCurrentPage(1);
   };
 
   return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title */}
-      <h1 className="font-bold text-gray-900 text-2xl md:text-3xl lg:text-4xl">
-        Gambar
-      </h1>
-
+    <div className="flex flex-col justify-center gap-5 lg:gap-4 w-full h-fit bg-white rounded-lg p-5">
       <FilterAdmin
-        filterKategori={filterKategori}
-        setFilterKategori={(value) => {
-          setFilterKategori(value);
-          setHalamanKe(1);
-        }}
         search={search}
-        setSearch={(value) => {
-          setSearch(value);
-          setHalamanKe(1);
+        setSearch={(val) => {
+          setSearch(val);
+          setCursor(null);
+          setCurrentPage(1);
         }}
         handleReset={handleReset}
-        linkTambah="/gambar/tambah"
-        titleTambah="Tambah Gambar"
-        kategoriList={["RPL", "Prestasi", "Karya", "Edukasi"]} //custom kategori
+        titleHalaman="Data Galeri"
+        descHalaman="Kelola data gambar"
+        linkTambah="/admin/gambar/tambah"
+        titleBTN="Tambah Gambar"
+        handleRefresh={() => refetch()}
+        
+        hasSoftDelete={true}
+        softDeleteFilter={softDeleteFilter}
+        setSoftDeleteFilter={(val) => {
+          setSoftDeleteFilter(val);
+          setCursor(null);
+          setCurrentPage(1);
+        }}
+        
+        filterKategori={filterKategori}
+        setFilterKategori={(val) => {
+          setFilterKategori(val);
+          setCursor(null);
+          setCurrentPage(1);
+        }}
+        
+        filterOptions={{
+          filterKategori: [...(kategori ? kategori.map((cat) => cat.name) : [])],
+        }}
       />
 
-      {/* tabel */}
-      <div class="overflow-x-auto">
-        <table class="min-w-full bg-white ">
-          <thead class="bg-orange-500 border-2 border-gray-200">
+      <div className="overflow-x-auto shadow-lg rounded-lg relative">
+        <table className="min-w-full bg-white">
+          <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th class="py-2 px-4 border text-left text-white">No</th>
-              <th class="py-2 px-4 border text-left text-white min-w-56">
-                Judul
-              </th>
-              <th class="py-2 px-4 border text-left text-white">Kategori</th>
-              <th class="py-2 px-4 border text-left text-white">Tanggal</th>
-              <th class="py-2 px-4 border text-left text-white">Foto</th>
-              <th class="py-2 px-4 border text-left text-white">Aksi</th>
+              <th className="py-2 px-4 text-left text-white">No</th>
+              <th className="py-2 px-4 text-left text-white min-w-56">Judul</th>
+              <th className="py-2 px-4 text-left text-white">Kategori</th>
+              <th className="py-2 px-4 text-left text-white">Tanggal</th>
+              <th className="py-2 px-4 text-left text-white">Foto</th>
+              <th className="py-2 px-4 text-left text-white">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            {dataHasil.map((a, _i) => (
-              <tr class="hover:bg-gray-50 text-[14px]">
-                <td class="py-2 px-4 border-b border-gray-400">
-                  {_i + 1 + arrayAwal}
-                </td>
-                <td class="py-2  border-b border-gray-400 ">{a.judul}</td>
-                <td class="py-2 px-4 border-b border-gray-400">
-                  <div className="flex gap-2">
-                    <div className="bg-orange-500 px-2 rounded-2xl text-white">
-                      {a.kategori}
-                    </div>
-                  </div>
-                </td>
-                <td class="py-2 px-4 border-b border-gray-400">{a.tanggal}</td>
-                <td class="py-2 px-4 border-b border-gray-400">
-                  <button
-                    onClick={() => setSelectedImage(a.image)} // buka modal
-                    className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
-                  >
-                    <CiImageOn className="text-xl" />
-                    {a.image}
-                  </button>
-                </td>
-                <td class="py-2 px-4 border-b border-gray-400 text-white ">
-                  <div className="flex gap-2 justify-center ">
-                    <a
-                      href={`/gambar/edit/${a.id}`}
-                      className="text-center text-3xl bg-green-500 p-2 rounded-2xl shadow-lg"
-                    >
-                      <FaRegEdit className="text-lg" />
-                    </a>
-                    <a
-                      href=""
-                      className="text-center text-3xl bg-red-500 p-2 rounded-2xl shadow-lg"
-                    >
-                      <MdDeleteOutline className="text-lg" />
-                    </a>
-                  </div>
+            {isFetching ? (
+              <tr>
+                <td colSpan={6} className="text-center py-4 text-gray-500">
+                  Memuat data...
                 </td>
               </tr>
-            ))}
+            ) : gallery.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-4 text-gray-500">
+                  Tidak ada data ditemukan.
+                </td>
+              </tr>
+            ) : (
+              gallery.map((a, i) => (
+                <tr
+                  key={a.id}
+                  className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
+                >
+                  <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
+                  <td className="py-2">{a.title}</td>
+                  <td className="py-2 px-4">
+                    {a.categories.map((cat, idx) => (
+                      <span
+                        key={idx}
+                        style={getCategoryStyle(cat.color)}
+                        className={`border px-2 py-[1px] w-fit rounded-2xl text-sm ${cat.color ? `` : 'bg-orange-100 text-orange-700 border-orange-300'} mr-1 mb-1 inline-block font-medium`}
+                      >
+                        {cat.name}
+                      </span>
+                    ))}
+                  </td>
+                  <td className="py-2 px-4">{a.date}</td>
+                  <td className="py-2 px-4">
+                    <button
+                      onClick={() => setSelectedImage(a.image)}
+                      className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                    >
+                      <CiImageOn className="text-xl" />
+                      Lihat
+                    </button>
+                  </td>
+                  <td className="py-2 px-4">
+                    <div className="flex gap-2 justify-center">
+                      <Button
+                        onClick={() => handleEdit(a.id)}
+                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
+                      >
+                        <FaRegEdit className="text-lg" />
+                      </Button>
+                      <button
+                        onClick={() => handleDelete(a.id)}
+                        className="bg-red-500 text-white p-2 rounded-2xl shadow-lg hover:bg-red-600 transition"
+                      >
+                        <MdDeleteOutline className="text-lg" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
 
       <PaginationAdmin
-        currentPage={halamanKe}
-        totalPages={jumlahHalaman}
+        currentPage={1}
+        totalPages={1}
         perPage={jumlahPage}
-        onPageChange={(value) => {
-          setHalamanKe(value);
-        }}
+        onPageChange={() => {}}
         onPerPageChange={(value) => {
           setJumlahPage(value);
-          setHalamanKe(1);
+          setCursor(null);
+          setCurrentPage(1);
         }}
+        hasNextPage={meta.has_more_pages}
+        hasPrevPage={!!meta.previous_cursor}
+        onNextPage={handleNextPage}
+        onPrevPage={handlePrevPage}
+        onFirstPage={handleFirstPage}
+        currentCursorPage={currentPage}
       />
 
       <ImageModal

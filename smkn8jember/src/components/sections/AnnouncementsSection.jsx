@@ -1,13 +1,26 @@
-import React from 'react';
 import { Section, Button, AnnouncementCard, Icon } from '../ui';
-import { useAnnouncements } from '../../hooks/useSchool';
+import { useAnnouncementsPublic } from '../../hooks/api/useAnnouncement';
+import PengumumanPopUp from '../ui/PengumumanPopUp';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AnnouncementsSection = ({ className = '' }) => {
-  const { announcements, isLoading } = useAnnouncements();
+  const { data: announcementsResponse = [] } = useAnnouncementsPublic({ limit: 3 });
+  const announcements = announcementsResponse?.pages?.flatMap(page => page.data) || [];
+  const [pengumuman, setPengumuman] = useState(null);
+  const navigate = useNavigate();
+
+  const handleClosePopUp = () => {
+    setPengumuman(null);
+  };
+
+  const handleOpenPopUp = (data) => {
+    setPengumuman(data);
+  };
 
   return (
-    <Section 
-      background="gradient" 
+    <Section
+      background="gradient"
       title={<>Pengumuman <span className='text-[#ff6000]'>Terbaru</span></>}
       subtitle="Informasi penting dan terkini untuk seluruh siswa, orang tua, dan civitas akademika SMK Negeri 8 Jember"
       className={className}
@@ -15,28 +28,42 @@ const AnnouncementsSection = ({ className = '' }) => {
       <div className="flex flex-col gap-5 w-full mx-20 bg-[#F8F9FA] rounded-xl shadow-md p-5 md:p-10 mt-5">
         <div className="flex items-center gap-3 md:pb-3">
           <span className='p-3 md:p-4 bg-[#f78000] text-[#fff] text-2xl rounded-full'>
-            <Icon name="RiMegaphoneFill" size={24}  />
+            <Icon name="RiMegaphoneFill" size={24} />
           </span>
           <h1 className='text-[#212529] text-xl md:text-3xl font-poppins font-bold'>
             Papan Pengumuman
           </h1>
         </div>
 
-        <div className="flex overflow-x-auto flex-row md:flex-col gap-2 md:gap-5 w-full">
-          {announcements.map((announcement) => (
-            <AnnouncementCard 
-              key={announcement.id} 
-              announcement={announcement} 
-            />
-          ))}
-        </div>
+        {announcements.length > 0 ? (
+          <>
+            <div className="flex overflow-x-auto flex-row md:flex-col gap-2 md:gap-5 w-full">
+              {announcements.map((announcement) => (
+                <AnnouncementCard
+                  key={announcement.id}
+                  announcement={announcement}
+                  onClick={() => handleOpenPopUp(announcement)}
+                />
+              ))}
+            </div>
+            <div className="flex justify-center items-center w-full py-3 md:py-0 md:pt-5">
+              <Button onClick={() => navigate('/announcement')}>
+                Lihat Semua Pengumuman
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center text-center w-full py-10 text-gray-500">
+            <Icon name="RiInbox2Line" size={48} className="mb-3 text-gray-400" />
+            <p className="text-lg font-medium">Belum ada pengumuman saat ini</p>
+            <p className="text-sm text-gray-400">Tetap pantau halaman ini untuk info terbaru ya</p>
+          </div>
+        )}
 
-        <div className="flex justify-center items-center w-full py-3 md:py-0 md:pt-5">
-          <Button>
-            Lihat Semua Pengumuman
-          </Button>
-        </div>
+
       </div>
+
+      <PengumumanPopUp pengumuman={pengumuman} onClose={handleClosePopUp} />
     </Section>
   );
 };

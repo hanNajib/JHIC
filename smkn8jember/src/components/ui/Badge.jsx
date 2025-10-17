@@ -5,6 +5,7 @@ const Badge = ({
   variant = 'primary', 
   size = 'sm',
   className = '',
+  style = {},
   ...props 
 }) => {
   const baseClasses = 'font-poppins font-medium text-center inline-flex items-center justify-center rounded-2xl';
@@ -32,6 +33,7 @@ const Badge = ({
     <span
       className={`${baseClasses} ${variantClasses} ${sizeClasses} ${className}`}
       {...props}
+      style={style}
     >
       {children}
     </span>

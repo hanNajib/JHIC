@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasCursorPagination;
 use App\Traits\HasImageUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Partner extends Model
 {
-    use SoftDeletes, HasImageUrl;
+    use SoftDeletes, HasImageUrl, HasCursorPagination;
 
     protected $fillable = ['name', 'image', 'major_id'];
 

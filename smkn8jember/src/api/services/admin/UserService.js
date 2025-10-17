@@ -17,6 +17,14 @@ export const getById = async (id) => {
         throw error;
     }
 };
+export const getByName = async (name) => {
+    try {
+        const response = await AdminApi.getByName(name);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
 
 export const create = async (data) => {
     try {

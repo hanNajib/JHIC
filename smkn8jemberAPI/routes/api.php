@@ -13,6 +13,8 @@ use App\Http\Controllers\Api\MajorsController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\SchoolDataController;
 use App\Http\Controllers\Api\SchoolSettingsController;
+use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\SubjectsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,11 +26,12 @@ Route::prefix('auth')->middleware('web')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('me', [AuthController::class, 'me'])->middleware(['auth:sanctum']);
+    Route::put('update', [AuthController::class, 'update'])->middleware(['auth:sanctum']);
 });
 
 Route::middleware('web')->group(function () {
 
-
+    Route::get('search', [SearchController::class, 'index']);
     // ----------------------------------
     // ---------- CRUD ROUTES ----------
     //-----------------------------------
@@ -38,6 +41,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [AnnouncementsController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [AnnouncementsController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [AnnouncementsController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [AnnouncementsController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('facility')->group(function () {
@@ -50,6 +54,7 @@ Route::middleware('web')->group(function () {
 
     Route::prefix('majors')->group(function () {
         Route::get('/', [MajorsController::class, 'index']);
+        Route::get('/shortname/{short_name}', [MajorsController::class, 'getByShortName']);
         Route::get('/{id}', [MajorsController::class, 'show']);
         Route::post('/', [MajorsController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [MajorsController::class, 'update'])->middleware('auth:sanctum');
@@ -63,6 +68,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [PartnersController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [PartnersController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [PartnersController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [PartnersController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('extracurriculars')->group(function () {
@@ -71,6 +77,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [ExtracurricularController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [ExtracurricularController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [ExtracurricularController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [ExtracurricularController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('chance-carriers')->group(function () {
@@ -79,6 +86,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [ChanceCarrierController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [ChanceCarrierController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [ChanceCarrierController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [ChanceCarrierController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('gallery')->group(function () {
@@ -87,6 +95,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [GalleryController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [GalleryController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [GalleryController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [GalleryController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('subject')->group(function () {
@@ -95,6 +104,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [SubjectsController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [SubjectsController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [SubjectsController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [SubjectsController::class, 'restore'])->middleware('auth:sanctum');
     });
 
 
@@ -104,6 +114,8 @@ Route::middleware('web')->group(function () {
         Route::post('/', [ArticleController::class, 'store'])->middleware('auth:sanctum');
         Route::put('/{id}', [ArticleController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [ArticleController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [ArticleController::class, 'restore'])->middleware('auth:sanctum');
+        Route::patch('/{id}/status', [ArticleController::class, 'updateStatus'])->middleware('auth:sanctum', 'role:superadmin');
     });
 
     Route::prefix('categories')->group(function () {
@@ -112,14 +124,33 @@ Route::middleware('web')->group(function () {
         Route::post('/', [CategoryController::class, 'store'])->middleware('auth:sanctum');
         Route::put('/{id}', [CategoryController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [CategoryController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [CategoryController::class, 'restore'])->middleware('auth:sanctum');
     });
-    
+
+    Route::prefix('staff')->group(function () {
+        Route::get('/', [StaffController::class, 'index']);
+        Route::get('/structure', [StaffController::class, 'structure']);
+        Route::get('/{id}', [StaffController::class, 'show']);
+
+        Route::middleware(['auth:sanctum', 'role:superadmin'])->group(function () {
+            Route::post('/', [StaffController::class, 'store']);
+            Route::put('/{id}', [StaffController::class, 'update']);
+            Route::delete('/{id}', [StaffController::class, 'delete']);
+            Route::post('/{id}/restore', [StaffController::class, 'restore']);
+        });
+    });
+
     Route::prefix('settings')->group(function () {
         Route::get('/', [SchoolSettingsController::class, 'index']);
         Route::get('/{title}', [SchoolSettingsController::class, 'getByTitle']);
         Route::put('/{title}', [SchoolSettingsController::class, 'update'])->middleware(['auth:sanctum', 'role:superadmin']);
     });
 
+    Route::prefix('school-data')->group(function () {
+        Route::get('/', [SchoolDataController::class, 'index']);
+        Route::get('/{name}', [SchoolDataController::class, 'show']);
+        Route::put('/{name}', [SchoolDataController::class, 'update'])->middleware(['auth:sanctum', 'role:superadmin']);
+    });
     // ----------------------------------
     // ---------- SUPERADMIN ROUTES ----------
     //-----------------------------------
@@ -134,6 +165,8 @@ Route::middleware('web')->group(function () {
             Route::post('/{id}/restore', [AdminController::class, 'restore']);
         });
     });
+
+   Route::get('admins/name/{name}', [AdminController::class, 'getByName']);
 
 
 });

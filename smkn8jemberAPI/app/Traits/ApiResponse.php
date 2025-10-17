@@ -90,13 +90,14 @@ trait ApiResponse
                 'path'             => $paginator->path(),
             ],
             'links' => [
-                'first' => $paginator->url($paginator->cursor()),
-                'last'  => null, // Cursor pagination doesn't have last page concept
-                'prev'  => $paginator->previousPageUrl(),
-                'next'  => $paginator->nextPageUrl(),
+                'first' => null,
+                'last'  => null,
+                'prev'  => $paginator->previousCursor()?->encode(),
+                'next'  => $paginator->nextCursor()?->encode(),
             ],
         ]);
     }
+
 
 
     /**

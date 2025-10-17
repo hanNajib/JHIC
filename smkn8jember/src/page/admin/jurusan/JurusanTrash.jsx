@@ -60,13 +60,13 @@ const JurusanTrash = () => {
           </thead>
           <tbody>
             {dataHasil.map((a, _i) => (
-              <tr key={a.id} className="hover:bg-gray-50 text-[14px]">
-                <td className="py-2 px-4 border-b border-gray-400">
+              <tr key={a.id} className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
+                <td className="py-2 px-4">
                   {_i + 1 + arrayAwal}
                 </td>
-                <td className="py-2 border-b border-gray-400">{a.jurusan}</td>
-                <td className="py-2 border-b border-gray-400">{a.deskripsi}</td>
-                <td className="py-2 px-4 border-b border-gray-400">
+                <td className="py-2">{a.jurusan}</td>
+                <td className="py-2">{a.deskripsi}</td>
+                <td className="py-2 px-4">
                   <button
                     onClick={() => setSelectedImage(a.foto)}
                     className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"

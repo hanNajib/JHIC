@@ -7,7 +7,7 @@ export const useAdmins = (filters = {}, options = {}) => {
         queryKey: [QUERY_KEYS.ADMINS.LIST, filters],
         queryFn: async () => {
             const response = await adminService.get(filters);
-            return response.data;
+            return { data: response.data, meta: response.meta, link: response.links };
         },
         staleTime: 5 * 60 * 1000,
         ...options
@@ -26,15 +26,38 @@ export const useAdmin = (id, options = {}) => {
     })
 }
 
+export const useAdminByName = (name, options = {}) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.ADMINS.DETAIL, name],
+        queryFn: async () => {
+            const response = await adminService.getByName(name);
+            return response.data;
+        },
+        staleTime: 5 * 60 * 1000,
+        ...options
+    })
+}
+
 export const useCreateUser = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: (data) => adminService.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -43,11 +66,22 @@ export const useUpdateUser = (id, options = {}) => {
 
     return useMutation({
         mutationFn: (data) => adminService.update(id, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.DETAIL, id]);
-            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries([QUERY_KEYS.ADMINS.DETAIL, id]);
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
@@ -56,22 +90,44 @@ export const useDeleteUser = (options = {}) => {
 
     return useMutation({
         mutationFn: (id) => adminService.deleteUser(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
-export const useRestoreUser = (id, options = {}) => {
+export const useRestoreUser = (options = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: (id) => adminService.restoreUser(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries([QUERY_KEYS.ADMINS.LIST]);
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ADMINS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
-        ...options
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
     })
 }
 
