@@ -21,7 +21,6 @@ const PengumumanPopUp = ({ pengumuman, onClose }) => {
             exit={{ y: "100%" }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
           >
-            {/* Tombol Close */}
             <div className="text-end">
               <button
                 onClick={onClose}
@@ -31,13 +30,25 @@ const PengumumanPopUp = ({ pengumuman, onClose }) => {
               </button>
             </div>
 
-            <div className="bg-gray-200 rounded-sm p-3 h-72 overflow-y-scroll mb-4">
-              <p className="tracking-wide text-justify whitespace-pre-wrap">
-                {pengumuman.content}
-              </p>
+            <div className="h-72 overflow-y-scroll mb-4">
+              {pengumuman.image && (
+                <div className="w-full mb-4">
+                  <img
+                    src={pengumuman.image}
+                    alt={pengumuman.title}
+                    className="w-full h-64 object-cover rounded-md"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+
+              <div className="bg-gray-200 h-full rounded-sm p-3">
+                <p className="tracking-wide text-justify whitespace-pre-wrap">
+                  {pengumuman.content}
+                </p>
+              </div>
             </div>
 
-            {/* Info Pengumuman */}
             <div className="flex flex-col justify-center">
               <h3 className="bg-orange-500 text-white font-medium text-xs lg:text-sm px-3 py-0.5 w-fit rounded-4xl">
                 {pengumuman.type}

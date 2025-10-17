@@ -18,15 +18,12 @@ const Announcement = () => {
     hasNextPage,
     isFetchingNextPage,
     refetch,
-  } = useAnnouncementsPublic({ limit: 1 });
+  } = useAnnouncementsPublic({ limit: 10 });
 
   const announcements = useMemo(
     () => data?.pages.flatMap((page) => page.data) || [],
     [data]
   );
-
-  console.log(announcements);
-
 
   if (isError)
     return (
@@ -39,6 +36,9 @@ const Announcement = () => {
         </div>
       </DefaultLayout>
     );
+
+  const latestAnnouncement = announcements[0];
+  const otherAnnouncements = announcements.slice(1);
 
   return (
     <DefaultLayout>
@@ -65,19 +65,32 @@ const Announcement = () => {
 
       {/* List */}
       <section className="bg-white py-10">
-        <div className="max-w-6xl mx-auto px-6 md:px-16 space-y-6">
+        <div className="w-full mx-auto px-6 md:px-16 space-y-8">
           {isLoading ? (
             <div className="flex justify-center py-10">
               <TextLoading text="Loading" />
             </div>
           ) : announcements.length > 0 ? (
-            announcements.map((announcement) => (
+            <>
+              {/* Pengumuman Terbaru */}
               <AnnouncementCard
-                key={announcement.id}
-                announcement={announcement}
-                onClick={() => handleOpenPopup(announcement)}
+                announcement={latestAnnouncement}
+                variant="large"
+                onClick={() => handleOpenPopup(latestAnnouncement)}
               />
-            ))
+
+              {/* Pengumuman Lainnya */}
+              <div className="grid md:grid-cols-3 gap-6">
+                {otherAnnouncements.map((announcement) => (
+                  <AnnouncementCard
+                    key={announcement.id}
+                    announcement={announcement}
+                    variant="small"
+                    onClick={() => handleOpenPopup(announcement)}
+                  />
+                ))}
+              </div>
+            </>
           ) : (
             <p className="text-center text-gray-500">
               Belum ada pengumuman saat ini 📭
@@ -101,6 +114,7 @@ const Announcement = () => {
           </div>
         </div>
       )}
+
       <PengumumanPopUp pengumuman={selectedImage} onClose={handleClosePopup} />
     </DefaultLayout>
   );
