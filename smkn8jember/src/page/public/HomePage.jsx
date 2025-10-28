@@ -9,25 +9,20 @@ import {
   AnnouncementsSection,
   GallerySection,
 } from '../../components/sections';
-import SambutanSection from '../../components/sections/SambutanSection';
+import { useWebSettings } from '../../hooks/api/useWebSettings';
+import DefaultLayout from '../../components/layout/DefaultLayout';
 
 const HomePage = () => {
+  const {data: webSettings} = useWebSettings();
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      
-      <main>
-        <HeroSection />
-        <AboutSection />
-        {/* <SambutanSection /> */}
+    <DefaultLayout>
+        <HeroSection judul={webSettings?.data?.find(setting => setting.title === 'judul_halaman')?.value} deskripsi={webSettings?.data?.find(setting => setting.title === 'deskripsi_halaman')?.value} />
+        <AboutSection deskripsi={webSettings?.data?.find(setting => setting.title === 'deskripsi_about')?.value} />
         <ProgramsSection />
         <ArticlesSection />
         <AnnouncementsSection />
         <GallerySection />
-      </main>
-      
-      <Footer />
-    </div>
+    </DefaultLayout>
   );
 };
 

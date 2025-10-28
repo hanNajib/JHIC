@@ -13,22 +13,28 @@ class ChanceCarrierController extends Controller
     use ApiResponse;
 
     public function index() {
-        $data = ChanceCarrier::all();
-        return $this->success($data, 'Chance carriers retrieved successfully');
+        $data = ChanceCarrier::with('major')->applyFilters(
+            request(),
+            searchable: ['name', 'salary'],
+            filters: ['major_id'],
+            relationFilters: ['major.name' => 'major_name']
+        );
+        return $this->cursorPaginated($data, 'Chance carriers retrieved successfully');
+
     }
 
     public function create(Request $request) {
         $request->validate([
             'name' => 'required|string',
-            'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'salary' => 'required|string',
+            'icon' => 'required|string',
             'major_id' => 'required|exists:majors,id',
         ]);
 
-        $createData = $request->only(['name', 'description', 'major_id']);
+        $createData = $request->only(['name', 'salary', 'major_id', 'icon']);
 
         if($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('extracurriculars', 'public');
+            $imagePath = $request->file('image')->store('chancecarrier', 'public');
             $createData['image'] = $imagePath;
         }
 
@@ -50,9 +56,9 @@ class ChanceCarrierController extends Controller
     {
         $request->validate([
             'title' => 'sometimes|string',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'content' => 'sometimes|required|string',
-            'category_id' => 'sometimes|exists:categories,id',
+            'salary' => 'sometimes|required|string',
+            'icon' => 'sometimes|required|string',
+            'major_id' => 'sometimes|exists:majors,id',
         ]);
 
         $chanceCarrier = ChanceCarrier::find($id);
@@ -60,7 +66,7 @@ class ChanceCarrierController extends Controller
             return $this->notFound('Chance carrier not found');
         }
 
-        $updateData = $request->only(['name', 'description', 'major_id']);
+        $updateData = $request->only(['name', 'description', 'major_id', 'icon']);
 
         if ($request->hasFile('image')) {
             if ($chanceCarrier->OriginalImagePath()) {
@@ -89,5 +95,14 @@ class ChanceCarrierController extends Controller
         $chanceCarrier->delete();
 
         return $this->deleted('Chance carrier deleted successfully');
+    }
+
+    public function restore($id){
+        $chanceCarrier = ChanceCarrier::withTrashed()->find($id);
+        if (!$chanceCarrier) {
+            return $this->notFound("Chance carrier not found");
+        }
+        $chanceCarrier->restore();
+        return $this->statusMessage("Chance carrier restored successfully");
     }
 }

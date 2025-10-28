@@ -13,9 +13,15 @@ class Announcement extends Model
 
     protected $fillable = ['title', 'image', 'content', 'category_id'];
     protected $with = ['category'];
+    protected $appends = ['date'];
 
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function getDateAttribute()
+    {
+        return $this->created_at ? $this->created_at->format('d F Y') : null;
     }
 }

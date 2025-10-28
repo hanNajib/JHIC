@@ -37,69 +37,62 @@ const ArtikelUserVerifikasi = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center gap-5 lg:gap-14 w-full h-fit bg-white rounded-lg p-5">
-      {/* Title */}
-      <div className="flex justify-between flex-col gap-2 lg:flex-row">
-        <div className="flex justify-start items-center gap-2">
-          <a
-            onClick={() => navigate(-1)}
-            className="cursor-pointer bg-orange-500 text-3xl lg:text-4xl text-center p-1 rounded-4xl text-white"
-          >
-            <IoIosArrowBack />
-          </a>
-          <h1 className="font-bold text-gray-900 text-3xl lg:text-4xl">
-            Verifikasi Artikel User
-          </h1>
-        </div>
-
-        <div className="flex gap-2">
-          <div className="flex justify-center items-center gap-2 px-3 text-orange-500 text-base font-bold border-[1.9px] border-orange-500 rounded-sm hover:bg-orange-500 hover:text-white transition duration-300">
-            <FiFilter />
-            <h6>Kategori</h6>
-          </div>
-        </div>
+    <div className="flex flex-col justify-center gap-5 lg:gap-7 w-full h-fit bg-white rounded-lg p-5">
+      <div className="flex justify-start items-center gap-2">
+        <a
+          onClick={() => navigate(-1)}
+          className="cursor-pointer bg-orange-500 text-3xl lg:text-4xl text-center p-1 rounded-4xl text-white"
+        >
+          <IoIosArrowBack />
+        </a>
+        <h1 className="font-bold text-gray-900 text-3xl lg:text-4xl">
+          Verifikasi Artikel User
+        </h1>
       </div>
 
       {/* tabel */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white ">
-          <thead className="bg-orange-500 border-2 border-gray-200">
+          <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
-              <th className="py-2 px-4 border text-left text-white">No</th>
-              <th className="py-2 px-4 border text-left text-white min-w-56">
+              <th className="py-2 px-4 text-left text-white">No</th>
+              <th className="py-2 px-4 text-left text-white min-w-56">
                 Judul
               </th>
-              <th className="py-2 px-4 border text-left text-white">
+              <th className="py-2 px-4 text-left text-white">
                 Kategori
               </th>
-              <th className="py-2 px-4 border text-left text-white">Tanggal</th>
-              <th className="py-2 px-4 border text-left text-white">Foto</th>
-              <th className="py-2 px-4 border text-left text-white">Aksi</th>
+              <th className="py-2 px-4 text-left text-white">Tanggal</th>
+              <th className="py-2 px-4 text-left text-white">Foto</th>
+              <th className="py-2 px-4 text-left text-white">Aksi</th>
             </tr>
           </thead>
           <tbody>
             {dataHasil.map((a, _i) => (
-              <tr className="hover:bg-gray-50 text-[14px]" key={a.id}>
-                <td className="py-2 px-4 border-b border-gray-400">
+              <tr
+                className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
+                key={a.id}
+              >
+                <td className="py-2 px-4">
                   {_i + 1 + arrayAwal}
                 </td>
-                <td className="py-2 border-b border-gray-400">{a.judul}</td>
-                <td className="py-2 px-4 border-b border-gray-400">
+                <td className="py-2">{a.judul}</td>
+                <td className="py-2 px-4">
                   <div className="grid grid-cols-2 gap-2 w-32">
                     {a.kategori.map((kate, index) => (
                       <div
                         key={index}
-                        className="bg-orange-500 px-2.5 w-fit rounded-2xl text-sm text-white"
+                        className="bg-orange-300/30 border border-orange-500 px-2 py-[1px] w-fit rounded-2xl text-sm text-orange-500"
                       >
                         {kate}
                       </div>
                     ))}
                   </div>
                 </td>
-                <td className="py-2 px-4 border-b border-gray-400">
+                <td className="py-2 px-4">
                   {a.tanggal}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-400">
+                <td className="py-2 px-4">
                   <button
                     onClick={() => setSelectedImage(a.image)}
                     className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
@@ -108,7 +101,7 @@ const ArtikelUserVerifikasi = () => {
                     {a.image}
                   </button>
                 </td>
-                <td className="py-2 px-4 border-b border-gray-400 text-white ">
+                <td className="py-2 px-4 text-white ">
                   <div className="flex gap-2 justify-center ">
                     <NavLink
                       to={`/artikelUser/edit/${a.id}`}

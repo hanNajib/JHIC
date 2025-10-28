@@ -23,11 +23,11 @@ class ArticleStoreRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:articles,slug',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'content' => 'required|string',
             'categories' => 'nullable|array',
             'categories.*' => 'integer|exists:categories,id',
+            'draft' => 'sometimes|boolean',
         ];
     }
 }

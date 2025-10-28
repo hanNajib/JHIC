@@ -1,8 +1,15 @@
 /* eslint-disable no-unused-vars */
 // components/Sidebar/index.jsx
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { FaBars, FaRegUser, FaChevronDown, FaRegListAlt } from "react-icons/fa";
+import { NavLink, useLocation } from "react-router-dom";
+import {
+  FaBars,
+  FaRegUser,
+  FaChevronDown,
+  FaRegListAlt,
+  FaRegHandshake,
+  FaUserTie,
+} from "react-icons/fa";
 import {
   MdOutlineDashboard,
   MdOutlineSettings,
@@ -24,7 +31,8 @@ import {
   LuUserRoundPen,
 } from "react-icons/lu";
 import { LiaUserTieSolid } from "react-icons/lia";
-import { RiBuilding2Line } from "react-icons/ri";
+import { RiBriefcaseLine, RiBuilding2Line } from "react-icons/ri";
+import { useAuth } from "../hooks/useAuth";
 
 const NavItem = ({ to, icon: Icon, label, isOpen }) => {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -73,229 +81,353 @@ const NavItem = ({ to, icon: Icon, label, isOpen }) => {
   );
 };
 
-const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => (
-  <div className="relative">
-    <button
-      onClick={() => setOpen(!open)}
-      className="flex items-center text-start text-sm text-zinc-600 justify-between w-full py-2.5 px-2.5 rounded-lg font-medium transition-all group"
-    >
-      <div className="flex items-center gap-2">
-        <Icon className="text-xl absolute" />
-        <span
-          className={`transition-all ml-8 duration-200 whitespace-nowrap ${
-            isOpen ? "opacity-100" : "opacity-0 -translate-x-10"
-          }`}
+const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
+  const location = useLocation();
+  
+  // Check if any of the dropdown items is active
+  const isAnyItemActive = items.some(item => 
+    location.pathname === item.to || 
+    location.pathname.startsWith(item.to + '/')
+  );
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className={`flex items-center text-start text-sm justify-between w-full py-2.5 px-2.5 rounded-lg font-medium transition-all group ${
+          isAnyItemActive 
+            ? "bg-orange-500 text-white" 
+            : "text-zinc-600 hover:bg-gray-100"
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <Icon className="text-xl absolute" />
+          <span
+            className={`transition-all ml-8 duration-200 whitespace-nowrap ${
+              isOpen ? "opacity-100" : "opacity-0 -translate-x-10"
+            }`}
+          >
+            {title}
+          </span>
+        </div>
+        {isOpen && (
+          <FaChevronDown
+            className={`transition-transform duration-300 ${
+              open ? "rotate-180" : ""
+            }`}
+          />
+        )}
+        <div
+          className={`bg-white absolute left-full top-0 ml-2 w-40 py-2 rounded-lg shadow-lg z-50 ${
+            !open ? "block md:hidden" : "hidden"
+          } md:group-hover:block`}
         >
-          {title}
-        </span>
-      </div>
-      {isOpen && (
-        <FaChevronDown
-          className={`transition-transform duration-300 ${
-            open ? "rotate-180" : ""
-          }`}
-        />
-      )}
+          {items.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `block px-4 py-2 ${
+                  isActive
+                    ? "bg-orange-500 text-white"
+                    : "text-zinc-600 hover:bg-gray-100"
+                }`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
+      </button>
+
       <div
-        className={`bg-white absolute left-full top-0 ml-2 w-40 py-2 rounded-lg shadow-lg z-50 ${
-          !open ? "block md:hidden" : "hidden"
-        } md:group-hover:block`}
+        className={`ml-8 mt-1 flex-col gap-1 overflow-hidden transition-all duration-200 ${
+          !isOpen
+            ? "hidden"
+            : open
+            ? "max-h-0 opacity-0 ease-out"
+            : "max-h-96 opacity-100 ease-in"
+        }`}
       >
         {items.map((item) => (
-          <NavLink
+          <NavItem
             key={item.to}
             to={item.to}
-            className={({ isActive }) =>
-              `block px-4 py-2 ${
-                isActive
-                  ? "bg-orange-500 text-white"
-                  : "text-zinc-600 hover:bg-gray-100"
-              }`
-            }
-          >
-            {item.label}
-          </NavLink>
+            icon={item.icon}
+            label={item.label}
+            isOpen={isOpen}
+          />
         ))}
       </div>
-    </button>
-
-    <div
-      className={`ml-8 mt-1 flex-col gap-1 overflow-hidden transition-all duration-200 ${
-        !isOpen
-          ? "hidden"
-          : open
-          ? "max-h-0 opacity-0 ease-out"
-          : "max-h-96 opacity-100 ease-in"
-      }`}
-    >
-      {items.map((item) => (
-        <NavItem
-          key={item.to}
-          to={item.to}
-          icon={item.icon}
-          label={item.label}
-          isOpen={isOpen}
-        />
-      ))}
     </div>
-  </div>
-);
-
-const Sidebar = ({ isOpen, setIsOpen }) => {
+  );
+};const Sidebar = ({ isOpen, setIsOpen }) => {
   const [openArtikel, setOpenArtikel] = useState(true);
   const [openManajemen, setOpenManajemen] = useState(true);
+  const [openStaff, setOpenStaff] = useState(true);
 
   const artikelItems = [
-    { to: "/artikel", icon: PiArticleMedium, label: "Artikel Admin" },
-    { to: "/artikelUser", icon: PiArticleNyTimes, label: "Artikel User" },
+    { to: "/admin/artikel", icon: PiArticleMedium, label: "Artikel Saya" },
+    {
+      to: "/admin/artikelUser",
+      icon: PiArticleNyTimes,
+      label: "Artikel Review",
+    },
+  ];
+
+  const staffItems = [
+    { to: "/admin/staff/teacher", icon: LiaUserTieSolid, label: "Data Guru" },
+    { to: "/admin/staff/employee", icon: LuUserRoundCog, label: "Data Karyawan" },
+    { to: "/admin/staff/principal", icon: FaUserTie, label: "Kepala Sekolah" },
   ];
 
   const manajemenItems = [
-    { to: "/dataguru", icon: LiaUserTieSolid, label: "Data Guru" },
-    { to: "/datakaryawan", icon: LuUserRoundCog, label: "Data Karyawan" },
-    { to: "/siswa", icon: LuUserRoundPen, label: "Data Siswa" },
-    { to: "/fasilitas", icon: RiBuilding2Line, label: "Data Fasilitas" },
+    { to: "/admin/siswa", icon: LuUserRoundPen, label: "Data Siswa" },
+    { to: "/admin/fasilitas", icon: RiBuilding2Line, label: "Data Fasilitas" },
     {
-      to: "/ekstrakulikuler",
+      to: "/admin/ekstrakulikuler",
       icon: MdOutlineSportsVolleyball,
       label: "Data Ekstra",
     },
   ];
 
-  return (
-    <div
-      className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
+  const { user } = useAuth();
+
+  if (user.role == "superadmin") {
+    return (
+      <div
+        className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
         ${
           isOpen ? "w-64 px-6" : "w-16 px-2"
         } fixed md:static top-0 left-0 z-50 `}
-    >
-      <div>
-        <div className="flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <img src="/image/logosmk.png" className="w-10" alt="logo" />
+      >
+        <div>
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-3">
+              <img src="/image/logosmk.png" className="w-10" alt="logo" />
+              {isOpen && (
+                <h1 className="font-bold text-lg tracking-wide boderTeks">
+                  SMKN 8 JEMBER
+                </h1>
+              )}
+            </div>
             {isOpen && (
-              <h1 className="font-bold text-lg tracking-wide boderTeks">
-                SMKN 8 JEMBER
-              </h1>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100 cursor-pointer lg:hidden"
+              >
+                <FaBars className="text-zinc-600" />
+              </button>
             )}
           </div>
-          {isOpen && (
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg hover:bg-gray-100 cursor-pointer lg:hidden"
-            >
-              <FaBars className="text-zinc-600" />
-            </button>
-          )}
+
+          {/* Menu List */}
+          <ul
+            className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${
+              isOpen ? "overflow-y-auto" : ""
+            } max-h-[calc(100vh-71px)] pr-2`}
+          >
+            <NavItem
+              to="/admin/dashboard"
+              icon={MdOutlineDashboard}
+              label="Dashboard"
+              isOpen={isOpen}
+            />
+
+            {/* Berita dan Content */}
+            <div className="">
+              <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
+                <span
+                  className={`transition-all duration-200 whitespace-nowrap ${
+                    isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
+                  } text-zinc-600 `}
+                >
+                  BERITA DAN KONTEN
+                </span>
+              </h2>
+              <Dropdown
+                isOpen={isOpen}
+                open={openArtikel}
+                setOpen={setOpenArtikel}
+                icon={GrArticle}
+                title="Artikel"
+                items={artikelItems}
+              />
+              <NavItem
+                to="/admin/gambar"
+                icon={IoImagesOutline}
+                label="Galeri"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/pengumuman"
+                icon={HiOutlineSpeakerphone}
+                label="Pengumuman"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/kategori"
+                icon={MdOutlineCategory}
+                label="Kategori"
+                isOpen={isOpen}
+              />
+            </div>
+
+            {/* Profil Sekolah */}
+            <div className="pb-2 pt-3 border-b-[1.5px] border-zinc-400">
+              <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
+                <span
+                  className={`transition-all duration-200 whitespace-nowrap ${
+                    isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
+                  } text-zinc-600`}
+                >
+                  PROFIL SEKOLAH
+                </span>
+              </h2>
+              <Dropdown
+                isOpen={isOpen}
+                open={openStaff}
+                setOpen={setOpenStaff}
+                icon={FaRegUser}
+                title="Data Staff"
+                items={staffItems}
+              />
+              <Dropdown
+                isOpen={isOpen}
+                open={openManajemen}
+                setOpen={setOpenManajemen}
+                icon={LuDatabase}
+                title="Manajemen Data"
+                items={manajemenItems}
+              />
+              <NavItem
+                to="/admin/mapel"
+                icon={FaRegListAlt}
+                label="Mata Pelajaran"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/data-user"
+                icon={LuUserPlus}
+                label="Data User"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/jurusan"
+                icon={MdOutlineCategory}
+                label="Jurusan"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/partner"
+                icon={FaRegHandshake}
+                label="Partner"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/carrier"
+                icon={RiBriefcaseLine}
+                label="Carrier"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/strukturorganisasi"
+                icon={PiTreeStructureBold}
+                label="Struktur Organisasi"
+                isOpen={isOpen}
+              />
+            </div>
+
+            <NavItem
+              to="/admin/websetting"
+              icon={MdOutlineSettings}
+              label="Web Setting"
+              isOpen={isOpen}
+            />
+          </ul>
         </div>
-
-        {/* Menu List */}
-        <ul
-          className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${
-            isOpen ? "overflow-y-auto" : ""
-          } max-h-[calc(100vh-71px)] pr-2`}
-        >
-          <NavItem
-            to="/admin/dashboard"
-            icon={MdOutlineDashboard}
-            label="Dashboard"
-            isOpen={isOpen}
-          />
-
-          {/* Berita dan Content */}
-          <div className="">
-            <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
-              <span
-                className={`transition-all duration-200 whitespace-nowrap ${
-                  isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
-                } text-zinc-600 `}
-              >
-                BERITA DAN KONTEN
-              </span>
-            </h2>
-            <Dropdown
-              isOpen={isOpen}
-              open={openArtikel}
-              setOpen={setOpenArtikel}
-              icon={GrArticle}
-              title="Artikel"
-              items={artikelItems}
-            />
-            <NavItem
-              to="/admin/gambar"
-              icon={IoImagesOutline}
-              label="Gambar"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/pengumuman"
-              icon={HiOutlineSpeakerphone}
-              label="Pengumuman"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/kategori"
-              icon={MdOutlineCategory}
-              label="Kategori"
-              isOpen={isOpen}
-            />
-          </div>
-
-          {/* Profil Sekolah */}
-          <div className="pb-2 pt-3 border-b-[1.5px] border-zinc-400">
-            <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
-              <span
-                className={`transition-all duration-200 whitespace-nowrap ${
-                  isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
-                } text-zinc-600`}
-              >
-                PROFIL SEKOLAH
-              </span>
-            </h2>
-            <Dropdown
-              isOpen={isOpen}
-              open={openManajemen}
-              setOpen={setOpenManajemen}
-              icon={LuDatabase}
-              title="Manajemen Data"
-              items={manajemenItems}
-            />
-            <NavItem
-              to="/admin/mapel"
-              icon={FaRegListAlt}
-              label="Mata Pelajaran"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/data-user"
-              icon={LuUserPlus}
-              label="Data User"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/jurusan"
-              icon={MdOutlineCategory}
-              label="Jurusan"
-              isOpen={isOpen}
-            />
-            <NavItem
-              to="/admin/strukturorganisasi"
-              icon={PiTreeStructureBold}
-              label="Struktur Organisasi"
-              isOpen={isOpen}
-            />
-          </div>
-
-          <NavItem
-            to="/admin/websetting"
-            icon={MdOutlineSettings}
-            label="Web Setting"
-            isOpen={isOpen}
-          />
-        </ul>
       </div>
-    </div>
-  );
+    );
+  } else if (user.role == "admin") {
+    return (
+      <div
+        className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
+        ${
+          isOpen ? "w-64 px-6" : "w-16 px-2"
+        } fixed md:static top-0 left-0 z-50 `}
+      >
+        <div>
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-3">
+              <img src="/image/logosmk.png" className="w-10" alt="logo" />
+              {isOpen && (
+                <h1 className="font-bold text-lg tracking-wide boderTeks">
+                  SMKN 8 JEMBER
+                </h1>
+              )}
+            </div>
+            {isOpen && (
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100 cursor-pointer lg:hidden"
+              >
+                <FaBars className="text-zinc-600" />
+              </button>
+            )}
+          </div>
+
+          {/* Menu List */}
+          <ul
+            className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${
+              isOpen ? "overflow-y-auto" : ""
+            } max-h-[calc(100vh-71px)] pr-2`}
+          >
+            <NavItem
+              to="/admin/dashboard"
+              icon={MdOutlineDashboard}
+              label="Dashboard"
+              isOpen={isOpen}
+            />
+
+            {/* Berita dan Content */}
+            <div className="">
+              <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
+                <span
+                  className={`transition-all duration-200 whitespace-nowrap ${
+                    isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
+                  } text-zinc-600 `}
+                >
+                  BERITA DAN KONTEN
+                </span>
+              </h2>
+              <NavItem
+                to="/admin/artikel"
+                icon={GrArticle}
+                label="Artikel"
+                isOpen={isOpen}
+              />
+              <NavItem
+                to="/admin/gambar"
+                icon={IoImagesOutline}
+                label="Galeri"
+                isOpen={isOpen}
+              />
+            </div>
+
+            {/* Profil Sekolah */}
+            <div className="pb-2 pt-3 border-t-[1.5px] border-zinc-400">
+              <NavItem
+                to="/admin/websetting"
+                icon={MdOutlineSettings}
+                label="Profil Setting"
+                isOpen={isOpen}
+              />
+            </div>
+          </ul>
+        </div>
+      </div>
+    );
+  }
 };
 
 export default Sidebar;

@@ -6,11 +6,14 @@ import { LuBookText } from "react-icons/lu";
 import { LuBuilding2 } from "react-icons/lu";
 import { LuSchool } from "react-icons/lu";
 import { TbMedal } from "react-icons/tb";
+import DefaultLayout from "../../components/layout/DefaultLayout";
+import { useStudentData } from "../../hooks/api/useStudentData";
 
 const History = () => {
+  const { data: schoolData } = useStudentData();
+  const { major_count, teacher_count, facility_count, ekstra_count } = schoolData?.data || {};
   return (
-    <>
-      <Navbar />
+    <DefaultLayout>
 
       <section
         style={{
@@ -80,7 +83,7 @@ const History = () => {
             <div className="relative w-full bg-[#f7800027] md:rounded-xl flex items-center justify-center md:px-5 px-2 py-3 rounded-2xl md:py-4 md:gap-5 cursor-pointer group">
               <div className="flex flex-col justify-center items-center">
                 <h1 className="text-[#ff6000] font-poppins font-bold text-2xl lg:text-3xl">
-                  7
+                  {major_count || 0}
                 </h1>
                 <h1 className="text-[#272727] font-poppins font-medium text-xs lg:text-sm">
                   Jurusan
@@ -91,7 +94,7 @@ const History = () => {
             <div className="relative w-full bg-[#f7800027] md:rounded-xl flex items-center justify-center md:px-5 px-2 py-3 rounded-2xl md:py-4 md:gap-5 cursor-pointer group">
               <div className="flex flex-col justify-center items-center">
                 <h1 className="text-[#ff6000] font-poppins font-bold text-2xl lg:text-3xl">
-                  37
+                  {facility_count || 0}
                 </h1>
                 <h1 className="text-[#272727] font-poppins font-medium text-xs lg:text-sm">
                   Bangunan/Fasilitas
@@ -102,7 +105,7 @@ const History = () => {
             <div className="relative w-full bg-[#f7800027] md:rounded-xl flex items-center justify-center md:px-5 px-2 py-3 rounded-2xl md:py-4 md:gap-5 cursor-pointer group">
               <div className="flex flex-col justify-center items-center">
                 <h1 className="text-[#ff6000] font-poppins font-bold text-2xl lg:text-3xl">
-                  17
+                  {ekstra_count || 0}
                 </h1>
                 <h1 className="text-[#272727] font-poppins font-medium text-xs lg:text-sm">
                   Ekstrakurikuler
@@ -205,8 +208,7 @@ const History = () => {
         </div>
       </section>
 
-      <Footer />
-    </>
+    </DefaultLayout >
   );
 };
 

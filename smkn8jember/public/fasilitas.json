@@ -3,21 +3,161 @@
     "id": 1,
     "nama": "Lab Komputer",
     "total": 2,
-    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
-    "foto": "/image/logosmk.png"
+    "deskripsi": "Dilengkapi dengan jaringan internet cepat dan 36 unit komputer berkualitas tinggi untuk pembelajaran teknologi.",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 2,
     "nama": "Lab TKJ",
     "total": 2,
-    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
-    "foto": "/image/logosmk.png"
+    "deskripsi": "Tempat praktik siswa jurusan TKJ, dilengkapi perangkat jaringan, server, dan alat perakitan komputer.",
+    "foto": "/image/fasil.jpg"
   },
   {
     "id": 3,
     "nama": "Studio DKV",
     "total": 2,
-    "deskripsi": "Dilengkapi Dengan Wifi Speed, 36 Unit Komputer Kualitas Tinggi",
-    "foto": "/image/logosmk.png"
+    "deskripsi": "Ruang kreatif untuk jurusan DKV dengan komputer desain, tablet grafis, dan pencahayaan profesional.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 4,
+    "nama": "Perpustakaan Utama",
+    "total": 1,
+    "deskripsi": "Koleksi buku lengkap (fiksi & non-fiksi), area baca nyaman, dan akses e-book.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 5,
+    "nama": "Ruang Kelas Standar",
+    "total": 30,
+    "deskripsi": "Ruangan ber-AC, proyektor, papan tulis interaktif, dan kursi ergonomis.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 6,
+    "nama": "Lab Kimia",
+    "total": 1,
+    "deskripsi": "Peralatan praktikum kimia lengkap, lemari asam, dan perlengkapan keselamatan standar.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 7,
+    "nama": "Lab Fisika",
+    "total": 1,
+    "deskripsi": "Peralatan praktikum fisika dasar dan lanjutan, termasuk set optik dan mekanika.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 8,
+    "nama": "Lab Biologi",
+    "total": 1,
+    "deskripsi": "Mikroskop digital, preparat, dan model anatomi lengkap.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 9,
+    "nama": "Ruang Serbaguna (Aula)",
+    "total": 1,
+    "deskripsi": "Kapasitas 500 orang, dilengkapi sound system dan panggung untuk acara.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 10,
+    "nama": "Lapangan Basket",
+    "total": 1,
+    "deskripsi": "Standar internasional, permukaan anti-slip, dan lampu penerangan malam.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 11,
+    "nama": "Lapangan Futsal",
+    "total": 1,
+    "deskripsi": "Lapangan indoor dengan rumput sintetis berkualitas tinggi.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 12,
+    "nama": "Kantin Sekolah",
+    "total": 1,
+    "deskripsi": "Menyediakan makanan dan minuman sehat, area makan bersih dan luas.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 13,
+    "nama": "Ruang UKS (Unit Kesehatan Sekolah)",
+    "total": 1,
+    "deskripsi": "Tempat tidur pasien, perlengkapan P3K lengkap, dan tenaga kesehatan siaga.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 14,
+    "nama": "Mushola / Tempat Ibadah",
+    "total": 1,
+    "deskripsi": "Ruangan ibadah yang bersih dan nyaman, dilengkapi perlengkapan sholat.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 15,
+    "nama": "Ruang Guru",
+    "total": 1,
+    "deskripsi": "Meja kerja individual untuk setiap guru, akses internet, dan loker penyimpanan.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 16,
+    "nama": "Ruang Kepala Sekolah",
+    "total": 1,
+    "deskripsi": "Ruangan kerja, ruang rapat kecil, dan area tamu.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 17,
+    "nama": "Bengkel Otomotif",
+    "total": 1,
+    "deskripsi": "Peralatan praktik mesin mobil/motor lengkap, dongkrak hidrolik, dan alat diagnosa.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 18,
+    "nama": "Studio Musik",
+    "total": 1,
+    "deskripsi": "Ruangan kedap suara, dilengkapi alat musik band lengkap (gitar, drum, keyboard).",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 19,
+    "nama": "Green House / Kebun Sekolah",
+    "total": 1,
+    "deskripsi": "Area praktik pertanian dan biologi, dilengkapi sistem irigasi sederhana.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 20,
+    "nama": "Toilet Siswa (Pria/Wanita)",
+    "total": 6,
+    "deskripsi": "Kebersihan terjamin, dilengkapi wastafel dan sabun cuci tangan.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 21,
+    "nama": "Area Parkir Luas",
+    "total": 1,
+    "deskripsi": "Area aman untuk parkir motor dan mobil guru/siswa, diawasi CCTV.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 22,
+    "nama": "Ruang OSIS",
+    "total": 1,
+    "deskripsi": "Ruangan khusus untuk rapat dan kegiatan organisasi siswa.",
+    "foto": "/image/fasil.jpg"
+  },
+  {
+    "id": 23,
+    "nama": "Kolam Renang",
+    "total": 1,
+    "deskripsi": "Kolam standar dengan kedalaman bervariasi untuk latihan, area bilas/ganti.",
+    "foto": "/image/fasil.jpg"
   }
 ]

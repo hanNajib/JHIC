@@ -6,36 +6,34 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('staff', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('role', ['teacher', 'employee'])->default('employee');
-            $table->enum('position', [
-                'Kepala Sekolah','Tim Pengembang Sekolah','Kepala Tata Usaha','Bendahara BOS','Bendahara BPOPP','Koord. PIP',
-                'Waka Kesiswaan','Koord. BKK','Koord. Kedisiplinan','Pembina OSIS','Koord. Ekstrakurikuler','Koord. KOPSIS',
-                'Waka Kurikulum','Koord. PSDM','Koord. PBM','Koord. Evaluasi KBM','Waka Sarpras','Koord. Pengadaan',
-                'Koord. Pemeliharaan','Pengembang IT','Koord. Perpustakaan','Koord. Lab/Bengkel','Koord. Kebersihan Lingkungan',
-                'Waka Humas','Koord. Sosial','Koord. PKL','Koord. Media Promosi','Koord. LKS','Koord. UP',
-                'Kaprodi T. Otomotif','Wakaprodi T. Otomotif','Kaprodi TKJ','Kaprodi RPL','Kaprodi DKV',
-                'Kaprodi Agribisnis Tanaman','Wakaprodi Agribisnis Tanaman','Wali Kelas','Pendidik dan Tenaga Kependidikan'
-            ]);
+            $table->enum('role', ['teacher', 'employee', 'principal'])->default('employee');
+            $table->string('position')->nullable();
             $table->string('image')->nullable();
             $table->string('subjects')->nullable();
+
+            $table->enum('category', [
+                'kepala_sekolah',
+                'waka',
+                'koordinator',
+                'koordinator_jurusan',
+                'komite',
+                'lainnya'
+            ])->default('lainnya');
+
+            $table->foreignId('parent_id')->nullable()->constrained('staff')->nullOnDelete();
+
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index('role', 'idx_staff_role');
+            $table->index(['role', 'category'], 'idx_staff_role_category');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('staff');

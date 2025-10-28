@@ -1,30 +1,36 @@
-import { apiClient, axiosClient } from "./ApiClient"
-
+import { apiClient, axiosClient } from "./ApiClient";
 
 export const AuthApi = {
-    csrf: () => axiosClient.get('/sanctum/csrf-cookie'),
-    login: (data) => apiClient.post('/auth/login?spa=true', data),
-    logout: () => apiClient.post('/auth/logout'),
-    fetchUser: () => apiClient.get('/auth/me'),
-}
-
+  csrf: () => axiosClient.get("/sanctum/csrf-cookie"),
+  login: (data) => apiClient.post("/auth/login?spa=true", data),
+  logout: () => apiClient.post("/auth/logout?spa=true"),
+  fetchUser: () => apiClient.get("/auth/me"),
+  update: (data) => apiClient.post("/auth/update?_method=PUT", data),
+};
 
 // SUPERADMIN ROUTE API
 export const AdminApi = {
-    get : (params) => apiClient.get('/admins', { params }),
-    getById : (id) => apiClient.get(`/admins/${id}`),
-    create : (data) => apiClient.post('/admins', data),
-    update : (id, data) => apiClient.post(`/admins/${id}?_method=PUT`, data),
-    delete : (id) => apiClient.delete(`/admins/${id}`),
-    restore: (id) => apiClient.post(`/admins/${id}/restore`)
-} 
+  get: (params) => apiClient.get("/admins", { params }),
+  getById: (id) => apiClient.get(`/admins/${id}`),
+  getByName: (name) => apiClient.get(`/admins/name/${name}`),
+  create: (data) => apiClient.post("/admins", data),
+  update: (id, data) => apiClient.post(`/admins/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/admins/${id}`),
+  restore: (id) => apiClient.post(`/admins/${id}/restore`),
+};
 
 export const WebSettingsApi = {
-    getSettings: () => apiClient.get('/settings'),
-    updateSetting: (title, data) => apiClient.post(`/settings/${title}?_method=PUT`, data),
-    getByTitle: (title) => apiClient.get(`/settings/${title}`),
-}
-
+  getSettings: () => apiClient.get("/settings"),
+  updateSetting: (title, data) =>
+    apiClient.post(`/settings/${title}?_method=PUT`, data),
+  getByTitle: (title) => apiClient.get(`/settings/${title}`),
+};
+export const StudentDataApi = {
+  get: () => apiClient.get("/school-data"),
+  update: (name, data) =>
+    apiClient.post(`/school-data/${name}?_method=PUT`, data),
+  getByName: (name) => apiClient.get(`/school-data/${name}`),
+};
 
 // CRUD ROUTE API
 export const AnnouncementApi = {
@@ -33,7 +39,9 @@ export const AnnouncementApi = {
     create : (data) => apiClient.post('/announcements', data),
     update : (id, data) => apiClient.post(`/announcements/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/announcements/${id}`),
+    restore: (id) => apiClient.post(`announcements/${id}/restore`)
 }
+
 
 export const FacilityApi = {
     get : (params) => apiClient.get('/facility', { params }),
@@ -41,40 +49,55 @@ export const FacilityApi = {
     create : (data) => apiClient.post('/facility', data),
     update : (id, data) => apiClient.post(`/facility/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/facility/${id}`),
+    restore: (id) => apiClient.post(`facility/${id}/restore`)
 }
 
 export const MajorsApi = {
-    get : (params) => apiClient.get('/majors', { params }),
-    getById : (id) => apiClient.get(`/majors/${id}`),
-    create : (data) => apiClient.post('/majors', data, {headers: {'Content-Type': 'multipart/form-data'}}),
-    update : (id, data) => apiClient.post(`/majors/${id}?_method=PUT`, data),
-    delete : (id) => apiClient.delete(`/majors/${id}`),
-    restore: (id) => apiClient.post(`majors/${id}/restore`)
-}
+  get: (params) => apiClient.get("/majors", { params }),
+  getById: (id) => apiClient.get(`/majors/${id}`),
+  getByShortName: (short_name) => apiClient.get(`/majors/shortname/${short_name}`),
+  create: (data) => apiClient.post("/majors", data),
+  update: (id, data) => apiClient.post(`/majors/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/majors/${id}`),
+  restore: (id) => apiClient.post(`majors/${id}/restore`),
+};
+export const CategoryApi = {
+  get: (params) => apiClient.get("/categories", { params }),
+  getById: (id) => apiClient.get(`/categories/${id}`),
+  create: (data) => apiClient.post("/categories", data),
+  update: (id, data) => apiClient.post(`/categories/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/categories/${id}`),
+  restore: (id) => apiClient.post(`categories/${id}/restore`),
+};
 
 export const PartnersApi = {
-    get : (params) => apiClient.get('/partners', { params }),
-    getById : (id) => apiClient.get(`/partners/${id}`),
-    create : (data) => apiClient.post('/partners', data),
-    update : (id, data) => apiClient.post(`/partners/${id}?_method=PUT`, data),
-    delete : (id) => apiClient.delete(`/partners/${id}`),
-}
+  get: (params) => apiClient.get("/partners", { params }),
+  getById: (id) => apiClient.get(`/partners/${id}`),
+  create: (data) => apiClient.post("/partners", data),
+  update: (id, data) => apiClient.post(`/partners/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/partners/${id}`),
+  restore: (id) => apiClient.post(`partners/${id}/restore`),
+};
 
 export const ExtracurricularApi = {
-    get : (params) => apiClient.get('/extracurricular', { params }),
-    getById : (id) => apiClient.get(`/extracurricular/${id}`),
-    create : (data) => apiClient.post('/extracurricular', data),
-    update : (id, data) => apiClient.post(`/extracurricular/${id}?_method=PUT`, data),
-    delete : (id) => apiClient.delete(`/extracurricular/${id}`),
-}
+  get: (params) => apiClient.get("/extracurriculars", { params }),
+  getById: (id) => apiClient.get(`/extracurriculars/${id}`),
+  create: (data) => apiClient.post("/extracurriculars", data),
+  update: (id, data) =>
+    apiClient.post(`/extracurriculars/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/extracurriculars/${id}`),
+  restore: (id) => apiClient.post(`extracurriculars/${id}/restore`),
+};
 
 export const ChanceCarrierApi = {
-    get : (params) => apiClient.get('/chance-carrier', { params }),
-    getById : (id) => apiClient.get(`/chance-carrier/${id}`),
-    create : (data) => apiClient.post('/chance-carrier', data),
-    update : (id, data) => apiClient.post(`/chance-carrier/${id}?_method=PUT`, data),
-    delete : (id) => apiClient.delete(`/chance-carrier/${id}`),
-}
+  get: (params) => apiClient.get("/chance-carriers", { params }),
+  getById: (id) => apiClient.get(`/chance-carriers/${id}`),
+  create: (data) => apiClient.post("/chance-carriers", data),
+  update: (id, data) =>
+    apiClient.post(`/chance-carriers/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/chance-carriers/${id}`),
+  restore: (id) => apiClient.post(`/chance-carriers/${id}/restore`),
+};
 
 export const GalleryApi = {
     get : (params) => apiClient.get('/gallery', { params }),
@@ -82,21 +105,38 @@ export const GalleryApi = {
     create : (data) => apiClient.post('/gallery', data),
     update : (id, data) => apiClient.post(`/gallery/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/gallery/${id}`),
+    restore: (id) => apiClient.post(`gallery/${id}/restore`)
 }
 
 export const SubjectApi = {
-    get : (params) => apiClient.get('/subjects', { params }),
-    getById : (id) => apiClient.get(`/subjects/${id}`),
-    create : (data) => apiClient.post('/subjects', data),
-    update : (id, data) => apiClient.post(`/subjects/${id}?_method=PUT`, data),
-    delete : (id) => apiClient.delete(`/subjects/${id}`),
-}
+  get: (params) => apiClient.get("/subject", { params }),
+  getById: (id) => apiClient.get(`/subject/${id}`),
+  create: (data) => apiClient.post("/subject", data),
+  update: (id, data) => apiClient.post(`/subject/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/subject/${id}`),
+  restore: (id) => apiClient.post(`/subject/${id}/restore`),
+};
+
+export const StaffApi = {
+  get: (params) => apiClient.get("/staff", { params }),
+  getById: (id) => apiClient.get(`/staff/${id}`),
+  getStructure: () => apiClient.get("/staff/structure"),
+  create: (data) => apiClient.post("/staff", data),
+  update: (id, data) => apiClient.post(`/staff/${id}?_method=PUT`, data),
+  delete: (id) => apiClient.delete(`/staff/${id}`),
+  restore: (id) => apiClient.post(`/staff/${id}/restore`),
+};
 
 export const ArticleApi = {
     get : (params) => apiClient.get('/articles', { params }),
-    getBySlug : (slug) => apiClient.get(`/articles/slug/${slug}`),
+    getBySlug : (slug) => apiClient.get(`/articles/${slug}`),
     create : (data) => apiClient.post('/articles', data),
     update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/articles/${id}`),
+    restore: (id) => apiClient.post(`/articles/${id}/restore`),
+    updateStatus: (id, status) => apiClient.post(`/articles/${id}/status?_method=PATCH`, status)
 }
 
+export const SearchApi = {
+  search: (params) => apiClient.get(`/search`, { params })
+}

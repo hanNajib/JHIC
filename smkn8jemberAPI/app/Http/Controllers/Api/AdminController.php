@@ -8,21 +8,32 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $adminsPaginated = User::where('role', 'admin')
             ->applyFilters($request, ['username', 'email'], []);
         return $this->cursorPaginated($adminsPaginated, 'Admins retrieved successfully');
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $admin = User::whereRole('admin')->find($id);
-        if(!$admin) {
+        if (!$admin) {
+            return $this->notFound('Admin not found');
+        }
+        return $this->success($admin, 'Admin retrieved successfully');
+    }
+    public function getByName($name)
+    {
+        $admin = User::where('username', $name)->first();
+        if (!$admin) {
             return $this->notFound('Admin not found');
         }
         return $this->success($admin, 'Admin retrieved successfully');
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $validated = $request->validate([
             'username' => 'required|string|unique:users,username',
             'email' => 'required|email|unique:users,email',
@@ -38,9 +49,10 @@ class AdminController extends Controller
         return $this->created($admin, 'Admin created successfully');
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $admin = User::whereRole('admin')->find($id);
-        if(!$admin) {
+        if (!$admin) {
             return $this->notFound('Admin not found');
         }
 
@@ -52,7 +64,7 @@ class AdminController extends Controller
             'bio' => 'nullable|string',
         ]);
 
-        if(isset($validated['password'])) {
+        if (isset($validated['password'])) {
             $validated['password'] = bcrypt($validated['password']);
         }
 
@@ -60,21 +72,23 @@ class AdminController extends Controller
         return $this->success($admin, 'Admin updated successfully');
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $admin = User::whereRole('admin')->find($id);
-        if(!$admin) {
+        if (!$admin) {
             return $this->notFound('Admin not found');
         }
         $admin->delete();
         return $this->success(null, 'Admin deleted successfully');
     }
 
-    public function restore($id) {
-       $admin = User::withTrashed()->find($id);
-       if(!$admin) {
-        return $this->notFound("Admin not found");
-       }
-       $admin->restore();
-       return $this->statusMessage("Admin restored successfully");
+    public function restore($id)
+    {
+        $admin = User::withTrashed()->find($id);
+        if (!$admin) {
+            return $this->notFound("Admin not found");
+        }
+        $admin->restore();
+        return $this->statusMessage("Admin restored successfully");
     }
 }

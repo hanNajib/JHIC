@@ -7,6 +7,7 @@ const Card = ({
   shadow = 'lg',
   rounded = '2xl',
   background = 'white',
+  onClick,
   ...props 
 }) => {
   const baseClasses = 'overflow-clip';
@@ -49,6 +50,7 @@ const Card = ({
     <div
       className={`${baseClasses} ${paddingClasses} ${shadowClasses} ${roundedClasses} ${backgroundClasses} ${className}`}
       {...props}
+      onClick={onClick}
     >
       {children}
     </div>

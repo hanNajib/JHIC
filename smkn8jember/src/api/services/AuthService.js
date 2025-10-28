@@ -31,3 +31,12 @@ export const fetchUser = async () => {
         return Promise.reject(error);
     }
 }
+
+export const update = async (data) => {
+    try {
+        const response = await AuthApi.update(data);
+        return response.data;
+    } catch (error) {
+        return error.response ? error.response.data : { message: 'Network Error' };
+    }
+}

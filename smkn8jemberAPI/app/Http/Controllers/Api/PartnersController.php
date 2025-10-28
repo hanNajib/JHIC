@@ -11,10 +11,14 @@ use Illuminate\Support\Facades\Storage;
 class PartnersController extends Controller
 {
     use ApiResponse;
-    public function index()
+    public function index(Request $request)
     {
-        $partner = Partner::all();
-        return $this->success($partner, 'Partners retrieved successfully');
+         $partner = Partner::with('major')->applyFilters(
+            $request,
+            ['name'],
+            ['major_id']
+        );
+        return $this->cursorPaginated($partner, 'Partner retrieved successfully');
     }
 
     public function create(Request $request)
@@ -59,17 +63,17 @@ class PartnersController extends Controller
             return $this->notFound('Partner not found');
         }
 
-        $updateData = $request->only(['name', 'major_id']); 
+        $updateData = $request->only(['name', 'major_id']);
 
         if ($request->hasFile('image')) {
             if ($partner->OriginalImagePath()) {
                 Storage::disk('public')->delete($partner->OriginalImagePath());
             }
-            
+
             $imagePath = $request->file('image')->store('partners', 'public');
             $updateData['image'] = $imagePath;
         }
-        
+
         $partner->update($updateData);
         return $this->updated($partner, 'Partner updated successfully');
     }
@@ -83,9 +87,18 @@ class PartnersController extends Controller
         if ($partner->image) {
             Storage::disk('public')->delete($partner->image);
         }
-        
+
         $partner->delete();
 
         return $this->deleted('Partner deleted successfully');
+    }
+
+    public function restore($id){
+        $partner = Partner::withTrashed()->find($id);
+        if (!$partner) {
+            return $this->notFound("Partner not found");
+        }
+        $partner->restore();
+        return $this->statusMessage("Partner restored successfully");
     }
 }

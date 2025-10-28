@@ -11,7 +11,7 @@ class Major extends Model
 {
     use SoftDeletes, HasImageUrl, HasCursorPagination;
 
-    protected $fillable = ['name', 'description', 'image'];
+    protected $fillable = ['name', 'description', 'short_name', 'image', 'icon'];
 
     public function partners()
     {

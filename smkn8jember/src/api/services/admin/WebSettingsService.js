@@ -12,10 +12,10 @@ export const getSettings = async () => {
 
 export const updateSettings = async (title, data) => {
     try {
-        const response = await WebSettingsApi.updateSettings(title, data);
+        const response = await WebSettingsApi.updateSetting(title, data);
         return response.data;
     } catch (error) {
-        throw error;
+        throw error.response?.data || error;
     }
 }
 
