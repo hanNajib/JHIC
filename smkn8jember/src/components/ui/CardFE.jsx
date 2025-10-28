@@ -2,7 +2,7 @@ import parse from "html-react-parser";
 
 const CardFE = ({ data1, data2, data3, data4 }) => {
   return (
-    <div className="bg-white w-43 lg:w-full rounded-2xl block shadow-lg transition-all duration-300 lg:hover:-translate-y-3">
+    <div className="bg-white w-full lg:w-full rounded-2xl block shadow-lg transition-all duration-300 lg:hover:-translate-y-3">
       <img
         src={data1}
         alt={data2}
@@ -15,7 +15,7 @@ const CardFE = ({ data1, data2, data3, data4 }) => {
         <h5 className="text-orange-500 text-sm lg:text-lg font-semibold">
           {data3}
         </h5>
-        <div className="text-center text-xs lg:text-base text-gray-600">
+        <div className="text-center text-xs lg:text-base text-gray-600 line-clamp-4">
           {parse(data4)}
         </div>
       </div>

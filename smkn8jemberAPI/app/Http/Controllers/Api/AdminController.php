@@ -40,9 +40,11 @@ class AdminController extends Controller
             'password' => 'required|string|min:8',
             'phone_number' => 'nullable|string',
             'bio' => 'nullable|string',
+            'role' => 'nullable|in:superadmin,admin'
         ]);
 
-        $validated['role'] = 'admin';
+        $validated['role'] = $request->role === 'superadmin' || $request->role === 'super_admin' ? 'superadmin' : 'admin';
+
         $validated['password'] = bcrypt($validated['password']);
 
         $admin = User::create($validated);
@@ -62,11 +64,14 @@ class AdminController extends Controller
             'password' => 'sometimes|nullable|string|min:8',
             'phone_number' => 'nullable|string',
             'bio' => 'nullable|string',
+            'role' => 'nullable|in:superadmin,admin'
         ]);
 
         if (isset($validated['password'])) {
             $validated['password'] = bcrypt($validated['password']);
         }
+
+        $validated['role'] = $request->role === 'superadmin' || $request->role === 'super_admin' ? 'superadmin' : 'admin';
 
         $admin->update($validated);
         return $this->success($admin, 'Admin updated successfully');

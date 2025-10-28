@@ -24,5 +24,47 @@ class CategorySeeder extends Seeder
             "name" => "Penting",
             "color" => "#E10000"
         ]);
+
+        Category::create([
+            "type" => "major",
+            "name" => "TSM",
+            "color" => "#FF6B35"
+        ]);
+
+        Category::create([
+            "type" => "major",
+            "name" => "TKR",
+            "color" => "#F7931E"
+        ]);
+
+        Category::create([
+            "type" => "major",
+            "name" => "RPL",
+            "color" => "#00A8E1"
+        ]);
+
+        Category::create([
+            "type" => "major",
+            "name" => "TKJ",
+            "color" => "#1E90FF"
+        ]);
+
+        Category::create([
+            "type" => "major",
+            "name" => "DKV",
+            "color" => "#9D4EDD"
+        ]);
+
+        Category::create([
+            "type" => "major",
+            "name" => "ATPH",
+            "color" => "#06A77D"
+        ]);
+
+        Category::create([
+            "type" => "major",
+            "name" => "APT",
+            "color" => "#2D6A4F"
+        ]);
     }
 }

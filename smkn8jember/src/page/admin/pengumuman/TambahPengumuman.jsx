@@ -1,6 +1,6 @@
 import { IoIosArrowBack } from "react-icons/io";
 import { useState } from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import MyEditor from "../../../components/ui/MyEditor";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -202,17 +202,10 @@ const TambahPengumuman = () => {
           <label className="block mb-1 font-semibold text-gray-800">
             Deskripsi
           </label>
-          <Editor
-            apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+          <MyEditor
             value={konten}
             onEditorChange={(value) => setValue("content", value)}
-            init={{
-              height: 300,
-              menubar: false,
-              plugins: "lists link image table code",
-              toolbar: "undo redo | bold italic | bullist numlist | alignleft aligncenter alignright | link code",
-              placeholder: "Masukkan Deskripsi Pengumuman",
-            }}
+            initialValue={""}
           />
           {errors.content && (
             <span className="text-red-500 text-sm mt-1">

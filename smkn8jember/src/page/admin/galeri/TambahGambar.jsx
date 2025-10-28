@@ -37,10 +37,9 @@ const schema = yup.object().shape({
 const TambahGambar = () => {
   const navigate = useNavigate();
 
-  const { data: categoryDataRaw = [] } = useCategories({ type: "gallery", limit: 1000 });
+  const { data: categoryDataRaw = [] } = useCategories({ type: ["major", "gallery"], limit: 1000 });
   const categoryData = categoryDataRaw?.data || [];
   const categoryOptions = categoryData
-    .filter((item) => item.type === "gallery")
     .map((category) => ({
       value: category.id,
       label: category.name,

@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "mapel": "Dasar Dasar Pemrograman",
+    "jurusan": "Rekayasa Perangkat Lunak",
+    "deskripsi": "Algoritma adalah sebuah rancangan yang ter strutur",
+    "foto": "/image/logosmk.png"
+  },
+  {
+    "id": 2,
+    "mapel": "Dasar Dasar Pemrograman",
+    "jurusan": "Rekayasa Perangkat Lunak",
+    "deskripsi": "Algoritma adalah sebuah rancangan yang ter struktur",
+    "foto": "/image/logosmk.png"
+  },
+  {
+    "id": 3,
+    "mapel": "Dasar Dasar Pemrograman",
+    "jurusan": "Rekayasa Perangkat Lunak",
+    "deskripsi": "Algoritma adalah sebuah rancangan yang ter struktur",
+    "foto": "/image/logosmk.png"
+  }
+]

@@ -1,22 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import {
-  MdCode,
   MdDoubleArrow,
-  MdOutlineLightbulb,
-  MdWeb,
 } from "react-icons/md";
-import { AiOutlineMobile } from "react-icons/ai";
 import { ArticleCard } from "../../components/ui";
 import { useMajorByName } from "../../hooks/api/useMajor";
 import { useParams } from "react-router-dom";
-import { useSubject, useSubjects } from "../../hooks/api/useSubject";
-import { usePartners } from "../../hooks/api/usePartner";
-import { useCareers } from "../../hooks/api/useCareer";
 import parse from "html-react-parser";
-import TextLoading from "../../components/ui/TextLoading";
-import DefaultLayout from "../../components/layout/DefaultLayout";
 import { RenderIcon } from "../../components/ui/RenderIcon";
 import { useArticle } from "../../hooks/api/useArticle";
 import MajorDetailSkeleton from "../../components/ui/MajorDetailSkeleton";
@@ -109,9 +100,9 @@ const MajorDetail = () => {
                   <MdDoubleArrow size={20} className="text-[#FF6000]" />
                   <h2 className="font-bold text-lg">{item.name}</h2>
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {item.description}
-                </p>
+                <div className="text-sm text-gray-600 leading-relaxed">
+                  {parse(item.description)}
+                </div>
               </div>
             ))}
           </div>
@@ -154,7 +145,6 @@ const MajorDetail = () => {
         </section>
       )}
 
-      {/* Partners / Logos */}
       {Array.isArray(partner) && partner.length > 0 && (
         <>
           <h1 className="font-bold text-2xl justify-center items-center text-center mt-3">
@@ -163,14 +153,14 @@ const MajorDetail = () => {
           <section className="py-16 px-6 m-8 rounded-lg overflow-hidden">
             <div
               ref={sliderRef}
-              className="flex items-center gap-16 whitespace-nowrap overflow-hidden scrollbar-hide"
+              className="flex items-center gap-16 overflow-hidden scrollbar-hide"
               style={{ scrollBehavior: "auto" }}
             >
               {partner.map((val, index) => (
                 <div key={index}>
                   <div
                     key={`${val.id}-${index}`}
-                    className="flex flex-col items-center justify-between gap-3 w-32 h-32"
+                    className="flex flex-col items-center justify-between gap-3 w-36 h-36"
                   >
                     <img
                       src={val.image}

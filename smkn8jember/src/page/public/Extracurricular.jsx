@@ -6,7 +6,9 @@ import { useExtarculiculars } from "../../hooks/api/useExtarculicular";
 import DefaultLayout from "../../components/layout/DefaultLayout";
 
 const Extracurricular = () => {
-  const {data: ekstraResponse, isLoading, isError} = useExtarculiculars();
+  const {data: ekstraResponse, isLoading, isError} = useExtarculiculars({
+    all: true,
+  });
   const ekstra = ekstraResponse?.data || [];
 
 
@@ -31,7 +33,7 @@ const Extracurricular = () => {
       </section>
 
 
-      {/* Versi 1 */}
+      {/* Versi 1
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4 lg:p-16 lg:gap-7 ">
           {ekstra.map((item, index) => (
             <CardFE
@@ -42,24 +44,24 @@ const Extracurricular = () => {
               data4={item.description}
             />
           ))}
-        </div>
+        </div> */}
 
-      {/* VErsi 2
+      {/* VErsi 2 */}
       <section className="flex flex-col items-center py-10 px-4 lg:px-16">
         <h2 className="font-bold text-2xl lg:text-4xl text-gray-800">Ekstrakulikuler</h2>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 mt-10">
           {ekstra.map((item, index) => (
             <CardFE
               key={index}
               data1={item.image}
               data2={item.name}
               data3={item.mentor_name}
-              data4={item.deskripsi}
+              data4={item.description}
             />
           ))}
         </div>
-      </section> */}
+      </section>
 
     </DefaultLayout>
   );

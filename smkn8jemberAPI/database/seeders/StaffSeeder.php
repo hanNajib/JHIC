@@ -11,11 +11,12 @@ class StaffSeeder extends Seeder
     {
         $getRole = fn(string $category) => match ($category) {
             'kepala_sekolah' => 'principal',
-            'waka', 'koordinator', 'koordinator_jurusan' => 'teacher',
+            'waka' => 'teacher',
+            'koordinator' => 'teacher',
+            'koordinator_jurusan' => 'teacher',
             default => 'employee',
         };
 
-        // 1️⃣ Kepala Sekolah
         $kepala = Staff::create([
             'name' => 'Hj. Rahmah Hidana, S.Pd., M.Si.',
             'role' => $getRole('kepala_sekolah'),
@@ -35,6 +36,8 @@ class StaffSeeder extends Seeder
                 'role' => $getRole('lainnya'),
                 'position' => 'Tim Pengembang Sekolah',
                 'category' => 'lainnya',
+                'image' => null,
+                'subjects' => null,
                 'parent_id' => $kepala->id,
             ]))
         );
