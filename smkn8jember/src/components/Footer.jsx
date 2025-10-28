@@ -75,7 +75,7 @@ const Footer = ({ data }) => {
             </h1>
             <div className="flex flex-col gap-2">
               {majors.map((major) => (
-                <Link to={`/major/${major.short_name}`} className="font-poppins text-[#A0A0A0] text-md">
+                <Link to={`/major/${major.short_name}`} key={major.id} className="font-poppins text-[#A0A0A0] text-md">
                   {major.name}
                 </Link>
               ))}

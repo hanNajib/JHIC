@@ -10,7 +10,7 @@ import { useCreateFacility } from "../../../hooks/api/useFacility";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama wajib diisi"),
-  room_total: yup.string().required("Total Ruangan wajib diisi"),
+  room_total: yup.string().required("Total wajib diisi"),
   description: yup.string().required("Deskripsi wajib diisi"),
   image: yup
     .mixed()
@@ -136,15 +136,15 @@ const TambahFasilitas = () => {
           )}
         </div>
 
-        {/* Total Ruangan */}
+        {/* Total  */}
         <div className="flex flex-col">
           <label htmlFor="room_total" className="font-bold text-gray-800">
-            Total Ruangan
+            Total 
           </label>
           <input
             type="text"
             id="room_total"
-            placeholder="Masukkan Total Ruangan"
+            placeholder="Masukkan Total "
             {...register("room_total")}
             className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600 focus:outline-none"
           />

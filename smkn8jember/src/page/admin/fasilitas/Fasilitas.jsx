@@ -159,7 +159,7 @@ const Fasilitas = () => {
             <tr>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white min-w-56">Nama</th>
-              <th className="py-2 px-4 text-left text-white">Total Ruangan</th>
+              <th className="py-2 px-4 text-left text-white">Total</th>
               <th className="py-2 px-4 text-left text-white min-w-72">Deskripsi</th>
               <th className="py-2 px-4 text-left text-white">Foto</th>
               <th className="py-2 px-4 text-left text-white">Aksi</th>

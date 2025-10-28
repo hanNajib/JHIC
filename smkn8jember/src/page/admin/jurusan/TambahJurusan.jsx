@@ -1,6 +1,6 @@
 import { IoIosArrowBack } from "react-icons/io";
 import { useState } from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import MyEditor from "../../../components/ui/MyEditor";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useCreateMajor } from "../../../hooks/api/useMajor";
@@ -143,19 +143,10 @@ const TambahJurusan = () => {
           <label htmlFor="description" className="font-bold text-gray-800">
             Deskripsi Jurusan <span className="text-red-500">*</span>
           </label>
-          <Editor
-            apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+          <MyEditor
             value={descriptionValue}
             onEditorChange={(content) => setValue("description", content)}
-            init={{
-              height: 300,
-              menubar: false,
-              plugins: "lists link table code",
-              toolbar:
-                "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
-              content_style:
-                "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
-            }}
+            initialValue={""}
           />
           {errors.description && (
             <span className="text-red-500 text-sm mt-1">{errors.description.message}</span>

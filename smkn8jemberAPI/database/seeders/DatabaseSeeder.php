@@ -18,7 +18,10 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             SchoolSettingsSeeder::class,
             SchoolDataSeeder::class,
-            StaffSeeder::class
+            StaffSeeder::class,
+            MajorSeeder::class,
+            ChanceCarrierSeeder::class,
+            SubjectSeeder::class,
         ]);
     }
 }

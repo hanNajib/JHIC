@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1,
+    "nama": "Fathul Rohman",
+    "jabatan": "Staf TU",
+    "mapel": "Kimia",
+    "foto": "image/fasil.jpg"
+  },
+  {
+    "id": 2,
+    "nama": "Andre Kurniawan",
+    "jabatan": "Staf TU",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/3183171/pexels-photo-3183171.jpeg"
+  },
+  {
+    "id": 3,
+    "nama": "Viandra Safri",
+    "jabatan": "Staf TU",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/3184460/pexels-photo-3184460.jpeg"
+  },
+  {
+    "id": 4,
+    "nama": "Elina Wati",
+    "jabatan": "Staf TU",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg"
+  },
+  {
+    "id": 5,
+    "nama": "Sri Ningseh",
+    "jabatan": "Staf TU",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/3182781/pexels-photo-3182781.jpeg"
+  },
+  {
+    "id": 6,
+    "nama": "Rina Dharwi",
+    "jabatan": "Staf TU",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/3184632/pexels-photo-3184632.jpeg"
+  },
+  {
+    "id": 7,
+    "nama": "Rendra Agustin",
+    "jabatan": "Toolsman RPL",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/3825527/pexels-photo-3825527.jpeg"
+  },
+  {
+    "id": 8,
+    "nama": "Citra Nuraini",
+    "jabatan": "Toolsman TKJ",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/164631/pexels-photo-164631.jpeg"
+  },
+  {
+    "id": 9,
+    "nama": "Alif Zulkarnain",
+    "jabatan": "Toolsman DKV",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg"
+  },
+  {
+    "id": 10,
+    "nama": "Hendro Wiramono",
+    "jabatan": "Toolsman TKR",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/1181341/pexels-photo-1181341.jpeg"
+  },
+  {
+    "id": 11,
+    "nama": "Adity Maulana",
+    "jabatan": "Toolsman TSM",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/3183172/pexels-photo-3183172.jpeg"
+  },
+  {
+    "id": 12,
+    "nama": "Arif Wibowo",
+    "jabatan": "Toolsman APT",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg"
+  },
+  {
+    "id": 13,
+    "nama": "Ryo Kusyono",
+    "jabatan": "Toolsman ATPH",
+    "mapel": "Kimia",
+    "foto": "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg"
+  }
+]

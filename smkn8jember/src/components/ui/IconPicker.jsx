@@ -11,6 +11,13 @@ import * as BsIcons from "react-icons/bs";
 import * as FiIcons from "react-icons/fi";
 import * as HiIcons from "react-icons/hi";
 import * as RiIcons from "react-icons/ri";
+import * as GiIcons from "react-icons/gi";
+import * as CgIcons from "react-icons/cg";
+import * as DiIcons from "react-icons/di";
+import * as FcIcons from "react-icons/fc";
+import * as TbIcons from "react-icons/tb";
+import * as VscIcons from "react-icons/vsc";
+import * as WiIcons from "react-icons/wi";
 
 const IconPicker = ({
   value = null,
@@ -23,7 +30,7 @@ const IconPicker = ({
   disabled = false,
   className = "",
   iconSize = 20,
-  iconLibraries = ["io5", "md", "fa", "ai", "bi", "bs", "fi", "hi", "ri"],
+  iconLibraries = ["io", "io5", "md", "fa", "ai", "bi", "bs", "fi", "hi", "ri", "gi", "cg", "di", "fc", "tb", "vsc", "wi"],
 }) => {
   const dropdownRef = useRef(null);
   const triggerRef = useRef(null);
@@ -43,6 +50,13 @@ const IconPicker = ({
     fi: FiIcons,
     hi: HiIcons,
     ri: RiIcons,
+    gi: GiIcons,
+    cg: CgIcons,
+    di: DiIcons,
+    fc: FcIcons,
+    tb: TbIcons,
+    vsc: VscIcons,
+    wi: WiIcons
   };
 
   const libraryLabels = {
@@ -56,9 +70,16 @@ const IconPicker = ({
     fi: "Feather",
     hi: "Heroicons",
     ri: "Remix Icon",
+    gi: "Game Icons",
+    cg: "Css.gg",
+    di: "Devicons",
+    fc: "Flat Color",
+    tb: "Tabler",
+    vsc: "VS Code Icons",
+    wi: "Weather Icons"
   };
 
-  // Get available icons based on selected libraries
+
   const getAvailableIcons = () => {
     const icons = [];
     const librariesToUse = iconLibraries.length > 0 ? iconLibraries : Object.keys(allIcons);
@@ -284,7 +305,7 @@ const IconPicker = ({
                           className="transition-transform group-hover:scale-110"
                         />
                         <span className="text-[9px] mt-1 text-center truncate w-full opacity-0 group-hover:opacity-100 transition-opacity">
-                          {icon.name.replace(/^(Io|Io5|Md|Fa|Ai|Bi|Bs|Fi|Hi|Ri)/, '')}
+                          {icon.name.replace(/^(Io|Io5|Md|Fa|Ai|Bi|Bs|Fi|Hi|Ri|Gi|Cg|Di|Fc|Tb|Vsc|Wi)/, '')}
                         </span>
                       </button>
                     );

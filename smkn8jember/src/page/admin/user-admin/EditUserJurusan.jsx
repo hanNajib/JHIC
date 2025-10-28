@@ -147,7 +147,7 @@ const EditUserJurusan = () => {
       submitData.append('foto', formData.foto);
     }
 
-    updateUser.mutate({ id, data: submitData }, {
+    updateUser.mutate(submitData, {
       onSuccess: () => {
         setIsLoading(false);
       },

@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama wajib diisi"),
-  room_total: yup.string().required("Total Ruangan wajib diisi"),
+  room_total: yup.string().required("Total  wajib diisi"),
   description: yup.string().required("Deskripsi wajib diisi"),
   image: yup
     .mixed()
@@ -213,15 +213,15 @@ const EditFasilitas = () => {
           {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
         </div>
 
-        {/* Total Ruangan */}
+        {/* Total  */}
         <div className="flex flex-col">
           <label htmlFor="room_total" className="font-bold text-gray-800">
-            Total Ruangan
+            Total 
           </label>
           <input
             type="text"
             id="room_total"
-            placeholder="Masukkan total ruangan"
+            placeholder="Masukkan total "
             {...register("room_total")}
             className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg"
           />
@@ -257,7 +257,7 @@ const EditFasilitas = () => {
                 className="h-fit object-contain rounded-lg"
               />
             ) : (
-              <p className="text-gray-600">Pilih foto Ruangan</p>
+              <p className="text-gray-600">Pilih foto </p>
             )}
             <input
               id="upload"

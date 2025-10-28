@@ -20,7 +20,6 @@ const schema = yup.object().shape({
     .min(6, "Password minimal 6 karakter"),
   phone_number: yup.string().nullable(),
   bio: yup.string().nullable(),
-  role: yup.string().required("Role wajib diisi"),
   foto: yup
     .mixed()
     .nullable()
@@ -59,7 +58,6 @@ const TambahUserJurusan = () => {
       password: "",
       phone_number: "",
       bio: "",
-      role: "admin",
       foto: null,
     },
   });
@@ -187,7 +185,7 @@ const TambahUserJurusan = () => {
         </div>
 
         {/* Role */}
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <label className="font-bold text-gray-800">
             Role <span className="text-red-500">*</span>
           </label>
@@ -198,7 +196,7 @@ const TambahUserJurusan = () => {
             <option value="admin">Admin</option>
             <option value="superadmin">Super Admin</option>
           </select>
-        </div>
+        </div> */}
 
         {/* Nomor HP */}
         <div className="flex flex-col">

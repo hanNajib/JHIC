@@ -14,17 +14,20 @@ export const useAnnouncements = (filters = {}, options = {}) => {
   });
 };
 
-export const useAnnouncementsPublic = ({ limit = 3, filters = {} }) => {
+export const useAnnouncementsPublic = (filters = {}, options = {}) => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST, filters],
     queryFn: async ({ pageParam = null }) => {
       const params = { ...filters };
       if (pageParam) params.cursor = pageParam;
-
       const response = await announcementService.get(params);
-      return response; 
+      return { data: response.data, meta: response.meta, link: response.links };
     },
-    getNextPageParam: (lastPage) => lastPage?.next_cursor || undefined,
+    getNextPageParam: (lastPage) => {
+      return lastPage.meta?.next_cursor || undefined;
+    },
+    staleTime: 5 * 60 * 1000,
+    ...options,
   });
 };
 

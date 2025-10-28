@@ -5,22 +5,29 @@ import parse from 'html-react-parser';
 import { FaArrowDown } from "react-icons/fa";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { IoCompassOutline } from "react-icons/io5";
+import { useWebSettings } from '../../hooks/api/useWebSettings';
 const HeroSection = ({ className = '', judul = "SMK NEGERI 8 JEMBER <br /> WES TOP", deskripsi = "Bersama kami, mari kita wujudkan masa depan generasi muda Bangsa Indonesia yang lebih berkualitas." }) => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [showFab, setShowFab] = useState(false);
   const chatContainerRef = useRef(null);
+  const { data: websetting } = useWebSettings();
+
+    const { hero_image } = websetting?.data?.reduce((acc, setting) => {
+    acc[setting.title] = setting.value;
+    return acc;
+  }, {}) || {};
+
  
  
 
 const questions = [
     { q: "Apa jurusan yang ada di SMKN 8 Jember?", a: "Kami memiliki beberapa jurusan seperti TKR, TSM, RPL, DKV, TKJ, APT, dan ATPH." },
-    { q: "Siapa nama kepala sekolah di SMKN 8 Jember?", a: "Kepala sekolah yang menjabat di SMKN 8 Jember saat ini adalah Hj.Rahmad Hidana (gelar lupa)." },
+    { q: "Siapa nama kepala sekolah di SMKN 8 Jember?", a: "Kepala sekolah yang menjabat di SMKN 8 Jember saat ini adalah Hj.Rahmah Hidana, S.Pd, M.Si." },
     { q: "Dimanakah alamat SMKN 8 Jember?", a: "SMKN 8 Jember berlokasi di jl.Pelita No 27 Sidomekar Semboro Jember Jawa Timur ." },
     { q: "Bagaimana cara mendaftar?", a: "Pendaftaran bisa dilakukan melalui jalur PPDB online sesuai jadwal Dinas Pendidikan Jawa Timur." },
 
-    // Pertanyaan Pengertian (Definisi) Per Jurusan
     { q: "Apa itu jurusan TKR dan apa yang dipelajari?", a: "TKR (Teknik Kendaraan Ringan) adalah keahlian yang mempelajari perbaikan, perawatan, dan pemeliharaan mobil (kendaraan ringan) secara menyeluruh." },
     { q: "Apa fokus utama dari jurusan TSM?", a: "TSM (Teknik Sepeda Motor) fokus pada penguasaan keterampilan di bidang perbaikan dan perawatan sepeda motor, baik dari segi mesin maupun kelistrikan." },
     { q: "Apa definisi dari RPL?", a: "RPL (Rekayasa Perangkat Lunak) adalah keahlian yang mendalami proses pengembangan aplikasi, pemrograman, dan pembuatan perangkat lunak (software)." },
@@ -29,7 +36,6 @@ const questions = [
     { q: "Apa fokus keahlian dari APT?", a: "APT (Agribisnis Pengolahan Hasil Pertanian) fokus pada pengolahan bahan baku pertanian menjadi produk bernilai tambah, seperti makanan, minuman, atau produk non-pangan." },
     { q: "Apa pengertian jurusan ATPH?", a: "ATPH (Agribisnis Tanaman Pangan dan Hortikultura) adalah keahlian yang mendalami budidaya, perawatan, dan pengelolaan tanaman pangan (misalnya padi) serta hortikultura (sayuran, buah, bunga)." },
 
-    // Pertanyaan Peluang Kerja Per Jurusan
     { q: "Apa peluang kerja untuk lulusan TKR?", a: "Lulusan TKR dapat bekerja sebagai mekanik di bengkel resmi/umum, teknisi perbaikan mobil, atau membuka usaha bengkel sendiri." },
     { q: "Prospek kerja lulusan TSM apa saja?", a: "Lulusan TSM berpeluang menjadi mekanik sepeda motor, teknisi di dealer resmi, atau wirausaha bengkel dan penjualan suku cadang." },
     { q: "Peluang karir apa yang menanti lulusan RPL?", a: "Lulusan RPL banyak dicari sebagai Web Developer, Mobile App Developer, programmer, atau tester aplikasi di perusahaan teknologi." },
@@ -84,10 +90,10 @@ const questions = [
   return (
     <section 
       style={{ 
-        backgroundImage: "url('/assets/images/hero.png')", 
+        backgroundImage: hero_image ? `url(${hero_image})` : "url('/assets/images/hero.png')", 
         backgroundSize: "cover", 
         backgroundPosition: "center" 
-      }} 
+      }}
       className={`h-screen flex lg:items-center relative ${className}`}
     >
       <div className="bg-gradient-to-r from-[#39302c9a] to-transparent w-full h-screen absolute"></div>

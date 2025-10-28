@@ -20,7 +20,7 @@ const Navbar = () => {
     const { data: categoriesResponse = [] } = useCategories({ all: true, type: 'articles' });
     const categories = categoriesResponse?.data || [];
     const { data: websetting } = useWebSettings();
-    const { youtube_link, instagram_link, facebook_link, telepon, email } = websetting?.data?.reduce((acc, setting) => {
+    const { youtube_link, instagram_link, facebook_link, telepon, email, logo_sekolah } = websetting?.data?.reduce((acc, setting) => {
         acc[setting.title] = setting.value;
         return acc;
     }, {}) || {};
@@ -113,8 +113,8 @@ const Navbar = () => {
                         )}
                     </button>
                 </div>
-                <div className={`flex gap-3 items-center relative ${isSearch ? 'mr-0' : 'mr-6 lg:mr-0'}`}>
-                    <img src="assets/images/logo-smk.png" alt="" className="w-[40px] md:w-[50px] relative" />
+                <div className={`cursor-pointer  flex gap-3 items-center relative ${isSearch ? 'mr-0' : 'mr-6 lg:mr-0'}`} onClick={() => navigate('/')}>
+                    <img src={logo_sekolah || "assets/images/logo-smk.png"} alt="" className="w-[40px] md:w-[50px] relative" />
                     <h1 className={`font-poppins font-bold text-[#424242] lg:hidden ${isSearch ? 'hidden md:flex' : 'flex'}`}>SMKN 8 JEMBER</h1>
                 </div>
                 <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
@@ -208,7 +208,7 @@ const Navbar = () => {
                         }`}
                 >
                     <div className="flex justify-center items-center flex-col font-poppins gap-2 text-center py-5 text-[#4c4c4c]">
-                        <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Home</a>
+                        <Link to="/" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Home</Link>
                         <button onClick={handleMenuProfil} className="active:font-semibold hover:opacity-100 opacity-75  transition-all duration-300 flex items-center gap-1">
                             Profil
                             {isProfil ?

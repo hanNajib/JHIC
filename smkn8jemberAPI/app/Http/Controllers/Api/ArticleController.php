@@ -29,11 +29,13 @@ class ArticleController extends Controller
     }
 
 
-    public function show($slug)
+    public function show($slug, Request $request)
     {
+        $IncrementView = $request->boolean('increment_view', true);
         $article = Article::whereSlug($slug)
             ->with(['author', 'categories'])
             ->first();
+        
 
         if (!$article) {
             return $this->notFound('Article not found');
@@ -42,13 +44,13 @@ class ArticleController extends Controller
         $ip = request()->ip();
         $cacheKey = 'article_viewed_' . $article->id . '_' . $ip;
 
-        if (!cache()->has($cacheKey)) {
+        if (!cache()->has($cacheKey) && $IncrementView) {
             $article->increment('views');
             cache()->put($cacheKey, true, now()->addMinutes(30)); 
         }
 
         return $this->success(
-            new ArticleResource($article->fresh()), 
+            new ArticleResource($article),
             'Article retrieved successfully'
         );
     }

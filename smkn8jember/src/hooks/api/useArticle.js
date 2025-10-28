@@ -42,6 +42,18 @@ export const useArticle = (slug, options = {}) => {
   });
 };
 
+export const useArticleNoView = (slug, options = {}) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ARTICLE.DETAIL, slug],
+    queryFn: async () => {
+      const response = await articleService.getBySlugNoView(slug);
+      return response;
+    },
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+};
+
 export const useCreateArticle = (options = {}) => {
     const queryClient = useQueryClient();
 

@@ -35,7 +35,7 @@ const PengumumanPopUp = ({ pengumuman, onClose }) => {
           </div>
 
           <div className="bg-gray-200 rounded-sm p-3 h-72 overflow-y-scroll mb-4">
-            <div className="tracking-wide prose prose-neutral text-justify whitespace-pre-wrap ">{pengumuman.content ? parse(pengumuman.content) : ""}</div>
+            <div className="tracking-wide prose prose-neutral ">{pengumuman.content ? parse(pengumuman.content) : ""}</div>
           </div>
 
           {/* Info */}
