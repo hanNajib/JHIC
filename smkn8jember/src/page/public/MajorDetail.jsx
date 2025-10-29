@@ -1,30 +1,26 @@
 import { useEffect, useRef } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import {
-  MdDoubleArrow,
-} from "react-icons/md";
-import { ArticleCard } from "../../components/ui";
+import { MdDoubleArrow } from "react-icons/md";
+import { ArticleCard, Button } from "../../components/ui";
 import { useMajorByName } from "../../hooks/api/useMajor";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { RenderIcon } from "../../components/ui/RenderIcon";
-import { useArticle } from "../../hooks/api/useArticle";
+import { useArticle, useArticles } from "../../hooks/api/useArticle";
 import MajorDetailSkeleton from "../../components/ui/MajorDetailSkeleton";
+import { useCategories } from "../../hooks/api/useCategory";
 
 const MajorDetail = () => {
-  const {slug} = useParams();
   const { name } = useParams();
   const { data: major, isLoading } = useMajorByName(name);
   const subjects = major?.subjects;
   const careers = major?.chance_carriers;
   const partner = major?.partners;
-  const {data: article} = useArticle(slug);
-  console.log(article);
-  
-  
+  const { data: articleRes } = useArticles({ category_name: name, limit: 6 });
+  const article = articleRes?.data || [];
+
   const sliderRef = useRef(null);
-  
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -48,7 +44,6 @@ const MajorDetail = () => {
     return () => cancelAnimationFrame(animationFrame);
   }, []);
 
-  
   if (isLoading) {
     return <MajorDetailSkeleton />;
   }
@@ -61,8 +56,9 @@ const MajorDetail = () => {
       <section
         className="flex flex-col items-center justify-center py-20 relative text-center"
         style={{
-          backgroundImage: `url(${major?.image || "/assets/images/jurusan-rpl.jpg"
-            })`,
+          backgroundImage: `url(${
+            major?.image || "/assets/images/jurusan-rpl.jpg"
+          })`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -76,14 +72,16 @@ const MajorDetail = () => {
       </section>
 
       {/* About */}
-        <section className="flex flex-col gap-4 items-center justify-center bg-[#F8F9FA] px-8 py-16">
-          <h1 className="font-bold text-2xl text-center md:text-start">
-            Tentang Jurusan {major?.name}
-          </h1>
-          <div className="md:text-justify prose prose-neutral max-w-none text-gray-700 leading-relaxed w-full">
-            {major ? parse(major.description) : "Deskripsi jurusan tidak tersedia."}
-          </div>
-        </section>
+      <section className="flex flex-col gap-4 items-center justify-center bg-[#F8F9FA] px-8 py-16">
+        <h1 className="font-bold text-2xl text-center md:text-start">
+          Tentang Jurusan {major?.name}
+        </h1>
+        <div className="md:text-justify prose prose-neutral max-w-none text-gray-700 leading-relaxed w-full">
+          {major
+            ? parse(major.description)
+            : "Deskripsi jurusan tidak tersedia."}
+        </div>
+      </section>
 
       {Array.isArray(subjects) && subjects.length > 0 && (
         <section className="bg-[#eeeeee] py-16 flex flex-col items-center justify-center px-2 m-8 rounded-2xl">
@@ -111,7 +109,9 @@ const MajorDetail = () => {
 
       {Array.isArray(careers) && careers.length > 0 && (
         <section className="bg-[#F77F00]/50 py-16 flex flex-col items-center justify-center px-6 m-8 rounded-lg">
-          <h1 className="font-bold text-2xl mb-10 text-white">Peluang Karier</h1>
+          <h1 className="font-bold text-2xl mb-10 text-white">
+            Peluang Karier
+          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl w-full">
             {careers.map((item, index) => (
               <div
@@ -119,7 +119,7 @@ const MajorDetail = () => {
                 className="flex flex-col items-center text-center gap-3"
               >
                 <div className="bg-[#FF6000] text-white p-5 rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
-                  <RenderIcon iconName={item.icon} className="w-8 h-8"/>
+                  <RenderIcon iconName={item.icon} className="w-8 h-8" />
                 </div>
                 <h2 className="font-semibold text-lg text-white leading-tight">
                   {item.name}
@@ -178,6 +178,40 @@ const MajorDetail = () => {
           </section>
         </>
       )}
+      <section className="bg-white flex flex-col items-center justify-center py-8 px-10">
+        <div className="flex w-full flex-col md:flex-row md:overflow-x-auto pt-10 gap-6 items-stretch pb-4">
+          {isLoading ? (
+            Array(6)
+              .fill(0)
+              .map((_, i) => (
+                <div
+                  key={i}
+                  className="h-60 bg-gray-200 animate-pulse rounded-md"
+                />
+              ))
+          ) : article.length > 0 ? (
+            article.map((article, index) => (
+              <ArticleCard
+                key={article.id}
+                article={article}
+                className={"md:w-1/3 w-full  md:flex md:flex-col md:flex-none"}
+              />
+            ))
+          ) : (
+            <p className="col-span-full text-center text-gray-500 text-lg">
+              Artikel tidak ditemukan
+            </p>
+          )}
+        </div>
+        <div className="flex justify-center items-center w-full pt-5">
+            <Link
+              to={`/artikel?category=${name}`}
+              className="px-4 py-2 hover:bg-gray-100 transition bg-[#ff6000] rounded-2xl text-white"
+            >
+              Lihat Semua
+            </Link>
+        </div>
+      </section>
 
       <Footer />
     </>

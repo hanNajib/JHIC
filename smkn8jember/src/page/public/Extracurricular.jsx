@@ -50,7 +50,7 @@ const Extracurricular = () => {
       <section className="flex flex-col items-center py-10 px-4 lg:px-16">
         <h2 className="font-bold text-2xl lg:text-4xl text-gray-800">Ekstrakulikuler</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 mt-10">
+        <div className="grid grid-cols-1 w-full md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 mt-10">
           {ekstra.map((item, index) => (
             <CardFE
               key={index}
