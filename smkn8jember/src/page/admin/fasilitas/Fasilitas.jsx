@@ -14,6 +14,9 @@ import { Button } from "../../../components/ui";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
 import Swal from "sweetalert2";
+import parse from "html-react-parser";
+
+
 const Fasilitas = () => {
   const [search, setSearch] = useState("");
   const [cursor, setCursor] = useState(null);
@@ -184,7 +187,7 @@ const Fasilitas = () => {
                   <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + index + 1}</td>
                   <td className="py-2 px-4 font-medium">{facility.name}</td>
                   <td className="py-2 px-4">{facility.room_total}</td>
-                  <td className="py-2 px-4">{facility.description}</td>
+                  <td className="py-1 px-4 line-clamp-2">{parse(facility.description)}</td>
                   <td className="py-2 px-4">
                     <button
                       onClick={() => setSelectedImage(facility.image)}

@@ -96,7 +96,6 @@ const EditArtikel = () => {
 
   useEffect(() => {
     if (currentArticle) {
-      console.log(currentArticleRes)
       
       setValue("title", currentArticle.title || "");
       setValue("content", currentArticle.content || "");

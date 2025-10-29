@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from "react";
-import Footer from "../../components/Footer";
-import Navbar from "../../components/Navbar";
 import CardFE from "../../components/ui/CardFE";
 import { useFacilities } from "../../hooks/api/useFacility";
 import DefaultLayout from "../../components/layout/DefaultLayout";
