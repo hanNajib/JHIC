@@ -250,12 +250,12 @@ console.log(articles);
         }}
           />
 
-          <div className="overflow-x-auto shadow-lg rounded-lg relative">
-          <table className="min-w-full bg-white">
+          <div className="w-full overflow-x-auto shadow-lg rounded-lg relative">
+          <table className=" bg-white">
             <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
               <th className="py-2 px-4 text-left text-white">No</th>
-              <th className="py-2 px-4 text-left text-white min-w-56">Judul</th>
+              <th className="py-2 px-4 text-left text-white">Judul</th>
               <th className="py-2 px-4 text-left text-white">Kategori</th>
               <th className="py-2 px-4 text-left text-white">Tanggal</th>
               <th className="py-2 px-4 text-left text-white">Foto</th>

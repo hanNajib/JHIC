@@ -16,7 +16,6 @@ import Dashboard from "./page/admin/dashboard/Dashboard";
 // Admin - Artikel
 import Artikel from "./page/admin/artikel/Artikel";
 import ArtikelUser from "./page/admin/artikel/ArtikelUser";
-import ArtikelUserVerifikasi from "./page/admin/artikel/ArtikelUserVerifikasi";
 import TambahArtikel from "./page/admin/artikel/TambahArtikel";
 import EditArtikel from "./page/admin/artikel/EditArtikel";
 // Admin - Pengumuman
@@ -104,7 +103,6 @@ function Router() {
           <Route path="artikel/tambah" element={<TambahArtikel />} />
           <Route path="artikel/edit/:slug" element={<EditArtikel />} />
           <Route path="artikelUser" element={<ArtikelUser />} />
-          <Route path="artikelUser/verifikasi" element={<ArtikelUserVerifikasi />} />
           <Route path="artikelUser/edit/:id" element={<EditArtikel />} />
 
           {/* Pengumuman */}
