@@ -31,16 +31,7 @@ const PengumumanPopUp = ({ pengumuman, onClose }) => {
             </div>
 
             <div className="h-72 overflow-y-scroll mb-4">
-              {pengumuman.image && (
-                <div className="w-full mb-4">
-                  <img
-                    src={pengumuman.image}
-                    alt={pengumuman.title}
-                    className="w-full h-64 object-cover rounded-md"
-                    loading="lazy"
-                  />
-                </div>
-              )}
+              w
 
               <div className="bg-gray-200 h-full rounded-sm p-3">
                 <div dangerouslySetInnerHTML={{ __html: pengumuman.content }}>
