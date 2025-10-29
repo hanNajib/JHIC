@@ -34,8 +34,23 @@ const PengumumanPopUp = ({ pengumuman, onClose }) => {
             </button>
           </div>
 
-          <div className="bg-gray-200 rounded-sm p-3 h-72 overflow-y-scroll mb-4">
-            <div className="tracking-wide prose prose-neutral ">{pengumuman.content ? parse(pengumuman.content) : ""}</div>
+          <div className="bg-gray-200 rounded-sm p-3 w-full h-72 overflow-y-scroll mb-4">
+
+            {pengumuman.image && (
+                <div className="w-full mb-4">
+                  <img
+                    src={pengumuman.image}
+                    alt={pengumuman.title}
+                    className="w-full h-64 object-cover rounded-md"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+
+            <div className="tracking-wide prose prose-sm prose-neutral max-w-none">
+            {pengumuman.content ? parse(pengumuman.content) : ""}
+          </div>
+
           </div>
 
           {/* Info */}

@@ -39,13 +39,15 @@ const GalleryPopUp = ({ image, onClose }) => {
             className="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-5 relative max-h-[85vh] overflow-y-auto"
           >
             {/* Tombol Close */}
-            <button
+            <div className="text-end">
+              <button
               onClick={onClose}
-              className="absolute top-3 right-3 text-gray-600 hover:text-red-500 transition text-2xl"
+              className=" top-3 right-3 text-gray-600 hover:text-red-500 transition text-2xl"
               aria-label="Close popup"
             >
               <RiCloseLargeLine />
             </button>
+            </div>
 
             {/* Gambar */}
             <div className="w-full mb-4">

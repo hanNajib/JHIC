@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -31,7 +32,14 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|string|max:255',
-            'name' => 'required|string|unique:categories,name,NULL,id,type,' . $request->type . '|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories')->where(function ($query) use ($request) {
+                    return $query->where('type', $request->input('type'));
+                }),
+            ],
             'color' => 'nullable|string|max:7',
         ]);
 
@@ -50,9 +58,21 @@ class CategoryController extends Controller
             return $this->notFound('Category not found');
         }
 
+        $typeForUnique = $request->has('type') ? $request->input('type') : $category->type;
+
         $validated = $request->validate([
             'type' => 'sometimes|required|string|max:255',
-            'name' => 'sometimes|required|string|unique:categories,name,' . $id . '|max:255',
+            'name' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories')
+                    ->ignore($id)
+                    ->where(function ($query) use ($typeForUnique) {
+                        $query->where('type', $typeForUnique);
+                    }),
+            ],
             'color' => 'nullable|string|max:7',
         ]);
 

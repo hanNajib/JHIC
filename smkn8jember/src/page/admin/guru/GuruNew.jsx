@@ -5,9 +5,9 @@ const Guru = () => {
   return (
     <StaffManagement
       role="teacher"
-      title="Data Guru"
-      description="Kelola data guru"
-      addButtonText="Tambah Guru"
+      title="Data Staff"
+      description="Kelola data staff"
+      addButtonText="Tambah Staff"
       addRoute="/admin/staff/add/teacher"
     />
   );

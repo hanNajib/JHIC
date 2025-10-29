@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -40,12 +41,18 @@ class AdminController extends Controller
             'password' => 'required|string|min:8',
             'phone_number' => 'nullable|string',
             'bio' => 'nullable|string',
-            'role' => 'nullable|in:superadmin,admin'
+            'role' => 'nullable|in:superadmin,admin',
+            'profile_image' => 'nullable|image|mimes:jpeg,jpg,png,gif,svg|max:2048'
         ]);
 
         $validated['role'] = $request->role === 'superadmin' || $request->role === 'super_admin' ? 'superadmin' : 'admin';
 
-        $validated['password'] = bcrypt($validated['password']);
+        $validated['password'] = Hash::make($validated['password']);
+
+        if ($request->hasFile('profile_image')) {
+            $imagePath = $request->file('profile_image')->store('profiles', 'public');
+            $validated['profile_image'] = $imagePath;
+        }
 
         $admin = User::create($validated);
         return $this->created($admin, 'Admin created successfully');
@@ -64,14 +71,20 @@ class AdminController extends Controller
             'password' => 'sometimes|nullable|string|min:8',
             'phone_number' => 'nullable|string',
             'bio' => 'nullable|string',
-            'role' => 'nullable|in:superadmin,admin'
+            'role' => 'nullable|in:superadmin,admin',
+            'profile_image' => 'sometimes|image|mimes:jpeg,jpg,png,gif,svg|max:2048'
         ]);
 
         if (isset($validated['password'])) {
-            $validated['password'] = bcrypt($validated['password']);
+            $validated['password'] = Hash::make($validated['password']);
         }
 
         $validated['role'] = $request->role === 'superadmin' || $request->role === 'super_admin' ? 'superadmin' : 'admin';
+
+        if ($request->hasFile('profile_image')) {
+            $imagePath = $request->file('profile_image')->store('profiles', 'public');
+            $validated['profile_image'] = $imagePath;
+        }
 
         $admin->update($validated);
         return $this->success($admin, 'Admin updated successfully');

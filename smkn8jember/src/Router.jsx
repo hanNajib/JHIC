@@ -16,7 +16,6 @@ import Dashboard from "./page/admin/dashboard/Dashboard";
 // Admin - Artikel
 import Artikel from "./page/admin/artikel/Artikel";
 import ArtikelUser from "./page/admin/artikel/ArtikelUser";
-import ArtikelUserVerifikasi from "./page/admin/artikel/ArtikelUserVerifikasi";
 import TambahArtikel from "./page/admin/artikel/TambahArtikel";
 import EditArtikel from "./page/admin/artikel/EditArtikel";
 // Admin - Pengumuman
@@ -85,6 +84,8 @@ import EditCarrier from "./page/admin/Carrier/EditCarrier";
 import ProfileSetting from "./page/admin/settings/ProfileSetting";
 import VisiMisi from "./page/public/VisiMisi";
 import Search from "./page/public/Search";
+import FacilitasDetail from "./page/public/FacilitasDetail";
+import ExtracurricularDetail from "./page/public/ExtracurricularDetail";
   
 function Router() {
   return (
@@ -102,7 +103,6 @@ function Router() {
           <Route path="artikel/tambah" element={<TambahArtikel />} />
           <Route path="artikel/edit/:slug" element={<EditArtikel />} />
           <Route path="artikelUser" element={<ArtikelUser />} />
-          <Route path="artikelUser/verifikasi" element={<ArtikelUserVerifikasi />} />
           <Route path="artikelUser/edit/:id" element={<EditArtikel />} />
 
           {/* Pengumuman */}
@@ -193,7 +193,9 @@ function Router() {
         <Route path="/teacher" element={<Teacher />} />
         <Route path="/karyawan" element={<Employee />} />
         <Route path="/fasilitas" element={<Facilitas />} />
+        <Route path="/fasilitas/:slug" element={<FacilitasDetail />} />
         <Route path="/ekstrakurikuler" element={<Extracurricular />} />
+        <Route path="/ekstrakurikuler/:slug" element={<ExtracurricularDetail />} />
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />

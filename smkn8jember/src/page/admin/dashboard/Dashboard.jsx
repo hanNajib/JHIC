@@ -10,7 +10,7 @@ import { useAnnouncements } from "../../../hooks/api/useAnnouncement";
 import { useGalleries } from "../../../hooks/api/useGallery";
 import { useMajors } from "../../../hooks/api/useMajor";
 import { useAuth } from "../../../hooks/useAuth";
-
+import { getCategoryStyle } from "../../../utils/helpers";
 const Dashboard = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [search, setSearch] = useState("");
@@ -22,13 +22,14 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const debouncedSearchTerm = useDebounce(search, 500);
 
+  const { user } = useAuth();
   const { data: articleResponse, isFetching } = useArticles({
     s: debouncedSearchTerm,
     trashed: softDeleteFilter === "deleted",
     cursor: cursor,
     limit: jumlahPage,
+    author_id: user?.id,
   });
-  const { user } = useAuth();
 
   const { data: announcementRes, isFetching: loadingAnnouncement } =
     useAnnouncements();
@@ -42,13 +43,10 @@ const Dashboard = () => {
     announcementRes?.meta?.total || announcementRes?.data?.length || 0;
   const jumlahGallery =
     galleryRes?.meta?.total || galleryRes?.data?.length || 0;
-  const jumlahJurusan =
-    majorRes?.meta?.total || majorRes?.data?.length || 0;
+  const jumlahJurusan = majorRes?.meta?.total || majorRes?.data?.length || 0;
 
   const LoadingDots = () => (
-    <span className="inline-block animate-pulse text-orange-500">
-      ...
-    </span>
+    <span className="inline-block animate-pulse text-orange-500">...</span>
   );
 
   return (
@@ -62,9 +60,7 @@ const Dashboard = () => {
         </h4>
       </div>
 
-      {/* Kartu Statistik */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Artikel */}
         <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
           <div className="flex flex-col gap-1">
             <h4 className="font-bold text-base">Artikel Terbit</h4>
@@ -77,47 +73,47 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Pengumuman */}
-        <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
-          <div className="flex flex-col gap-1">
-            <h4 className="font-bold text-base">Pengumuman</h4>
-            <h3 className="font-bold text-2xl md:text-3xl">
-              {loadingAnnouncement ? <LoadingDots /> : jumlahPengumuman}
-            </h3>
-          </div>
-          <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
-            <RiMegaphoneFill />
-          </div>
-        </div>
+        {user?.role !== "admin" && (
+          <>
+            <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+              <div className="flex flex-col gap-1">
+                <h4 className="font-bold text-base">Pengumuman</h4>
+                <h3 className="font-bold text-2xl md:text-3xl">
+                  {loadingAnnouncement ? <LoadingDots /> : jumlahPengumuman}
+                </h3>
+              </div>
+              <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+                <RiMegaphoneFill />
+              </div>
+            </div>
 
-        {/* Gallery */}
-        <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
-          <div className="flex flex-col gap-1">
-            <h4 className="font-bold text-base">Gallery Terbit</h4>
-            <h3 className="font-bold text-2xl md:text-3xl">
-              {loadingGallery ? <LoadingDots /> : jumlahGallery}
-            </h3>
-          </div>
-          <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
-            <GrGallery />
-          </div>
-        </div>
+            <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+              <div className="flex flex-col gap-1">
+                <h4 className="font-bold text-base">Gallery Terbit</h4>
+                <h3 className="font-bold text-2xl md:text-3xl">
+                  {loadingGallery ? <LoadingDots /> : jumlahGallery}
+                </h3>
+              </div>
+              <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+                <GrGallery />
+              </div>
+            </div>
 
-        {/* Jurusan */}
-        <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
-          <div className="flex flex-col gap-1">
-            <h4 className="font-bold text-base">Jurusan</h4>
-            <h3 className="font-bold text-2xl md:text-3xl">
-              {loadingMajor ? <LoadingDots /> : jumlahJurusan}
-            </h3>
-          </div>
-          <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
-            <MdExtension />
-          </div>
-        </div>
+            <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+              <div className="flex flex-col gap-1">
+                <h4 className="font-bold text-base">Jurusan</h4>
+                <h3 className="font-bold text-2xl md:text-3xl">
+                  {loadingMajor ? <LoadingDots /> : jumlahJurusan}
+                </h3>
+              </div>
+              <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+                <MdExtension />
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Tabel Artikel */}
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
@@ -149,12 +145,24 @@ const Dashboard = () => {
                   key={article.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
-                  <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
+                  <td className="py-2 px-4">
+                    {(currentPage - 1) * jumlahPage + i + 1}
+                  </td>
                   <td className="py-2">{article.title}</td>
                   <td className="py-2 px-4">
-                    <div className="bg-orange-300/30 border border-orange-500 px-2 py-[1px] w-fit rounded-2xl text-sm text-orange-500">
-                      {article.category?.name || "-"}
-                    </div>
+                    {article.categories.map((cat, idx) => (
+                      <span
+                        key={idx}
+                        style={getCategoryStyle(cat.color)}
+                        className={`border px-2 py-[1px] w-fit rounded-2xl text-sm ${
+                          cat.color
+                            ? ``
+                            : "bg-orange-100 text-orange-700 border-orange-300"
+                        } mr-1 mb-1 inline-block font-medium`}
+                      >
+                        {cat.name}
+                      </span>
+                    ))}
                   </td>
                   <td className="py-2 px-4">
                     {article.created_at
@@ -172,10 +180,10 @@ const Dashboard = () => {
                     {article.image ? (
                       <button
                         onClick={() => setSelectedImage(article.image)}
-                        className="flex justify-center items-center gap-2 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                        className="flex justify-center items-center gap-1 py-1 px-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
                       >
-                        <CiImageOn className="text-lg" />
-                        <span>Lihat</span>
+                        <CiImageOn className="text-xl" />
+                        Lihat
                       </button>
                     ) : (
                       <span className="text-gray-400">-</span>

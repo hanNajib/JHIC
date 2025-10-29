@@ -29,7 +29,7 @@ class StaffController extends Controller
      */
     public function structure()
     {
-        $kepalaSekolah = Staff::where('position', 'Kepala Sekolah')->first();
+        $kepalaSekolah = Staff::where('role', 'principal')->first();
 
         $waka = Staff::where('category', 'waka')->get();
 
