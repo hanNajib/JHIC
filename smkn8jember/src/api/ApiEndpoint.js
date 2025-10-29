@@ -87,7 +87,7 @@ export const ExtracurricularApi = {
   update: (id, data) =>
     apiClient.post(`/extracurriculars/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/extracurriculars/${id}`),
-  restore: (id) => apiClient.post(`extracurriculars/${id}/restore`),
+  restore: (id) => apiClient.post(`/extracurriculars/${id}/restore`),
 };
 
 export const ChanceCarrierApi = {

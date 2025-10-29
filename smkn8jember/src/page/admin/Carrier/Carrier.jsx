@@ -6,7 +6,7 @@ import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useCareers, useDeleteCareer } from "../../../hooks/api/useCareer";
+import { useCareers, useDeleteCareer, useRestoreCareer } from "../../../hooks/api/useCareer";
 import Swal from "sweetalert2";
 import { Button } from "../../../components/ui";
 import { RenderIcon } from "../../../components/ui/RenderIcon";
@@ -36,6 +36,7 @@ const Carrier = () => {
   const meta = careerResponse?.meta || {};
 
   const deleteCareer = useDeleteCareer();
+  const restoreCareer = useRestoreCareer();
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -89,8 +90,12 @@ const Carrier = () => {
       cancelButtonText: "Batal"
     }).then((result) => {
       if (result.isConfirmed) {
-        // Implementasi restore - mungkin perlu menambahkan mutation untuk restore
-        console.log('Restore career:', career.id);
+        restoreCareer.mutate(career.id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire("Diaktifkan!", "Fasilitas telah diaktifkan.", "success");
+          }
+        });
       }
     });
   };

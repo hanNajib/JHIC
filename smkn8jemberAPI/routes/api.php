@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\SchoolSettingsController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\SubjectsController;
+use App\Models\Facility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -50,6 +51,7 @@ Route::middleware('web')->group(function () {
         Route::post('/', [FacilityController::class, 'create'])->middleware('auth:sanctum');
         Route::put('/{id}', [FacilityController::class, 'update'])->middleware('auth:sanctum');
         Route::delete('/{id}', [FacilityController::class, 'delete'])->middleware('auth:sanctum');
+        Route::post('/{id}/restore', [FacilityController::class, 'restore'])->middleware('auth:sanctum');
     });
 
     Route::prefix('majors')->group(function () {

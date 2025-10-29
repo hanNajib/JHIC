@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
 import Swal from "sweetalert2";
 import parse from "html-react-parser";
+import { BiRefresh } from "react-icons/bi";
 
 
 const Fasilitas = () => {
@@ -200,17 +201,18 @@ const Fasilitas = () => {
                   <td className="py-2 px-4">
                     <div className="flex gap-2 justify-center">
                       {softDeleteFilter === "deleted" ? (
-                        <Button
+                        <button
                           onClick={() => handleRestore(facility)}
-                          className="text-center bg-blue-500 hover:bg-blue-600 p-2 rounded-lg shadow-lg"
+                          className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+                          title="Pulihkan Artikel"
                         >
-                          <span className="text-xs font-medium">Pulihkan</span>
-                        </Button>
+                          <BiRefresh className="text-lg" />
+                        </button>
                       ) : (
                         <>
                           <Button
                             onClick={() => handleEdit(facility.id)}
-                            className="text-center bg-green-500 hover:bg-green-600 p-2 rounded-lg shadow-lg"
+                            className="text-center bg-blue-500 hover:bg-blue-600 p-2 rounded-lg shadow-lg"
                           >
                             <FaRegEdit className="text-lg" />
                           </Button>

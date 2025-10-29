@@ -234,7 +234,7 @@ const EditCareer = () => {
         {/* Icon Picker */}
         <div className="flex flex-col">
           <IconPicker
-            label="Icon Karir"
+            label="Icon"
             value={watch("icon")}
             onChange={(iconName) => setValue("icon", iconName)}
             placeholder="Pilih icon untuk karir"
@@ -243,7 +243,7 @@ const EditCareer = () => {
           />
         </div>
 
-        {/* Upload Foto */}
+        {/* Upload Foto
         <div className="w-full">
           <label className="block font-bold mb-2 text-gray-800">Icon</label>
           <label
@@ -270,7 +270,7 @@ const EditCareer = () => {
           {errors.image && (
             <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Tombol */}
         <div className="flex gap-3 justify-end mt-6">
