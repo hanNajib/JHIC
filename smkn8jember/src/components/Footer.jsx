@@ -75,7 +75,7 @@ const Footer = ({ data }) => {
             </h1>
             <div className="flex flex-col gap-2">
               {majors.map((major) => (
-                <Link to={`/major/${major.short_name}`} className="font-poppins text-[#A0A0A0] text-md">
+                <Link to={`/major/${major.short_name}`} key={major.id} className="font-poppins text-[#A0A0A0] text-md">
                   {major.name}
                 </Link>
               ))}
@@ -116,7 +116,7 @@ const Footer = ({ data }) => {
         </div>
 
         <div className="flex justify-center bg-white md:w-2/3 lg:w-1/2 mt-14 rounded-2xl">
-          <img src="assets/images/Logo Jagoan Hosting, Komdigi, Maspion IT, Garuda Spark.png" alt="" className="" />
+          <img src="/assets/images/Logo Jagoan Hosting, Komdigi, Maspion IT, Garuda Spark.png" alt="" className="" />
         </div>
 
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // components/Sidebar/index.jsx
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaRegUser,
@@ -44,10 +44,9 @@ const NavItem = ({ to, icon: Icon, label, isOpen }) => {
       onMouseLeave={() => setShowTooltip(false)}
       className={({ isActive }) =>
         `flex relative items-center justify-start text-sm gap-2 py-2.5 pl-2.5 rounded-lg font-medium transition-all duration-300
-        ${
-          isActive
-            ? "bg-orange-500 text-white"
-            : "text-zinc-600 hover:bg-gray-100"
+        ${isActive
+          ? "bg-orange-500 text-white"
+          : "text-zinc-600 hover:bg-gray-100"
         }`
       }
     >
@@ -56,11 +55,10 @@ const NavItem = ({ to, icon: Icon, label, isOpen }) => {
       {/* Tooltip hanya muncul jika sidebar tertutup dan dihover */}
       {!isOpen && (
         <div
-          className={`absolute left-full top-1/2 -translate-y-1/2 ml-3 transition-all duration-200 ease-out z-50 ${
-            showTooltip
+          className={`absolute left-full top-1/2 -translate-y-1/2 ml-3 transition-all duration-200 ease-out z-50 ${showTooltip
               ? "opacity-100 translate-x-0"
               : "opacity-0 -translate-x-2 pointer-events-none"
-          }`}
+            }`}
         >
           <div className="relative bg-white text-gray-800 text-xs font-medium py-1.5 px-3 rounded-md shadow-lg backdrop-blur-sm">
             {label}
@@ -71,9 +69,8 @@ const NavItem = ({ to, icon: Icon, label, isOpen }) => {
 
       {/* Label teks (muncul saat sidebar terbuka) */}
       <span
-        className={`transition-all ml-8 duration-200 whitespace-nowrap ${
-          isOpen ? "opacity-100" : "opacity-0 -translate-x-20"
-        }`}
+        className={`transition-all ml-8 duration-200 whitespace-nowrap ${isOpen ? "opacity-100" : "opacity-0 -translate-x-20"
+          }`}
       >
         {label}
       </span>
@@ -83,10 +80,10 @@ const NavItem = ({ to, icon: Icon, label, isOpen }) => {
 
 const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
   const location = useLocation();
-  
+
   // Check if any of the dropdown items is active
-  const isAnyItemActive = items.some(item => 
-    location.pathname === item.to || 
+  const isAnyItemActive = items.some(item =>
+    location.pathname === item.to ||
     location.pathname.startsWith(item.to + '/')
   );
 
@@ -94,43 +91,38 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className={`flex items-center text-start text-sm justify-between w-full py-2.5 px-2.5 rounded-lg font-medium transition-all group ${
-          isAnyItemActive 
-            ? "bg-orange-500 text-white" 
+        className={`flex items-center text-start text-sm justify-between w-full py-2.5 px-2.5 rounded-lg font-medium transition-all group ${isAnyItemActive
+            ? "bg-orange-500 text-white"
             : "text-zinc-600 hover:bg-gray-100"
-        }`}
+          }`}
       >
         <div className="flex items-center gap-2">
           <Icon className="text-xl absolute" />
           <span
-            className={`transition-all ml-8 duration-200 whitespace-nowrap ${
-              isOpen ? "opacity-100" : "opacity-0 -translate-x-10"
-            }`}
+            className={`transition-all ml-8 duration-200 whitespace-nowrap ${isOpen ? "opacity-100" : "opacity-0 -translate-x-10"
+              }`}
           >
             {title}
           </span>
         </div>
         {isOpen && (
           <FaChevronDown
-            className={`transition-transform duration-300 ${
-              open ? "rotate-180" : ""
-            }`}
+            className={`transition-transform duration-300 ${open ? "rotate-180" : ""
+              }`}
           />
         )}
         <div
-          className={`bg-white absolute left-full top-0 ml-2 w-40 py-2 rounded-lg shadow-lg z-50 ${
-            !open ? "block md:hidden" : "hidden"
-          } md:group-hover:block`}
+          className={`bg-white absolute left-full top-0 ml-2 w-40 py-2 rounded-lg shadow-lg z-50 ${!open ? "block md:hidden" : "hidden"
+            } md:group-hover:block`}
         >
           {items.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `block px-4 py-2 ${
-                  isActive
-                    ? "bg-orange-500 text-white"
-                    : "text-zinc-600 hover:bg-gray-100"
+                `block px-4 py-2 ${isActive
+                  ? "bg-orange-500 text-white"
+                  : "text-zinc-600 hover:bg-gray-100"
                 }`
               }
             >
@@ -141,13 +133,12 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
       </button>
 
       <div
-        className={`ml-8 mt-1 flex-col gap-1 overflow-hidden transition-all duration-200 ${
-          !isOpen
+        className={`ml-8 mt-1 flex-col gap-1 overflow-hidden transition-all duration-200 ${!isOpen
             ? "hidden"
             : open
-            ? "max-h-0 opacity-0 ease-out"
-            : "max-h-96 opacity-100 ease-in"
-        }`}
+              ? "max-h-0 opacity-0 ease-out"
+              : "max-h-96 opacity-100 ease-in"
+          }`}
       >
         {items.map((item) => (
           <NavItem
@@ -161,10 +152,13 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
       </div>
     </div>
   );
-};const Sidebar = ({ isOpen, setIsOpen }) => {
+};
+
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const [openArtikel, setOpenArtikel] = useState(true);
   const [openManajemen, setOpenManajemen] = useState(true);
   const [openStaff, setOpenStaff] = useState(true);
+  const navigate = useNavigate();
 
   const artikelItems = [
     { to: "/admin/artikel", icon: PiArticleMedium, label: "Artikel Saya" },
@@ -176,8 +170,8 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
   ];
 
   const staffItems = [
-    { to: "/admin/staff/teacher", icon: LiaUserTieSolid, label: "Data Guru" },
-    { to: "/admin/staff/employee", icon: LuUserRoundCog, label: "Data Karyawan" },
+    { to: "/admin/staff/teacher", icon: LiaUserTieSolid, label: "Guru & Staff" },
+    // { to: "/admin/staff/employee", icon: LuUserRoundCog, label: "Data Karyawan" },
     { to: "/admin/staff/principal", icon: FaUserTie, label: "Kepala Sekolah" },
   ];
 
@@ -191,19 +185,19 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
     },
   ];
 
+
   const { user } = useAuth();
 
   if (user.role == "superadmin") {
     return (
       <div
         className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
-        ${
-          isOpen ? "w-64 px-6" : "w-16 px-2"
-        } fixed md:static top-0 left-0 z-50 `}
+        ${isOpen ? "w-64 px-6" : "w-16 px-2"
+          } fixed md:static top-0 left-0 z-50 `}
       >
         <div>
           <div className="flex items-center justify-between py-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3" onClick={() => navigate('/')}>
               <img src="/image/logosmk.png" className="w-10" alt="logo" />
               {isOpen && (
                 <h1 className="font-bold text-lg tracking-wide boderTeks">
@@ -223,9 +217,8 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
 
           {/* Menu List */}
           <ul
-            className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${
-              isOpen ? "overflow-y-auto" : ""
-            } max-h-[calc(100vh-71px)] pr-2`}
+            className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${isOpen ? "overflow-y-auto" : ""
+              } max-h-[calc(100vh-71px)] pr-2`}
           >
             <NavItem
               to="/admin/dashboard"
@@ -238,9 +231,8 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
             <div className="">
               <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
                 <span
-                  className={`transition-all duration-200 whitespace-nowrap ${
-                    isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
-                  } text-zinc-600 `}
+                  className={`transition-all duration-200 whitespace-nowrap ${isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
+                    } text-zinc-600 `}
                 >
                   BERITA DAN KONTEN
                 </span>
@@ -277,9 +269,8 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
             <div className="pb-2 pt-3 border-b-[1.5px] border-zinc-400">
               <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
                 <span
-                  className={`transition-all duration-200 whitespace-nowrap ${
-                    isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
-                  } text-zinc-600`}
+                  className={`transition-all duration-200 whitespace-nowrap ${isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
+                    } text-zinc-600`}
                 >
                   PROFIL SEKOLAH
                 </span>
@@ -327,13 +318,7 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
               <NavItem
                 to="/admin/carrier"
                 icon={RiBriefcaseLine}
-                label="Carrier"
-                isOpen={isOpen}
-              />
-              <NavItem
-                to="/admin/strukturorganisasi"
-                icon={PiTreeStructureBold}
-                label="Struktur Organisasi"
+                label="Peluang Karir"
                 isOpen={isOpen}
               />
             </div>
@@ -352,13 +337,12 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
     return (
       <div
         className={`bg-white flex flex-col justify-between h-full shadow-md transition-all duration-300
-        ${
-          isOpen ? "w-64 px-6" : "w-16 px-2"
-        } fixed md:static top-0 left-0 z-50 `}
+        ${isOpen ? "w-64 px-6" : "w-16 px-2"
+          } fixed md:static top-0 left-0 z-50 `}
       >
         <div>
           <div className="flex items-center justify-between py-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3" onClick={() => navigate('/')}>
               <img src="/image/logosmk.png" className="w-10" alt="logo" />
               {isOpen && (
                 <h1 className="font-bold text-lg tracking-wide boderTeks">
@@ -378,9 +362,8 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
 
           {/* Menu List */}
           <ul
-            className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${
-              isOpen ? "overflow-y-auto" : ""
-            } max-h-[calc(100vh-71px)] pr-2`}
+            className={`ScorllBar flex flex-col gap-4 pt-5 pb-5 ${isOpen ? "overflow-y-auto" : ""
+              } max-h-[calc(100vh-71px)] pr-2`}
           >
             <NavItem
               to="/admin/dashboard"
@@ -393,9 +376,8 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
             <div className="">
               <h2 className="font-semibold text-zinc-600 pl-2.5 pb-1 pt-3 border-t-[1.5px] border-zinc-400">
                 <span
-                  className={`transition-all duration-200 whitespace-nowrap ${
-                    isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
-                  } text-zinc-600 `}
+                  className={`transition-all duration-200 whitespace-nowrap ${isOpen ? "opacity-100" : "opacity-0 -translate-x-10 hidden"
+                    } text-zinc-600 `}
                 >
                   BERITA DAN KONTEN
                 </span>
@@ -406,18 +388,12 @@ const Dropdown = ({ isOpen, open, setOpen, icon: Icon, title, items }) => {
                 label="Artikel"
                 isOpen={isOpen}
               />
-              <NavItem
-                to="/admin/gambar"
-                icon={IoImagesOutline}
-                label="Galeri"
-                isOpen={isOpen}
-              />
             </div>
 
             {/* Profil Sekolah */}
             <div className="pb-2 pt-3 border-t-[1.5px] border-zinc-400">
               <NavItem
-                to="/admin/websetting"
+                to="/admin/profilesetting"
                 icon={MdOutlineSettings}
                 label="Profil Setting"
                 isOpen={isOpen}

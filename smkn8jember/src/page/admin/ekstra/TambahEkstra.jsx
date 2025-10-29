@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useCreateExtarculicular } from "../../../hooks/api/useExtarculicular";
 import Swal from "sweetalert2";
+import MyEditor from "../../../components/ui/MyEditor";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama wajib diisi"),
@@ -53,12 +54,14 @@ const TambahEkstra = () => {
     }
   });
 
+  
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
     reset,
+    watch,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -68,6 +71,8 @@ const TambahEkstra = () => {
       image: null,
     },
   });
+  
+  const watchedContent = watch("description");
 
   const onSubmit = async (data) => {
     try {
@@ -152,17 +157,15 @@ const TambahEkstra = () => {
           <label htmlFor="description" className="font-bold text-gray-800">
             Deskripsi Singkat
           </label>
-          <textarea
-            id="description"
-            rows="5"
-            placeholder="Tuliskan deskripsi singkat kegiatan ekstrakurikuler..."
-            {...register("description")}
-            className="w-full px-3 py-2 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600"
-          ></textarea>
+          <MyEditor
+            value={watchedContent}
+            onEditorChange={(newContent) => setValue("description", newContent)}
+            initialValue={""}
+          />
           {errors.description && (
-            <span className="text-red-500 text-sm">
+            <p className="text-red-500 text-sm mt-1">
               {errors.description.message}
-            </span>
+            </p>
           )}
         </div>
 

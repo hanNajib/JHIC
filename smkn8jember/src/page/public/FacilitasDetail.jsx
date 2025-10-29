@@ -2,7 +2,6 @@ import { useFacilities, useFacility } from "../../hooks/api/useFacility";
 import DefaultLayout from "../../components/layout/DefaultLayout";
 import { Link, useSearchParams } from "react-router-dom";
 import parse from "html-react-parser";
-import { BiHome } from "react-icons/bi";
 import { FaHome } from "react-icons/fa";
 
 const FacilitasDetail = () => {
@@ -90,7 +89,7 @@ const FacilitasDetail = () => {
         <div className="w-full lg:w-2/7 flex flex-col md:flex-row lg:flex-col gap-4 lg:gap-0 items-stretch">
           <div className="w-full bg-white p-6 rounded-2xl shadow-lg h-full lg:h-auto mb-6">
             <h1 className="font-poppins font-semibold text-black text-xl flex items-center gap-3">
-              Ekstracurricular Lainnya
+              Fasilitas Lainnya
             </h1>
 
             <div className="flex flex-col pt-7 gap-4">
@@ -114,7 +113,7 @@ const FacilitasDetail = () => {
                           {item.name}
                         </h1>
                         <p className="text-[#5A5A5A] text-sm line-clamp-2">
-                          {item.description}
+                          {parse(item.description)}
                         </p>
                       </div>
                     </Link>

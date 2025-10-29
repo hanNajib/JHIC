@@ -20,14 +20,17 @@ const schema = yup.object().shape({
     .min(6, "Password minimal 6 karakter"),
   phone_number: yup.string().nullable(),
   bio: yup.string().nullable(),
-  role: yup.string().required("Role wajib diisi"),
   foto: yup
     .mixed()
     .nullable()
-    .test("fileType", "Hanya file PNG, JPEG, dan JPG yang diperbolehkan", (value) => {
-      if (!value) return true;
-      return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
-    })
+    .test(
+      "fileType",
+      "Hanya file PNG, JPEG, dan JPG yang diperbolehkan",
+      (value) => {
+        if (!value) return true;
+        return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
+      }
+    )
     .test("fileSize", "Ukuran file maksimal 2MB", (value) => {
       if (!value) return true;
       return value.size <= 2 * 1024 * 1024;
@@ -59,7 +62,6 @@ const TambahUserJurusan = () => {
       password: "",
       phone_number: "",
       bio: "",
-      role: "admin",
       foto: null,
     },
   });
@@ -79,6 +81,10 @@ const TambahUserJurusan = () => {
     Object.keys(data).forEach((key) => {
       if (data[key] !== null && data[key] !== undefined) {
         submitData.append(key, data[key]);
+      }
+
+      if (data.foto) {
+        submitData.append("profile_image", data.foto);
       }
     });
 
@@ -187,7 +193,7 @@ const TambahUserJurusan = () => {
         </div>
 
         {/* Role */}
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <label className="font-bold text-gray-800">
             Role <span className="text-red-500">*</span>
           </label>
@@ -198,7 +204,7 @@ const TambahUserJurusan = () => {
             <option value="admin">Admin</option>
             <option value="superadmin">Super Admin</option>
           </select>
-        </div>
+        </div> */}
 
         {/* Nomor HP */}
         <div className="flex flex-col">

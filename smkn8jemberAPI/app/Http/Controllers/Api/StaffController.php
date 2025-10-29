@@ -29,26 +29,17 @@ class StaffController extends Controller
      */
     public function structure()
     {
-        // Kepala Sekolah
-        $kepalaSekolah = Staff::where('position', 'Kepala Sekolah')->first();
+        $kepalaSekolah = Staff::where('role', 'principal')->first();
 
-        // Wakil Kepala Sekolah
-        $waka = Staff::where('position', 'like', 'Waka%')->get();
+        $waka = Staff::where('category', 'waka')->get();
 
-        // Koordinator & Kaprogli
-        $koordinator = Staff::where(function ($q) {
-            $q->where('position', 'like', 'Koord%')
-              ->orWhere('position', 'like', 'Kaprogli%')
-              ->orWhere('position', 'like', 'Wakaprogli%');
-        })->get();
+        $koordinator = Staff::where('category', 'koordinator')->get();
 
-        // Komite Sekolah
-        $komite = Staff::where('position', 'like', '%Komite%')->get();
+        $koordinatorJurusan = Staff::where('category', 'koordinator_jurusan')->get();
 
-        // Jumlah tenaga kerja
         $jumlah = [
             'guru' => Staff::where('role', 'teacher')->count(),
-            'staf_tu' => Staff::where('position', 'like', '%Tata Usaha%')->count(),
+            'staff' => Staff::where('role', 'employee')->count(),
             'teknisi' => Staff::where('position', 'like', '%Teknisi%')->count(),
             'satpam' => Staff::where('position', 'like', '%Satpam%')->count(),
         ];
@@ -57,7 +48,7 @@ class StaffController extends Controller
             'kepala_sekolah' => $kepalaSekolah,
             'wakil_kepala' => $waka,
             'koordinator' => $koordinator,
-            'komite' => $komite,
+            'koordinator_jurusan' => $koordinatorJurusan,
             'jumlah_tenaga_kerja' => $jumlah,
         ], 'Staff structure retrieved successfully');
     }

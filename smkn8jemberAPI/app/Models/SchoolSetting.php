@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class SchoolSetting extends Model
 {
@@ -34,5 +35,15 @@ class SchoolSetting extends Model
     public static function whereSetting($title): Builder
     {
         return self::where('title', $title);
+    }
+
+    public function getValueAttribute($value) {
+        if ($this->type === 'image' && !empty($value)) {
+            if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                return $value;
+            }
+            return url(Storage::url($value));
+        }
+        return $value;
     }
 }

@@ -1,4 +1,5 @@
 import { apiClient, axiosClient } from "./ApiClient";
+import { getBySlugNoView } from "./services/admin/ArticleService";
 
 export const AuthApi = {
   csrf: () => axiosClient.get("/sanctum/csrf-cookie"),
@@ -86,7 +87,7 @@ export const ExtracurricularApi = {
   update: (id, data) =>
     apiClient.post(`/extracurriculars/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/extracurriculars/${id}`),
-  restore: (id) => apiClient.post(`extracurriculars/${id}/restore`),
+  restore: (id) => apiClient.post(`/extracurriculars/${id}/restore`),
 };
 
 export const ChanceCarrierApi = {
@@ -130,6 +131,7 @@ export const StaffApi = {
 export const ArticleApi = {
     get : (params) => apiClient.get('/articles', { params }),
     getBySlug : (slug) => apiClient.get(`/articles/${slug}`),
+    getBySlugNoView : (slug) => apiClient.get(`/articles/${slug}`, { params: { increment_view: false } }),
     create : (data) => apiClient.post('/articles', data),
     update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/articles/${id}`),
@@ -137,3 +139,6 @@ export const ArticleApi = {
     updateStatus: (id, status) => apiClient.post(`/articles/${id}/status?_method=PATCH`, status)
 }
 
+export const SearchApi = {
+  search: (params) => apiClient.get(`/search`, { params })
+}

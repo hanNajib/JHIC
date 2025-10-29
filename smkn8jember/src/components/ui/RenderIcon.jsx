@@ -8,6 +8,13 @@ import * as BsIcons from "react-icons/bs";
 import * as FiIcons from "react-icons/fi";
 import * as HiIcons from "react-icons/hi";
 import * as RiIcons from "react-icons/ri";
+import * as GiIcons from "react-icons/gi";
+import * as CgIcons from "react-icons/cg";
+import * as DiIcons from "react-icons/di";
+import * as FcIcons from "react-icons/fc";
+import * as TbIcons from "react-icons/tb";
+import * as VscIcons from "react-icons/vsc";
+import * as WiIcons from "react-icons/wi";
 
 export const RenderIcon = ({ iconName, size = 20, className = "" }) => {
   if (!iconName) return null;
@@ -23,6 +30,13 @@ export const RenderIcon = ({ iconName, size = 20, className = "" }) => {
     ...FiIcons,
     ...HiIcons,
     ...RiIcons,
+    ...GiIcons,
+    ...CgIcons,
+    ...DiIcons,
+    ...FcIcons,
+    ...TbIcons,
+    ...VscIcons,
+    ...WiIcons
   };
 
   const Icon = allIconLibs[iconName];

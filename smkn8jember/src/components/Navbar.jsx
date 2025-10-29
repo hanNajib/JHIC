@@ -8,24 +8,26 @@ import { IoIosMail } from "react-icons/io";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa6";
 import { FaChevronUp } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMajors } from "../hooks/api/useMajor";
 import { useCategories } from "../hooks/api/useCategory";
 import { useWebSettings } from "../hooks/api/useWebSettings";
 
 const Navbar = () => {
+    const navigate = useNavigate();
     const { data: majorsResponse = [], isLoading } = useMajors({ all: true });
     const majors = majorsResponse?.data || [];
     const { data: categoriesResponse = [] } = useCategories({ all: true, type: 'articles' });
     const categories = categoriesResponse?.data || [];
     const { data: websetting } = useWebSettings();
-    const { youtube_link, instagram_link, facebook_link, telepon, email } = websetting?.data?.reduce((acc, setting) => {
+    const { youtube_link, instagram_link, facebook_link, telepon, email, logo_sekolah } = websetting?.data?.reduce((acc, setting) => {
         acc[setting.title] = setting.value;
         return acc;
     }, {}) || {};
 
     const [isOpen, setIsOpen] = useState(false);
     const [isSearch, setIsSearch] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const handleToggleOpen = () => {
         setIsOpen((prev) => {
@@ -76,6 +78,14 @@ const Navbar = () => {
         });
     };
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+            setSearchQuery("");
+            setIsSearch(false);
+        }
+    };
 
     return (
         <>
@@ -103,8 +113,8 @@ const Navbar = () => {
                         )}
                     </button>
                 </div>
-                <div className={`flex gap-3 items-center relative ${isSearch ? 'mr-0' : 'mr-6 lg:mr-0'}`}>
-                    <img src="assets/images/logo-smk.png" alt="" className="w-[40px] md:w-[50px] relative" />
+                <div className={`cursor-pointer  flex gap-3 items-center relative ${isSearch ? 'mr-0' : 'mr-6 lg:mr-0'}`} onClick={() => navigate('/')}>
+                    <img src={logo_sekolah || "assets/images/logo-smk.png"} alt="" className="w-[40px] md:w-[50px] relative" />
                     <h1 className={`font-poppins font-bold text-[#424242] lg:hidden ${isSearch ? 'hidden md:flex' : 'flex'}`}>SMKN 8 JEMBER</h1>
                 </div>
                 <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
@@ -117,12 +127,12 @@ const Navbar = () => {
                         <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md hidden group-hover:flex flex-col text-[#4c4c4c]/75 z-50">
                             <Link to="/history" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Sejarah Sekolah</Link>
                             <Link to="/visi-misi" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Visi dan Misi</Link>
-                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Struktur Sekolah</Link>
+                            <Link to="/struktur" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Struktur Sekolah</Link>
                             <Link to="/headmaster" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Kepala Sekolah</Link>
                             <Link to="/fasilitas" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Fasilitas Sekolah</Link>
-                            <Link to="/data-guru" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Guru</Link>
-                            <Link to="/data-karyawan" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Karyawan</Link>
-                            <Link to="/data-siswa" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Siswa</Link>
+                            <Link to="/teacher" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Guru</Link>
+                            <Link to="/karyawan" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Karyawan</Link>
+                            <Link to="/student-data" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Siswa</Link>
                             <Link to="/ekstrakurikuler" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Ekstrakurikuler</Link>
                         </div>
                     </div>
@@ -160,26 +170,34 @@ const Navbar = () => {
                 </div>
 
                 <div className="hidden lg:flex relative w-full lg:w-72">
-                    <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
-                    <input
-                        type="search"
-                        placeholder="Search"
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-500"
-                    />
+                    <form onSubmit={handleSearch} className="w-full flex items-center">
+                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
+                        <input
+                            type="search"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-500"
+                        />
+                    </form>
                 </div>
                 <div className="relative flex lg:hidden">
-                    <button onClick={handleToggleSearch}>
+                    <button type="button" onClick={handleToggleSearch}>
                         {isSearch ? (
                             <FaTimes className={`text-xl absolute top-1/2 -translate-y-1/2 ${isSearch ? 'left-3' : 'right-3'}`} />
                         ) : (
                             <FaSearch className={`text-xl absolute top-1/2 -translate-y-1/2 ${isSearch ? 'left-3' : 'right-3'}`} />
                         )}
                     </button>
-                    <input
-                        type="search"
-                        placeholder="Search"
-                        className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-500 transition-transform duration-300 ease-in-out ${isSearch ? 'flex' : 'hidden'}`}
-                    />
+                    <form onSubmit={handleSearch} className={`w-full ${isSearch ? 'flex' : 'hidden'}`}>
+                        <input
+                            type="search"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-500 transition-transform duration-300 ease-in-out"
+                        />
+                    </form>
                 </div>
 
             </div>
@@ -190,7 +208,7 @@ const Navbar = () => {
                         }`}
                 >
                     <div className="flex justify-center items-center flex-col font-poppins gap-2 text-center py-5 text-[#4c4c4c]">
-                        <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Home</a>
+                        <Link to="/" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Home</Link>
                         <button onClick={handleMenuProfil} className="active:font-semibold hover:opacity-100 opacity-75  transition-all duration-300 flex items-center gap-1">
                             Profil
                             {isProfil ?
@@ -201,12 +219,12 @@ const Navbar = () => {
                         <div className={`mt-2 w-72 bg-white shadow-lg rounded-md z-50 flex flex-col transition-all duration-300 text-[#4c4c4c]/75 ${isProfil ? 'flex' : 'hidden'}`}>
                             <Link to="/history" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Sejarah Sekolah</Link>
                             <Link to="/visi-misi" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Visi dan Misi</Link>
-                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Struktur Sekolah</Link>
+                            <Link to="/struktur" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Struktur Sekolah</Link>
                             <Link to="/headmaster" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Kepala Sekolah</Link>
                             <Link to="/fasilitas" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Fasilitas Sekolah</Link>
-                            <Link to="/data-guru" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Guru</Link>
-                            <Link to="/data-karyawan" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Karyawan</Link>
-                            <Link to="/data-siswa" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Siswa</Link>
+                            <Link to="/teacher" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Guru</Link>
+                            <Link to="/karyawan" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Karyawan</Link>
+                            <Link to="/student-data" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Data Siswa</Link>
                             <Link to="/ekstrakurikuler" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Ekstrakurikuler</Link>
                         </div>
                         <button onClick={handleMenuJurusan} className="active:font-semibold hover:opacity-100 opacity-75  transition-all duration-300 flex items-center gap-1">
@@ -234,16 +252,15 @@ const Navbar = () => {
                         </button>
                         <div className={`mt-2 w-72 bg-white shadow-lg rounded-md z-50 flex flex-col transition-all duration-300 text-[#4c4c4c]/75 ${isBlog ? 'flex' : 'hidden'}`}>
                             <Link to="/artikel" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">Semua Artikel</Link>
-                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">TKR</Link>
-                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">TSM</Link>
-                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">RPL</Link>
-                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">DKV</Link>
-                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">TKJ</Link>
-                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">ATPH</Link>
-                            <Link to="/profil/sejarah" className="px-4 py-2 hover:bg-gray-100 active:bg-gray-100 transition">APT</Link>
+                            
+                            {categories.map((category) => (
+                                <Link to={`/artikel?category=${category.name}`} className="px-4 py-2 hover:bg-gray-100 transition" key={category.id}>
+                                    {category.name}
+                                </Link>
+                            ))}
                         </div>
-                        <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Galeri</a>
-                        <a href="" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Pengumuman</a>
+                        <Link to="/gallery" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Galeri</Link>
+                        <Link to="/announcement" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Pengumuman</Link>
                     </div>
                 </div>
             </div>

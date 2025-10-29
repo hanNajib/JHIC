@@ -17,7 +17,7 @@ const ArticleCard = ({ article = {}, className = "" }) => {
 
   return (
     <Card onClick={handleClick} className={`flex-none ${className} cursor-pointer`} background="gray" padding="none">
-      <div className="relative h-52 md:h-56 w-full bg-gray-200 overflow-hidden">
+      <div className="relative h-52 md:h-56 bg-gray-200 overflow-hidden">
         {!imageLoaded && (
           <div className="absolute inset-0 animate-pulse bg-gray-300" />
         )}

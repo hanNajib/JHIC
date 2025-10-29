@@ -142,10 +142,10 @@ const Guru = () => {
           setCurrentPage(1);
         }}
         handleReset={handleReset}
-        titleHalaman="Data Guru"
-        descHalaman="Kelola data guru"
+        titleHalaman="Data Staff"
+        descHalaman="Kelola data Staff"
         linkTambah="/admin/dataguru/tambah"
-        titleBTN="Tambah Guru"
+        titleBTN="Tambah Staff"
         handleRefresh={() => refetch()}
         
         hasSoftDelete={true}

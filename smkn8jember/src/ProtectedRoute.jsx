@@ -30,9 +30,7 @@ const ProtectedRoute = ({ children }) => {
     "/admin/artikel",
     "/admin/artikel/tambah",
     "/admin/artikel/edit/",
-    "/admin/gambar",
-    "/admin/gambar/tambah",
-    "/admin/gambar/edit/",
+    "/admin/profilesetting",
   ];
 
   if (isAdmin) {

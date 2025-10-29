@@ -2,7 +2,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import MyEditor from "../../../components/ui/MyEditor";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -197,19 +197,10 @@ const TambahArtikel = () => {
           <label className="font-bold text-gray-800 mb-2">
             Konten <span className="text-red-500">*</span>
           </label>
-          <Editor
-            apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+          <MyEditor
             value={contentValue}
             onEditorChange={(content) => setValue("content", content)}
-            init={{
-              height: 300,
-              menubar: false,
-              plugins: "lists link table code",
-              toolbar:
-                "undo redo | bold italic underline | fontsizeselect forecolor backcolor | " +
-                "alignleft aligncenter alignright justify | bullist numlist | link table | removeformat | code",
-              placeholder: "Masukkan Konten Artikel",
-            }}
+            initialValue={""}
           />
           {errors.content && (
             <span className="text-red-500 text-sm mt-1">{errors.content.message}</span>

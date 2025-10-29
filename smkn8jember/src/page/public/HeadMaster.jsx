@@ -3,6 +3,7 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import { useWebSettings } from "../../hooks/api/useWebSettings";
 import { useStaff } from "../../hooks/api/useStaff";
+import parse from "html-react-parser";
 
 const HeadMaster = () => {
   const { data: webResponse } = useWebSettings();
@@ -68,7 +69,7 @@ const HeadMaster = () => {
             </h3>
 
             <p className="text-gray-700 leading-relaxed text-justify">
-              {kataSambutan || "Memuat kata sambutan..."}
+              {parse(kataSambutan) || "Memuat kata sambutan..."}
             </p>
 
             <div className="mt-8 flex items-center">

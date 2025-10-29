@@ -18,6 +18,15 @@ export const getBySlug = async (slug) => {
     }
 };
 
+export const getBySlugNoView = async (slug) => {
+    try {
+        const response = await  ArticleApi.getBySlugNoView(slug);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const create = async (data) => {
     try {
         const response = await  ArticleApi.create(data);

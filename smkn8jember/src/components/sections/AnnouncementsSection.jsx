@@ -20,6 +20,7 @@ const AnnouncementsSection = ({ className = '' }) => {
 
   return (
     <Section
+      id="pengumuman"
       background="gradient"
       title={<>Pengumuman <span className='text-[#ff6000]'>Terbaru</span></>}
       subtitle="Informasi penting dan terkini untuk seluruh siswa, orang tua, dan civitas akademika SMK Negeri 8 Jember"

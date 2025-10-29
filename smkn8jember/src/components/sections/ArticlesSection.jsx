@@ -1,9 +1,11 @@
 import React from "react";
 import { Section, Button, ArticleCard } from "../ui";
 import { useArticles } from "../../hooks/api/useArticle";
+import { useNavigate } from "react-router-dom";
 
 const ArticlesSection = ({ className = "" }) => {
   const { data: articleResponse, isLoading } = useArticles();
+  const navigate = useNavigate();
 
   const articles = articleResponse?.data || [];
   
@@ -36,7 +38,7 @@ const ArticlesSection = ({ className = "" }) => {
       </div>
 
       <div className="flex justify-center items-center w-full pt-5">
-        <Button>Lihat Semua Artikel</Button>
+        <Button onClick={() => navigate("/artikel")}>Lihat Semua Artikel</Button>
       </div>
     </Section>
   );

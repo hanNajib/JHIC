@@ -29,11 +29,13 @@ class ArticleController extends Controller
     }
 
 
-    public function show($slug)
+    public function show($slug, Request $request)
     {
+        $IncrementView = $request->boolean('increment_view', true);
         $article = Article::whereSlug($slug)
             ->with(['author', 'categories'])
             ->first();
+
 
         if (!$article) {
             return $this->notFound('Article not found');
@@ -42,13 +44,13 @@ class ArticleController extends Controller
         $ip = request()->ip();
         $cacheKey = 'article_viewed_' . $article->id . '_' . $ip;
 
-        if (!cache()->has($cacheKey)) {
+        if (!cache()->has($cacheKey) && $IncrementView) {
             $article->increment('views');
-            cache()->put($cacheKey, true, now()->addMinutes(30)); 
+            cache()->put($cacheKey, true, now()->addMinutes(30));
         }
 
         return $this->success(
-            new ArticleResource($article->fresh()), 
+            new ArticleResource($article),
             'Article retrieved successfully'
         );
     }
@@ -86,7 +88,7 @@ class ArticleController extends Controller
 
         if ($request->has('draft')) {
             $isDraft = filter_var($request->draft, FILTER_VALIDATE_BOOLEAN);
-            $validated['status'] = $isDraft ? 'draft' : 'pending';
+            $validated['status'] = $isDraft ? 'draft' : (Auth::user()->role === 'superadmin' ? 'published' : 'pending');
         }
 
         if ($request->hasFile('image')) {
@@ -99,9 +101,10 @@ class ArticleController extends Controller
 
         $article->update($validated);
 
-        if (isset($validated['categories'])) {
-            $article->categories()->sync($validated['categories']);
+        if (array_key_exists('categories', $validated)) {
+            $article->categories()->sync($validated['categories'] ?? []);
         }
+
 
         return $this->success(new ArticleResource($article), 'Article updated successfully');
     }
@@ -114,7 +117,7 @@ class ArticleController extends Controller
             return $this->notFound('Article not found');
         }
 
-        if ($article->author_id !== Auth::id() || Auth::user()->role !== 'superadmin') {
+        if ($article->author_id !== Auth::id() ) {
             return $this->error('You are not authorized to delete this article', 403);
         }
         if ($article->image) {

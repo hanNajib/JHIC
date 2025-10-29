@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from "react";
-import Footer from "../../components/Footer";
-import Navbar from "../../components/Navbar";
 import CardFE from "../../components/ui/CardFE";
 import { useFacilities } from "../../hooks/api/useFacility";
 import DefaultLayout from "../../components/layout/DefaultLayout";
@@ -29,7 +26,8 @@ const Facilitas = () => {
         </p>
       </section>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 p-4 lg:p-16">
+      {/* versi 1 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 p-4 lg:p-16 items-stretch">
         {fasilitas.map((item, index) => {
           const slug = item.name.toLowerCase().replace(/\s+/g, "-");
 

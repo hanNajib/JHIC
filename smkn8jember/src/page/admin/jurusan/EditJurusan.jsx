@@ -1,7 +1,7 @@
 import { IoIosArrowBack } from "react-icons/io";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, use } from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import MyEditor from "../../../components/ui/MyEditor";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -179,20 +179,10 @@ const EditJurusan = () => {
           <label className="block mb-1 font-semibold text-gray-800">
             Deskripsi
           </label>
-          <Editor
-            apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+          <MyEditor
             value={watch("description")}
-            onEditorChange={(newContent) =>
-              setValue("description", newContent)
-            }
-            init={{
-              height: 300,
-              menubar: false,
-              plugins: "lists link table code",
-              toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
-              content_style:
-                "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
-            }}
+            onEditorChange={(newContent) => setValue("description", newContent)}
+            initialValue={""}
           />
           {errors.description && (
             <p className="text-red-500 text-sm mt-1">

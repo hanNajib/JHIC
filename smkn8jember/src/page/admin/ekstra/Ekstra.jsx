@@ -15,6 +15,7 @@ import {
 } from "../../../hooks/api/useExtarculicular";
 import { Button } from "../../../components/ui";
 import Swal from "sweetalert2";
+import parse from "html-react-parser"; 
 
 const Ekstra = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -187,7 +188,7 @@ const Ekstra = () => {
                   <td className="py-2 px-4">{_i + 1}</td>
                   <td className="py-2 px-4">{a.name}</td>
                   <td className="py-2 px-4">{a.mentor_name}</td>
-                  <td className="py-2 px-4">{a.description}</td>
+                  <td className="py-1 px-4 line-clamp-2">{parse(a.description)}</td>
                   <td className="py-2 px-4">
                     <button
                       onClick={() => setSelectedImage(a.image)}

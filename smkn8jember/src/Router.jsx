@@ -84,6 +84,7 @@ import TambahCarrier from "./page/admin/Carrier/TambahCarrier";
 import EditCarrier from "./page/admin/Carrier/EditCarrier";
 import ProfileSetting from "./page/admin/settings/ProfileSetting";
 import VisiMisi from "./page/public/VisiMisi";
+import Search from "./page/public/Search";
 import FacilitasDetail from "./page/public/FacilitasDetail";
 import ExtracurricularDetail from "./page/public/ExtracurricularDetail";
   
@@ -196,7 +197,7 @@ function Router() {
         <Route path="/fasilitas" element={<Facilitas />} />
         <Route path="/fasilitas/:slug" element={<FacilitasDetail />} />
         <Route path="/ekstrakurikuler" element={<Extracurricular />} />
-        <Route path="/ekstrakurikuler/:slug" element={<ExtracurricularDetail />} />
+        <Route path="/ekstrakurikuler/:slug" element={<ExtracurricularDetail />} />
         <Route path="/headmaster" element={<HeadMaster />} />
         <Route path="/announcement" element={<Announcement />} />
         <Route path="/gallery" element={<Gallery />} />
@@ -208,6 +209,7 @@ function Router() {
         <Route path="/artikel" element={<ArtikelPage />} />
         <Route path="/artikel/:slug" element={<DetailArtikel />} />
         <Route path="/struktur" element={<Struktur />} />
+        <Route path="/search" element={<Search />} />
 
 
         {/* Not Found */}

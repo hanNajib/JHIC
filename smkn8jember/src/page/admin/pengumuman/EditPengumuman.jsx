@@ -1,6 +1,6 @@
 import { IoIosArrowBack } from "react-icons/io";
 import { useState, useEffect } from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import MyEditor from "../../../components/ui/MyEditor";
 import { useNavigate, useParams } from "react-router-dom";
 import * as yup from "yup";
 import { Multiselect } from "../../../components/ui";
@@ -213,17 +213,10 @@ const EditPengumuman = () => {
           <label htmlFor="content" className="font-bold text-gray-800">
             Konten <span className="text-red-500">*</span>
           </label>
-          <Editor
-            apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+          <MyEditor
             value={konten}
             onEditorChange={(content) => setValue("content", content)}
-            init={{
-              height: 300,
-              menubar: false,
-              plugins: "lists link image table code",
-              toolbar: "undo redo | bold italic | bullist numlist | link image",
-              placeholder: "Masukkan konten pengumuman...",
-            }}
+            initialValue={""}
           />
           {errors.content && (
             <span className="text-red-500 text-sm mt-1">{errors.content.message}</span>

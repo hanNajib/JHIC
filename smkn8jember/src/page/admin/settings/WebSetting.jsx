@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Editor } from "@tinymce/tinymce-react";
 import { useWebSettings, useUpdateWebSettings } from "../../../hooks/api/useWebSettings";
 import { Loading } from "../../../components/ui";
 import Swal from "sweetalert2";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import MyEditor from "../../../components/ui/MyEditor";
 
 const WebSetting = () => {
   const navigate = useNavigate();
@@ -344,19 +344,10 @@ const WebSetting = () => {
             <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
               Deskripsi About
             </h2>
-            <Editor
-              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+            <MyEditor
               value={formData.deskripsi_about || ""}
               onEditorChange={(content) => handleInputChange("deskripsi_about", content)}
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: "lists link table code",
-                toolbar:
-                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
-                content_style:
-                  "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
-              }}
+              initialValue={""}
             />
           </div>
 
@@ -365,19 +356,10 @@ const WebSetting = () => {
             <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
               Kata Sambutan Kepala Sekolah
             </h2>
-            <Editor
-              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+            <MyEditor
               value={formData.kata_sambutan || ""}
               onEditorChange={(content) => handleInputChange("kata_sambutan", content)}
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: "lists link table code",
-                toolbar:
-                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
-                content_style:
-                  "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
-              }}
+              initialValue={""}
             />
           </div>
 
@@ -386,19 +368,10 @@ const WebSetting = () => {
             <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
               Visi
             </h2>
-            <Editor
-              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+            <MyEditor
               value={formData.visi || ""}
               onEditorChange={(content) => handleInputChange("visi", content)}
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: "lists link table code",
-                toolbar:
-                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
-                content_style:
-                  "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
-              }}
+              initialValue={""}
             />
           </div>
 
@@ -406,19 +379,10 @@ const WebSetting = () => {
             <h2 className="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2">
               Misi
             </h2>
-            <Editor
-              apiKey="z1lkqlsk4vjd7irjkvmackpeb4dq8dz0hisyrfb09w6x7c2c"
+            <MyEditor
               value={formData.misi || ""}
               onEditorChange={(content) => handleInputChange("misi", content)}
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: "lists link table code",
-                toolbar:
-                  "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | code",
-                content_style:
-                  "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#4B5563; }",
-              }}
+              initialValue={""}
             />
           </div>
 
