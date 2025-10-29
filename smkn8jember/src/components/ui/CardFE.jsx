@@ -15,7 +15,7 @@ const CardFE = ({ data1, data2, data3, data4 }) => {
         <h5 className="text-orange-500 text-sm lg:text-lg font-semibold">
           {data3}
         </h5>
-        <div className="text-center text-xs lg:text-base text-gray-600">
+        <div className="text-center text-xs lg:text-base text-gray-600 line-clamp-2">
           {parse(data4)}
         </div>
       </div>

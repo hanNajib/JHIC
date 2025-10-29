@@ -4,11 +4,11 @@ import Navbar from "../../components/Navbar";
 import CardFE from "../../components/ui/CardFE";
 import { useFacilities } from "../../hooks/api/useFacility";
 import DefaultLayout from "../../components/layout/DefaultLayout";
+import { Link } from "react-router-dom";
 
 const Facilitas = () => {
   const { data: fasilitasResponse = [], isLoading, isError } = useFacilities();
   const fasilitas = fasilitasResponse?.data || [];
-  
   return (
     <DefaultLayout>
       <section
@@ -29,36 +29,22 @@ const Facilitas = () => {
         </p>
       </section>
 
-      {/* versi 1 */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 p-4 lg:p-16">
-        {fasilitas.map((item, index) => (
-          <CardFE
-            key={index}
-            data1={item.image}
-            data2={item.name}
-            data3={`${item.room_total} Ruang`}
-            data4={item.description}
-          />
-        ))}
+        {fasilitas.map((item, index) => {
+          const slug = item.name.toLowerCase().replace(/\s+/g, "-");
+
+          return (
+            <Link to={`/fasilitas/${slug}?i=${item.id}`} key={index}>
+              <CardFE
+                data1={item.image}
+                data2={item.name}
+                data3={`${item.room_total} Ruang`}
+                data4={item.description}
+              />
+            </Link>
+          );
+        })}
       </div>
-
-      {/* versi 2 */}
-      {/* <section className="flex flex-col items-center py-10 px-4 lg:px-16">
-        <h2 className="font-bold text-2xl lg:text-4xl text-gray-800">Ekstrakulikuler</h2>
-
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 mt-10">
-          {fasilitas.map((item, index) => (
-            <CardFE
-              key={index}
-              data1={item.foto}
-              data2={item.nama}
-              data3={`${item.total} Ruang`}
-              data4={item.deskripsi}
-            />
-          ))}
-        </div>
-      </section> */}
-
     </DefaultLayout>
   );
 };

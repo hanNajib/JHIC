@@ -11,7 +11,7 @@ class Gallery extends Model
 {
     use SoftDeletes, HasImageUrl, HasCursorPagination;
 
-    protected $fillable = ['title', 'description', 'image'];
+    protected $fillable = ['title', 'description', 'image', 'category_id'];
     protected $table = 'gallery';
     protected $appends = ['date'];
     protected $with = ['categories'];
