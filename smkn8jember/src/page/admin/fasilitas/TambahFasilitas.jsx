@@ -53,38 +53,12 @@ const TambahFasilitas = () => {
     }
   });
 
-
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    setValue,
-    reset,
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      name: "",
-      room_total: "",
-      description: "",
-      image: null,
-    },
-  });
-
-  const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("room_total", data.room_total);
-      formData.append("description", data.description);
-      formData.append("image", data.image);
-
-      await createFacility.mutateAsync(formData);
-      reset();
-      setPreview(null);
-    } catch (error) {
-      console.error("Submit error:", error);
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log({
+      judul: judul,
+      konten: konten,
+    });
   };
 
   const handleFileChange = (e) => {

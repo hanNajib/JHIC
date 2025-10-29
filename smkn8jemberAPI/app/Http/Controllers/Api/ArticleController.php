@@ -35,7 +35,7 @@ class ArticleController extends Controller
         $article = Article::whereSlug($slug)
             ->with(['author', 'categories'])
             ->first();
-        
+
 
         if (!$article) {
             return $this->notFound('Article not found');
@@ -46,7 +46,7 @@ class ArticleController extends Controller
 
         if (!cache()->has($cacheKey) && $IncrementView) {
             $article->increment('views');
-            cache()->put($cacheKey, true, now()->addMinutes(30)); 
+            cache()->put($cacheKey, true, now()->addMinutes(30));
         }
 
         return $this->success(
@@ -88,7 +88,7 @@ class ArticleController extends Controller
 
         if ($request->has('draft')) {
             $isDraft = filter_var($request->draft, FILTER_VALIDATE_BOOLEAN);
-            $validated['status'] = $isDraft ? 'draft' : 'pending';
+            $validated['status'] = $isDraft ? 'draft' : (Auth::user()->role === 'superadmin' ? 'published' : 'pending');
         }
 
         if ($request->hasFile('image')) {
@@ -101,9 +101,10 @@ class ArticleController extends Controller
 
         $article->update($validated);
 
-        if (isset($validated['categories'])) {
-            $article->categories()->sync($validated['categories']);
+        if (array_key_exists('categories', $validated)) {
+            $article->categories()->sync($validated['categories'] ?? []);
         }
+
 
         return $this->success(new ArticleResource($article), 'Article updated successfully');
     }

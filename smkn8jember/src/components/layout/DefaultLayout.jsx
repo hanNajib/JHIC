@@ -16,7 +16,7 @@ const DefaultLayout = ({ children }) => {
             size="xl"
             fullscreen={true}
         >
-            <div className="min-h-screen">
+            <div className="min-h-screen overflow-x-hidden">
                 <Navbar />
 
                 <main className="min-h-52">

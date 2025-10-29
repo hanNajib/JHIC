@@ -156,7 +156,7 @@ const ArtikelPage = () => {
                 <ArticleCard
                   key={article.id}
                   article={article}
-                  className={index >= 3 ? "hidden md:flex md:flex-col md:flex-none" : ""}
+                  className={"md:flex-col md:flex-none"}
                 />
               ))
             ) : (

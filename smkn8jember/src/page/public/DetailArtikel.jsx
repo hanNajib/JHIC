@@ -145,7 +145,7 @@ function DetailArtikel() {
             className="w-full h-[15rem] md:h-[30rem] object-cover object-center rounded-xl"
           />
 
-          <div className="font-poppins text-start text-black leading-relaxed py-8">
+          <div className="font-poppins prose prose-lg max-w-none text-start w-full text-black leading-relaxed py-8">
             {article.content ? parse(article.content) : <p>Tidak ada konten</p>}
           </div>
 
