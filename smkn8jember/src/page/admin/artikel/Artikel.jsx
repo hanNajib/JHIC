@@ -111,7 +111,7 @@ const Artikel = () => {
       if (result.isConfirmed) {
         restoreArticle.mutateAsync(article.id);
         refetch();
-        Swal.fire("Diaktifkan!", "Admin telah diaktifkan.", "success");
+        Swal.fire("Diaktifkan!", "Data telah diaktifkan.", "success");
       }
     });
   };

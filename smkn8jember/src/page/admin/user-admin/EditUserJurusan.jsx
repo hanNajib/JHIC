@@ -144,7 +144,7 @@ const EditUserJurusan = () => {
     }
     
     if (formData.foto) {
-      submitData.append('foto', formData.foto);
+      submitData.append('profile_image', formData.foto);
     }
 
     updateUser.mutate(submitData, {

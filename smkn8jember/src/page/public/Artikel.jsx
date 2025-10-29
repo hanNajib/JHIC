@@ -140,7 +140,7 @@ const ArtikelPage = () => {
       </section>
 
       {/* Artikel Grid */}
-      <section className="bg-white flex flex-col items-center justify-center py-8 px-16">
+      <section className="bg-white flex flex-col items-center justify-center py-8 px-10">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 w-full pt-10 gap-6 items-stretch pb-4">
           {isLoading
             ? Array(6)

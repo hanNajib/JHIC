@@ -11,7 +11,7 @@ const Profile = () => {
 
   const { data: author, isLoading: authorLoading } = useAdminByName(slug);
   const { data: articlesResponse, isLoading: articlesLoading } = useArticles({
-    authorId: author?.id,
+    author_id: author?.id,
   });
   const articles = articlesResponse?.data || [];
 

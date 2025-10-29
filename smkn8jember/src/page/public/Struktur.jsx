@@ -68,9 +68,9 @@ function Struktur() {
 
             <section className="w-full flex flex-col lg:flex-row px-6 md:px-16 pt-14 pb-12 items-stretch gap-12">
 
-                <div className="w-full lg:w-1/2 flex flex-col items-center justify-start bg-[#f780001f] px-6 md:px-8 py-8 rounded-xl shadow-md">
+                <div className="w-full lg:w-full flex flex-col items-center justify-start bg-[#f780001f] px-6 md:px-8 py-8 rounded-xl shadow-md">
                     <h1 className='font-bold font-poppins text-[#242424] text-2xl md:text-3xl'>Koordinator Jurusan</h1>
-                    <div className="flex flex-col pt-6 w-full gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 pt-6 w-full gap-4">
 
                         {koordinator_jurusan?.map((komite, index) => (
                             <div key={komite?.id || index} className="bg-white flex flex-col justify-center items-center p-6 rounded-xl shadow-md">
@@ -82,7 +82,7 @@ function Struktur() {
                     </div>
                 </div>
 
-                <div className="w-full lg:w-1/2 flex flex-col items-center justify-start bg-[#f780001f] px-6 md:px-8 py-8 rounded-xl shadow-md">
+                {/* <div className="w-full lg:w-1/2 flex flex-col items-center justify-start bg-[#f780001f] px-6 md:px-8 py-8 rounded-xl shadow-md">
                     <h1 className='font-bold font-poppins text-[#242424] text-2xl md:text-3xl'>Jumlah Tenaga Kerja</h1>
                     <div className="grid grid-cols-2 pt-6 w-full gap-4 items-stretch">
                         <div className="bg-[#ebb96896] flex flex-col justify-center items-center p-8 rounded-xl">
@@ -106,7 +106,7 @@ function Struktur() {
                             <p className='font-poppins text-[#495057] font-medium '>Satpam</p>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
             </section>
         </DefaultLayout>

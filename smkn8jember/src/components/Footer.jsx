@@ -116,7 +116,7 @@ const Footer = ({ data }) => {
         </div>
 
         <div className="flex justify-center bg-white md:w-2/3 lg:w-1/2 mt-14 rounded-2xl">
-          <img src="assets/images/Logo Jagoan Hosting, Komdigi, Maspion IT, Garuda Spark.png" alt="" className="" />
+          <img src="/assets/images/Logo Jagoan Hosting, Komdigi, Maspion IT, Garuda Spark.png" alt="" className="" />
         </div>
 
 

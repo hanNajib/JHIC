@@ -170,8 +170,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   ];
 
   const staffItems = [
-    { to: "/admin/staff/teacher", icon: LiaUserTieSolid, label: "Data Guru" },
-    { to: "/admin/staff/employee", icon: LuUserRoundCog, label: "Data Karyawan" },
+    { to: "/admin/staff/teacher", icon: LiaUserTieSolid, label: "Guru & Staff" },
+    // { to: "/admin/staff/employee", icon: LuUserRoundCog, label: "Data Karyawan" },
     { to: "/admin/staff/principal", icon: FaUserTie, label: "Kepala Sekolah" },
   ];
 
