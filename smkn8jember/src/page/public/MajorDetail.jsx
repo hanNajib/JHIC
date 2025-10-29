@@ -198,19 +198,21 @@ const MajorDetail = () => {
               />
             ))
           ) : (
-            <p className="col-span-full text-center text-gray-500 text-lg">
+            <p className="col-span-full  text-center text-gray-500 text-lg">
               Artikel tidak ditemukan
             </p>
           )}
         </div>
-        <div className="flex justify-center items-center w-full pt-5">
+        {article.length > 0 && (
+          <div className="flex justify-center items-center w-full pt-5">
             <Link
               to={`/artikel?category=${name}`}
-              className="px-4 py-2 hover:bg-[#ca4e00]  transition bg-[#ff6000] rounded-2xl text-white"
+              className="px-4 py-2 hover:bg-[#ca4e00] transition bg-[#ff6000] rounded-2xl text-white"
             >
               Lihat Semua
             </Link>
-        </div>
+          </div>
+        )}
       </section>
 
       <Footer />
