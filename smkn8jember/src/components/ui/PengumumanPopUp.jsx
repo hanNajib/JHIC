@@ -31,8 +31,6 @@ const PengumumanPopUp = ({ pengumuman, onClose }) => {
             </div>
 
             <div className="h-72 overflow-y-scroll mb-4">
-              w
-
               <div className="bg-gray-200 h-full rounded-sm p-3">
                 <div dangerouslySetInnerHTML={{ __html: pengumuman.content }}>
                 </div>

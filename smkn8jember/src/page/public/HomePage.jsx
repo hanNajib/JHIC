@@ -20,7 +20,7 @@ const HomePage = () => {
         <AboutSection deskripsi={webSettings?.data?.find(setting => setting.title === 'deskripsi_about')?.value} />
         <ProgramsSection />
         <ArticlesSection />
-        <AnnouncementsSection />
+        {/* <AnnouncementsSection /> */}
         <GallerySection />
     </DefaultLayout>
   );
