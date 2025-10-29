@@ -38,7 +38,7 @@ const schema = yup.object().shape({
 const TambahArtikel = () => {
   const navigate = useNavigate();
 
-  const { data: categoryDataRaw } = useCategories({ type: ["article", "major"], limit: 1000 });
+  const { data: categoryDataRaw } = useCategories({ type: ["articles", "major"], limit: 1000 });
   const categoryData = categoryDataRaw?.data || [];
   const categoryOptions = categoryData
     .map((category) => ({

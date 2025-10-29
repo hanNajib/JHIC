@@ -14,7 +14,7 @@ const GalleryCard = ({ image, className = "", onClick, skeleton = false }) => {
   return (
     <div
       onClick={onClick}
-      className={`relative h-60 w-96 flex justify-center items-center bg-black rounded-md group cursor-pointer ${className}`}
+      className={`relative aspect-video w-full flex justify-center items-center bg-black rounded-md group cursor-pointer ${className}`}
     >
       <img
         src={image.image}

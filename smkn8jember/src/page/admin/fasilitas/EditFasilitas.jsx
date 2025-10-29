@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import Swal from "sweetalert2";
+import MyEditor from "../../../components/ui/MyEditor";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama wajib diisi"),
@@ -34,10 +35,8 @@ const EditFasilitas = () => {
     id,
     {
       onSuccess: () => {
-        console.log("✅ Fasilitas berhasil diupdate");
       },
       onError: (error) => {
-        console.error("❌ Error update fasilitas:", error);
       },
     }
   );
@@ -47,14 +46,16 @@ const EditFasilitas = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    watch,
     reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
+  const watchedContent = watch("description");
+
   useEffect(() => {
     if (facility) {
-      console.log("🔄 Setting form values:", facility);
       setValue("name", facility.name || "");
       setValue("room_total", facility.room_total || "");
       setValue("description", facility.description || "");
@@ -231,15 +232,14 @@ const EditFasilitas = () => {
         {/* Deskripsi */}
         <div className="flex flex-col">
           <label htmlFor="description" className="font-bold text-gray-800">
-            Deskripsi Singkat
+            Deskripsi
           </label>
-          <input
-            type="text"
-            id="description"
-            placeholder="Masukkan deskripsi singkat"
-            {...register("description")}
-            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg"
+          <MyEditor
+            value={watchedContent}
+            onEditorChange={(newContent) => setValue("description", newContent)}
+            initialValue={""}
           />
+          
           {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
         </div>
 

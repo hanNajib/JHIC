@@ -28,40 +28,40 @@ const ProgramsSection = ({ className = '' }) => {
   const hasMoreItems = isMobile && majorsData.length > 3;
 
   return (
-    <Section 
-      background="gradient" 
-      title={<>Program <span className='text-[#ff6000]'>Keahlian</span></>}
-      subtitle={`SMKN 8 Jember menyediakan ${majorsData.length} program keahlian`}
-      className={className}
-    >
-      <div className="flex flex-col md:flex-row overflow-x-auto w-full pt-8 md:pt-10 gap-6 md:gap-4 items-stretch pb-4">
-        {displayedMajors.map((program) => (
-          <ProgramCard 
-            key={program.id} 
-            program={program}
-          />
-        ))}
-      </div>
-
-      {hasMoreItems && (
-        <div className="flex py-4 justify-center text-center">
-          <Button 
-            onClick={toggleExpanded}
-            className="flex items-center gap-2"
-          >
-            {isExpanded ? (
-              <>
-                Tampilkan Lebih Sedikit <FaChevronUp />
-              </>
-            ) : (
-              <>
-                Lihat Selengkapnya <FaChevronDown />
-              </>
-            )}
-          </Button>
+      <Section 
+        background="gradient" 
+        title={<>Program <span className='text-[#ff6000]'>Keahlian</span></>}
+        subtitle={`SMKN 8 Jember menyediakan ${majorsData.length} program keahlian`}
+        className={className}
+      >
+        <div className="flex flex-col md:flex-row overflow-x-auto w-full pt-8 md:pt-10 gap-6 md:gap-4 items-stretch pb-4">
+          {displayedMajors.map((program) => (
+            <ProgramCard 
+              key={program.id} 
+              program={program}
+            />
+          ))}
         </div>
-      )}
-    </Section>  
+
+        {hasMoreItems && (
+          <div className="flex py-4 justify-center text-center">
+            <Button 
+              onClick={toggleExpanded}
+              className="flex items-center gap-2"
+            >
+              {isExpanded ? (
+                <>
+                  Tampilkan Lebih Sedikit <FaChevronUp />
+                </>
+              ) : (
+                <>
+                  Lihat Selengkapnya <FaChevronDown />
+                </>
+              )}
+            </Button>
+          </div>
+        )}
+      </Section>  
   );
 };
 

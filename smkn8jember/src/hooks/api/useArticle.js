@@ -3,7 +3,7 @@ import { QUERY_KEYS } from "../../constants/queryKeys";
 import * as articleService from "../../api/services/admin/ArticleService";
 export const useArticles = (filters = {}, options = {}) => {
   return useQuery({
-    queryKey: [QUERY_KEYS.ARTICLE.LIST, filters],
+    queryKey: [QUERY_KEYS.ARTICLE.LIST, filters], 
     queryFn: async () => {
       const response = await articleService.get(filters);
       return { data: response.data, meta: response.meta, link: response.links };
@@ -20,9 +20,21 @@ export const useArticlesPublic = (filters = {}, options = {}) => {
       const params = { ...filters };
       if (pageParam) params.cursor = pageParam;
       const response = await articleService.get(params);
-      return { data: response.data, meta: response.meta, link: response.links };
+      
+      // DEBUG LOG
+      console.log('🌐 API Response:', response);
+      console.log('🌐 response.data:', response.data);
+      console.log('🌐 Is response.data an array?', Array.isArray(response.data));
+      
+      return { 
+        data: response.data,    // Pastikan ini array artikel
+        meta: response.meta, 
+        link: response.links 
+      };
     },
     getNextPageParam: (lastPage) => {
+      console.log('🔗 getNextPageParam - lastPage.meta:', lastPage.meta);
+      console.log('🔗 next_cursor:', lastPage.meta?.next_cursor);
       return lastPage.meta?.next_cursor || undefined;
     },
     staleTime: 5 * 60 * 1000,

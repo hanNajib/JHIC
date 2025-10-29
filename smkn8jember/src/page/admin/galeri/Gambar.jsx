@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
+import { BiRefresh } from "react-icons/bi";
 import { CiImageOn } from "react-icons/ci";
 import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
 import ImageModal from "../../../components/ui/ImageModal";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useDeleteGallery, useGalleries } from "../../../hooks/api/useGallery";
+import { useDeleteGallery, useGalleries, useRestoreGallery } from "../../../hooks/api/useGallery";
 import Swal from "sweetalert2";
 import { Button } from "../../../components/ui";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +45,7 @@ const Gambar = () => {
   const kategori = kategoriesResponse?.data || [];
 
   const deleteGallery = useDeleteGallery();
+  const restoreGallery = useRestoreGallery();
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -83,6 +85,42 @@ const Gambar = () => {
 
   const handleEdit = (id) => {
     navigate(`/admin/gambar/edit/${id}`);
+  };
+
+  const handleRestore = (gallery) => {
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data akan diaktifkan kembali!",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, aktifkan!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        restoreGallery.mutate(gallery.id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire({
+              title: "Berhasil!",
+              text: "Data berhasil diaktifkan kembali.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat mengaktifkan data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
   };
 
   const handleReset = () => {
@@ -204,17 +242,22 @@ const Gambar = () => {
                   </td>
                   <td className="py-2 px-4">
                     <div className="flex gap-2 justify-center">
-                      <Button
-                        onClick={() => handleEdit(a.id)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
-                      >
-                        <FaRegEdit className="text-lg" />
-                      </Button>
+                      {a.deleted_at === null && (
+                        <Button
+                          onClick={() => handleEdit(a.id)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
+                        >
+                          <FaRegEdit className="text-lg" />
+                        </Button>
+                      )}
                       <button
-                        onClick={() => handleDelete(a.id)}
-                        className="bg-red-500 text-white p-2 rounded-2xl shadow-lg hover:bg-red-600 transition"
+                        onClick={() => a.deleted_at === null ? handleDelete(a.id) : handleRestore(a)}
+                        className={`${a.deleted_at === null
+                          ? 'bg-red-500 hover:bg-red-600'
+                          : 'bg-green-500 hover:bg-green-600'
+                        } text-white p-2 rounded-2xl shadow-lg transition`}
                       >
-                        <MdDeleteOutline className="text-lg" />
+                        {a.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
                       </button>
                     </div>
                   </td>

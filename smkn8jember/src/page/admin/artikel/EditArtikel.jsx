@@ -96,7 +96,6 @@ const EditArtikel = () => {
 
   useEffect(() => {
     if (currentArticle) {
-      console.log(currentArticleRes)
       
       setValue("title", currentArticle.title || "");
       setValue("content", currentArticle.content || "");
@@ -122,15 +121,14 @@ const EditArtikel = () => {
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("content", data.content);
-      formData.append("draft", false);
-      // Handle categories
+      formData.append("draft", 0);
+
       if (data.categories && data.categories.length > 0) {
         data.categories.forEach((categoryId) => {
-          formData.append("category_ids[]", categoryId);
+          formData.append("categories[]", categoryId);
         });
       }
       
-      // Handle image - only append if a new image is selected
       if (data.image && data.image instanceof File) {
         formData.append("image", data.image);
       }
@@ -151,7 +149,7 @@ const EditArtikel = () => {
       // Handle categories
       if (data.categories && data.categories.length > 0) {
         data.categories.forEach((categoryId) => {
-          formData.append("category_ids[]", categoryId);
+          formData.append("categories[]", categoryId);
         });
       }
       
@@ -243,7 +241,7 @@ const EditArtikel = () => {
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <form className="flex flex-col gap-5">
         {/* Judul */}
         <div className="flex flex-col">
           <label htmlFor="title" className="font-bold text-gray-800">
@@ -361,6 +359,7 @@ const EditArtikel = () => {
             type="submit"
             className="bg-orange-500 text-white font-semibold py-2 px-6 text-base rounded-lg hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isSubmitting}
+            onClick={handleSubmit(onSubmit)}
           >
             {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>

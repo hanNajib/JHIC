@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import * as yup from "yup";
 import { useCreateFacility } from "../../../hooks/api/useFacility";
+import MyEditor from "../../../components/ui/MyEditor";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nama wajib diisi"),
@@ -60,6 +61,7 @@ const TambahFasilitas = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    watch,
     reset,
   } = useForm({
     resolver: yupResolver(schema),
@@ -70,6 +72,8 @@ const TambahFasilitas = () => {
       image: null,
     },
   });
+
+  const watchedContent = watch("description");
 
   const onSubmit = async (data) => {
     try {
@@ -117,9 +121,7 @@ const TambahFasilitas = () => {
         </h1>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        {/* Nama */}
         <div className="flex flex-col">
           <label htmlFor="name" className="font-bold text-gray-800">
             Nama
@@ -139,7 +141,7 @@ const TambahFasilitas = () => {
         {/* Total  */}
         <div className="flex flex-col">
           <label htmlFor="room_total" className="font-bold text-gray-800">
-            Total 
+            Total
           </label>
           <input
             type="text"
@@ -158,14 +160,12 @@ const TambahFasilitas = () => {
         {/* Deskripsi */}
         <div className="flex flex-col">
           <label htmlFor="description" className="font-bold text-gray-800">
-            Deskripsi Singkat
+            Deskripsi
           </label>
-          <input
-            type="text"
-            id="description"
-            placeholder="Masukkan Deskripsi Singkat"
-            {...register("description")}
-            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600 focus:outline-none"
+          <MyEditor
+            value={watchedContent}
+            onEditorChange={(newContent) => setValue("description", newContent)}
+            initialValue={""}
           />
           {errors.description && (
             <p className="text-red-500 text-sm mt-1">

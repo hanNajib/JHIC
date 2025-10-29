@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 
 const createSchema = (role) => yup.object().shape({
   name: yup.string().required("Nama wajib diisi"),
-  position: role === "principal" || role === "teacher" ? yup.string().nullable() : yup.string().nullable(),
+  position: role === "principal" ? yup.string().nullable() : yup.string().nullable(),
   category: role === "teacher" ? yup.string().nullable() : 
            role === "principal" ? yup.string().nullable() :
            yup.string().required("Kategori wajib diisi"),
@@ -34,8 +34,13 @@ const StaffForm = () => {
   const { role: urlRole, id } = useParams();
   const isEdit = !!id;
   
-  // Determine role from URL parameter or default
-  const role = urlRole || "employee";
+  // Fetch existing data for edit mode first
+  const { data: existingStaff, isLoading: loadingStaff } = useStaffById(id, {
+    enabled: isEdit,
+  });
+  
+  // Determine role from existing data (for edit) or URL parameter (for create)
+  const role = isEdit && existingStaff ? existingStaff.role : (urlRole || "employee");
   
   // Validation schema based on role
   const schema = createSchema(role);
@@ -56,11 +61,6 @@ const StaffForm = () => {
     onError: (error) => {
       console.error("❌ Error update staff:", error);
     },
-  });
-
-  // Fetch existing data for edit mode
-  const { data: existingStaff, isLoading: loadingStaff } = useStaffById(id, {
-    enabled: isEdit,
   });
 
   const categoryOptions = [
@@ -99,10 +99,13 @@ const StaffForm = () => {
   // Load existing data when editing
   useEffect(() => {
     if (isEdit && existingStaff && !loadingStaff) {
+      // Untuk principal, pastikan category selalu kepala_sekolah
+      const categoryValue = role === "principal" ? "kepala_sekolah" : (existingStaff.category || "lainnya");
+      
       reset({
         name: existingStaff.name || "",
         position: existingStaff.position || "",
-        category: existingStaff.category || (role === "principal" ? "kepala_sekolah" : "lainnya"),
+        category: categoryValue,
         subjects: existingStaff.subjects || "",
         image: null,
       });
@@ -158,14 +161,14 @@ const StaffForm = () => {
         formData.append("position", "Kepala Sekolah");
         formData.append("category", "kepala_sekolah");
       } else if (role === "teacher") {
-        formData.append("position", data.position || "Guru");
+        if (data.position) formData.append("position", data.position);
         if (data.category) formData.append("category", data.category);
+        if (data.subjects) formData.append("subjects", data.subjects);
       } else {
         if (data.position) formData.append("position", data.position);
         formData.append("category", data.category);
       }
       
-      if (data.subjects && role === "teacher") formData.append("subjects", data.subjects);
       if (data.image) {
         formData.append("image", data.image);
         console.log("🖼️ Image file included:", data.image.name);
@@ -199,7 +202,7 @@ const StaffForm = () => {
   // Helper functions
   const getRoleLabel = (role) => {
     const roleLabels = {
-      teacher: "Guru",
+      teacher: "Guru & Staff",
       employee: "Karyawan",
       principal: "Kepala Sekolah",
     };
@@ -260,8 +263,8 @@ const StaffForm = () => {
           )}
         </div>
 
-        {/* Jabatan - hanya untuk employee */}
-        {role === "employee" && (
+        {/* Jabatan - untuk teacher dan employee */}
+        {(role === "teacher" || role === "employee") && (
           <div className="flex flex-col">
             <label htmlFor="position" className="font-bold text-gray-800">
               Jabatan
@@ -279,28 +282,6 @@ const StaffForm = () => {
             />
             {errors.position && (
               <span className="text-red-500 text-sm mt-1">{errors.position.message}</span>
-            )}
-          </div>
-        )}
-
-        {/* Kategori - hanya untuk employee dan principal */}
-        {(role === "employee" || role === "principal") && (
-          <div className="flex flex-col">
-            <label htmlFor="category" className="font-bold text-gray-800">
-              Kategori {role === "employee" && <span className="text-red-500">*</span>}
-            </label>
-            <Multiselect
-              options={role === "principal" ? principalCategoryOptions : categoryOptions}
-              value={selectedCategory}
-              onChange={(value) => setValue("category", value)}
-              placeholder="Pilih Kategori"
-              multiple={false}
-              customValue={false}
-              disabled={role === "principal"}
-              className={errors.category ? "border-red-500" : ""}
-            />
-            {errors.category && (
-              <span className="text-red-500 text-sm mt-1">{errors.category.message}</span>
             )}
           </div>
         )}
@@ -324,6 +305,49 @@ const StaffForm = () => {
             />
             {errors.subjects && (
               <span className="text-red-500 text-sm mt-1">{errors.subjects.message}</span>
+            )}
+          </div>
+        )}
+
+        {/* Kategori - untuk teacher dan employee */}
+        {(role === "teacher" || role === "employee") && (
+          <div className="flex flex-col">
+            <label htmlFor="category" className="font-bold text-gray-800">
+              Kategori {role === "employee" && <span className="text-red-500">*</span>}
+            </label>
+            <Multiselect
+              options={categoryOptions}
+              value={selectedCategory}
+              onChange={(value) => setValue("category", value)}
+              placeholder="Pilih Kategori"
+              multiple={false}
+              customValue={false}
+              className={errors.category ? "border-red-500" : ""}
+            />
+            {errors.category && (
+              <span className="text-red-500 text-sm mt-1">{errors.category.message}</span>
+            )}
+          </div>
+        )}
+
+        {/* Kategori - khusus untuk principal (tetap tidak berubah) */}
+        {role === "principal" && (
+          <div className="flex flex-col">
+            <label htmlFor="category" className="font-bold text-gray-800">
+              Kategori
+            </label>
+            <Multiselect
+              options={principalCategoryOptions}
+              value={selectedCategory}
+              onChange={(value) => setValue("category", value)}
+              placeholder="Pilih Kategori"
+              multiple={false}
+              customValue={false}
+              disabled={true}
+              className={errors.category ? "border-red-500" : ""}
+            />
+            {errors.category && (
+              <span className="text-red-500 text-sm mt-1">{errors.category.message}</span>
             )}
           </div>
         )}

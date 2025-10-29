@@ -23,10 +23,14 @@ const schema = yup.object().shape({
   foto: yup
     .mixed()
     .nullable()
-    .test("fileType", "Hanya file PNG, JPEG, dan JPG yang diperbolehkan", (value) => {
-      if (!value) return true;
-      return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
-    })
+    .test(
+      "fileType",
+      "Hanya file PNG, JPEG, dan JPG yang diperbolehkan",
+      (value) => {
+        if (!value) return true;
+        return ["image/png", "image/jpeg", "image/jpg"].includes(value.type);
+      }
+    )
     .test("fileSize", "Ukuran file maksimal 2MB", (value) => {
       if (!value) return true;
       return value.size <= 2 * 1024 * 1024;
@@ -77,6 +81,10 @@ const TambahUserJurusan = () => {
     Object.keys(data).forEach((key) => {
       if (data[key] !== null && data[key] !== undefined) {
         submitData.append(key, data[key]);
+      }
+
+      if (data.foto) {
+        submitData.append("profile_image", data.foto);
       }
     });
 

@@ -14,6 +14,10 @@ import { Button } from "../../../components/ui";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
 import Swal from "sweetalert2";
+import parse from "html-react-parser";
+import { BiRefresh } from "react-icons/bi";
+
+
 const Fasilitas = () => {
   const [search, setSearch] = useState("");
   const [cursor, setCursor] = useState(null);
@@ -184,7 +188,7 @@ const Fasilitas = () => {
                   <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + index + 1}</td>
                   <td className="py-2 px-4 font-medium">{facility.name}</td>
                   <td className="py-2 px-4">{facility.room_total}</td>
-                  <td className="py-2 px-4">{facility.description}</td>
+                  <td className="py-1 px-4 line-clamp-2">{parse(facility.description)}</td>
                   <td className="py-2 px-4">
                     <button
                       onClick={() => setSelectedImage(facility.image)}
@@ -197,17 +201,18 @@ const Fasilitas = () => {
                   <td className="py-2 px-4">
                     <div className="flex gap-2 justify-center">
                       {softDeleteFilter === "deleted" ? (
-                        <Button
+                        <button
                           onClick={() => handleRestore(facility)}
-                          className="text-center bg-blue-500 hover:bg-blue-600 p-2 rounded-lg shadow-lg"
+                          className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+                          title="Pulihkan Artikel"
                         >
-                          <span className="text-xs font-medium">Pulihkan</span>
-                        </Button>
+                          <BiRefresh className="text-lg" />
+                        </button>
                       ) : (
                         <>
                           <Button
                             onClick={() => handleEdit(facility.id)}
-                            className="text-center bg-green-500 hover:bg-green-600 p-2 rounded-lg shadow-lg"
+                            className="text-center bg-blue-500 hover:bg-blue-600 p-2 rounded-lg shadow-lg"
                           >
                             <FaRegEdit className="text-lg" />
                           </Button>

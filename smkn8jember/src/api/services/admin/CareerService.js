@@ -47,7 +47,7 @@ export const deleteData = async (id) => {
 
 export const restoreData = async (id) => {
     try {
-        const response = await Changec.restore(id);
+        const response = await ChanceCarrierApi.restore(id);
         return response.data;
     } catch (error) {
         throw error;

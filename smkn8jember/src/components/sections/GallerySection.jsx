@@ -37,7 +37,7 @@ const GallerySection = ({ className = "" }) => {
       className={className}
     >
       {/* Filter Buttons */}
-      <div className="flex flex-wrap w-full justify-center items-center gap-3 py-5">
+      <div className="flex flex-wrap w-full justify-center items-center gap-3 p-5">
         {categories.map((category) => (
           <button
             key={category.id}
