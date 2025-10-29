@@ -117,7 +117,7 @@ class ArticleController extends Controller
             return $this->notFound('Article not found');
         }
 
-        if ($article->author_id !== Auth::id() || Auth::user()->role !== 'superadmin') {
+        if ($article->author_id !== Auth::id() ) {
             return $this->error('You are not authorized to delete this article', 403);
         }
         if ($article->image) {

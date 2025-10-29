@@ -388,18 +388,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 label="Artikel"
                 isOpen={isOpen}
               />
-              <NavItem
-                to="/admin/gambar"
-                icon={IoImagesOutline}
-                label="Galeri"
-                isOpen={isOpen}
-              />
             </div>
 
             {/* Profil Sekolah */}
             <div className="pb-2 pt-3 border-t-[1.5px] border-zinc-400">
               <NavItem
-                to="/admin/websetting"
+                to="/admin/profilesetting"
                 icon={MdOutlineSettings}
                 label="Profil Setting"
                 isOpen={isOpen}
