@@ -177,21 +177,31 @@ const EditKategori = () => {
         </div>
 
         {/* Warna (input teks biasa) */}
+        {/* Warna (color picker + input teks sinkron) */}
         <div className="flex flex-col">
           <label htmlFor="color" className="font-bold text-gray-800">
-            Warna (contoh: #FF6600)
+            Warna
           </label>
-          <input
-            type="text"
-            id="color"
-            placeholder="#FF6600"
-            {...register("color")}
-            className="w-full px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600 focus:outline-none"
-          />
+          <div className="flex items-center gap-3">
+            <input
+              type="color"
+              id="color"
+              value={watch("color") || "#FF6600"} // tampilkan warna saat ini
+              onChange={(e) => setValue("color", e.target.value)} // update ke form
+              className="w-16 h-10 cursor-pointer border border-gray-600 rounded-lg"
+            />
+            <input
+              type="text"
+              placeholder="#FF6600"
+              {...register("color")}
+              className="flex-1 px-3 py-1 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600 focus:outline-none"
+            />
+          </div>
           {errors.color && (
             <p className="text-red-500 text-sm mt-1">{errors.color.message}</p>
           )}
         </div>
+
 
         {/* Tombol */}
         <div className="flex gap-3 justify-end mt-6">
