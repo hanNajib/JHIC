@@ -2,7 +2,7 @@ import parse from "html-react-parser";
 
 const CardFE = ({ data1, data2, data3, data4 }) => {
   return (
-    <div className="bg-white w-full  lg:w-full rounded-2xl block shadow-lg transition-all duration-300 lg:hover:-translate-y-3">
+    <div className="bg-white w-full  lg:w-full rounded-2xl block shadow-lg transition-all duration-300 lg:hover:-translate-y-3 min-h-52 h-full">
       <img
         src={data1}
         alt={data2}

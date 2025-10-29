@@ -1,11 +1,12 @@
 import CardFE from "../../components/ui/CardFE";
 import { useFacilities } from "../../hooks/api/useFacility";
 import DefaultLayout from "../../components/layout/DefaultLayout";
+import { Link } from "react-router-dom";
 
 const Facilitas = () => {
   const { data: fasilitasResponse = [], isLoading, isError } = useFacilities();
   const fasilitas = fasilitasResponse?.data || [];
-  
+
   return (
     <DefaultLayout>
       <section
@@ -27,16 +28,21 @@ const Facilitas = () => {
       </section>
 
       {/* versi 1 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 p-4 lg:p-16">
-        {fasilitas.map((item, index) => (
-          <CardFE
-            key={index}
-            data1={item.image}
-            data2={item.name}
-            data3={`${item.room_total} Ruang`}
-            data4={item.description}
-          />
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7 p-4 lg:p-16 items-stretch">
+        {fasilitas.map((item, index) => {
+          const slug = item.name.toLowerCase().replace(/\s+/g, "-");
+
+          return (
+            <Link to={`/fasilitas/${slug}?i=${item.id}`} key={index}>
+              <CardFE
+                data1={item.image}
+                data2={item.name}
+                data3={`${item.room_total} Ruang`}
+                data4={item.description}
+              />
+            </Link>
+          );
+        })}
       </div>
 
       {/* versi 2 */}
