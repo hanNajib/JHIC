@@ -103,11 +103,11 @@ const questions = [
           <div className='underline decoration-[#ff6000]'>{ parse(judul) }</div> 
         </h1>
         
-        <p className='text-white font-poppins pr-10 lg:pr-40 py-5 text-left md:text-center lg:text-left hidden md:flex md:text-lg'>
+        <p className='text-white font-poppins pr-10 lg:pr-40 py-5 text-left md:text-center lg:text-left hidden md:flex text-sm md:text-lg'>
           { parse(deskripsi) }
         </p>
         
-        <p className='text-white font-poppins pr-10 lg:pr-40 py-5 text-left md:text-center lg:text-left md:hidden md:text-lg'>
+        <p className='text-white font-poppins pr-10 lg:pr-40 py-5 text-left md:text-center lg:text-left md:hidden text-sm md:text-lg'>
           { parse(deskripsi) }
         </p>
         
