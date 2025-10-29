@@ -182,13 +182,13 @@ const EditKategori = () => {
           <label htmlFor="color" className="font-bold text-gray-800">
             Warna
           </label>
-          <div className="flex items-center gap-3">
+          <div className="flex gap-2">
             <input
               type="color"
               id="color"
               value={watch("color") || "#FF6600"} // tampilkan warna saat ini
               onChange={(e) => setValue("color", e.target.value)} // update ke form
-              className="w-16 h-10 cursor-pointer border border-gray-600 rounded-lg"
+              className="w-20 h-10 cursor-pointer border border-gray-600 rounded-lg"
             />
             <input
               type="text"
