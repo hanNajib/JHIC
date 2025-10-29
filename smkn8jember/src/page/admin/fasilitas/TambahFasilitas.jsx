@@ -117,9 +117,7 @@ const TambahFasilitas = () => {
         </h1>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        {/* Nama */}
         <div className="flex flex-col">
           <label htmlFor="name" className="font-bold text-gray-800">
             Nama
