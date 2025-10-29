@@ -17,7 +17,7 @@ const EditKategori = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: currentCategory, isLoading, error } = useCategory(id);
-  
+
 
   const updateCategory = useUpdateCategory(id, {
     onSuccess: () => {
@@ -55,17 +55,17 @@ const EditKategori = () => {
     },
   });
 
-  // Watch untuk memantau value type
   const watchedType = watch("type");
 
   useEffect(() => {
     if (currentCategory) {
-      console.log("Setting form values:", currentCategory); // Debug log
-      setValue("name", currentCategory.name || "");
-      setValue("type", currentCategory.type || "");
-      setValue("color", currentCategory.color || "");
+      reset({
+        name: currentCategory.name,
+        type: currentCategory.type,
+        color: currentCategory.color
+      });
     }
-  }, [currentCategory, setValue]);
+  }, [currentCategory, reset]);
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -86,8 +86,8 @@ const EditKategori = () => {
 
   const kategoriOptions = [
     { value: "major", label: "Jurusan" },
-    { value: "article", label: "Artikel" },
-    { value: "announcement", label: "Pengumuman" },
+    { value: "articles", label: "Artikel" },
+    { value: "announcements", label: "Pengumuman" },
     { value: "gallery", label: "Galeri" },
   ];
 
@@ -158,26 +158,24 @@ const EditKategori = () => {
           <label htmlFor="type" className="font-bold text-gray-800">
             Tipe Kategori
           </label>
-          <select
-            id="type"
-            {...register("type")}
-            value={watchedType || ""}
-            className="w-full px-3 py-2 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600 focus:outline-none"
-          >
-            <option value="">Pilih Tipe Kategori</option>
-            {kategoriOptions.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
+            <select
+              id="type"
+              {...register("type")}
+              className="w-full px-3 py-2 text-gray-600 border border-gray-600 rounded-lg focus:ring-1 focus:ring-gray-600 focus:outline-none"
+            >
+              <option value="">Pilih Tipe Kategori</option>
+              {kategoriOptions.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+
           {errors.type && (
             <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>
           )}
         </div>
 
-        {/* Warna (input teks biasa) */}
-        {/* Warna (color picker + input teks sinkron) */}
         <div className="flex flex-col">
           <label htmlFor="color" className="font-bold text-gray-800">
             Warna

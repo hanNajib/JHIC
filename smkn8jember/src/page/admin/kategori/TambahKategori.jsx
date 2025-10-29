@@ -64,10 +64,10 @@ const TambahKategori = () => {
   };
 
   const kategoriOptions = [
-    { value: "article", label: "Artikel" },
-    { value: "announcement", label: "Pengumuman" },
-    { value: "gallery", label: "Galeri" },
     { value: "major", label: "Jurusan" },
+    { value: "articles", label: "Artikel" },
+    { value: "announcements", label: "Pengumuman" },
+    { value: "gallery", label: "Galeri" },
   ];
 
   return (
