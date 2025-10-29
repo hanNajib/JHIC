@@ -189,7 +189,7 @@ const MajorDetail = () => {
                   className="h-60 bg-gray-200 animate-pulse rounded-md"
                 />
               ))
-          ) : article.length > 0 ? (
+          ) : (
             article.map((article, index) => (
               <ArticleCard
                 key={article.id}
@@ -197,10 +197,6 @@ const MajorDetail = () => {
                 className={"md:w-1/3 w-full  md:flex md:flex-col md:flex-none"}
               />
             ))
-          ) : (
-            <p className="col-span-full  text-center text-gray-500 text-lg">
-              Artikel tidak ditemukan
-            </p>
           )}
         </div>
         {article.length > 0 && (
