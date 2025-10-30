@@ -118,7 +118,7 @@ const Navbar = () => {
                     <h1 className={`font-poppins font-bold text-[#424242] lg:hidden ${isSearch ? 'hidden md:flex' : 'flex'}`}>SMKN 8 JEMBER</h1>
                 </div>
                 <div className="hidden lg:flex font-poppins gap-10 text-[#4c4c4c]">
-                    <Link to={'/'} className="active:opacity-100 active:font-semibold hover:opacity-100 opacity-75 transition-all duration-300 cursor-pointer">Home</Link>
+                    <Link to={'/'} className="active:opacity-100 active:font-semibold hover:opacity-100 opacity-75 transition-all duration-300 cursor-pointer">Beranda</Link>
                     <div className="relative group cursor-pointer">
                         <p className="flex items-center gap-1 active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">
                             Profil <FaChevronDown className="text-xs" />
@@ -208,7 +208,7 @@ const Navbar = () => {
                         }`}
                 >
                     <div className="flex justify-center items-center flex-col font-poppins gap-2 text-center py-5 text-[#4c4c4c]">
-                        <Link to="/" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Home</Link>
+                        <Link to="/" className="active:opacity-100 active:font-semibold hover:opacity-100  opacity-75 transition-all duration-300 cursor-pointer">Beranda</Link>
                         <button onClick={handleMenuProfil} className="active:font-semibold hover:opacity-100 opacity-75  transition-all duration-300 flex items-center gap-1">
                             Profil
                             {isProfil ?
