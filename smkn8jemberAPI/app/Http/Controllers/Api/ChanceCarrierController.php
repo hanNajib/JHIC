@@ -89,9 +89,6 @@ class ChanceCarrierController extends Controller
             return $this->notFound('Chance carrier not found');
         }
 
-        if ($chanceCarrier->image) {
-            Storage::disk('public')->delete($chanceCarrier->image);
-        }
         $chanceCarrier->delete();
 
         return $this->deleted('Chance carrier deleted successfully');
@@ -104,5 +101,58 @@ class ChanceCarrierController extends Controller
         }
         $chanceCarrier->restore();
         return $this->statusMessage("Chance carrier restored successfully");
+    }
+
+    public function forceDelete($id)
+    {
+        $chanceCarrier = ChanceCarrier::withTrashed()->find($id);
+        if (!$chanceCarrier) {
+            return $this->notFound('Chance carrier not found');
+        }
+
+        if ($chanceCarrier->image) {
+            Storage::disk('public')->delete($chanceCarrier->image);
+        }
+        $chanceCarrier->forceDelete();
+        return $this->deleted('Chance carrier permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = ChanceCarrier::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted chance carriers found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' chance carrier(s) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $carriers = ChanceCarrier::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($carriers->isEmpty()) {
+            return $this->notFound('No chance carriers found with the provided IDs');
+        }
+
+        foreach ($carriers as $carrier) {
+            if ($carrier->image) {
+                Storage::disk('public')->delete($carrier->image);
+            }
+            $carrier->forceDelete();
+        }
+
+        return $this->deleted(count($carriers) . ' chance carrier(s) permanently deleted');
     }
 }

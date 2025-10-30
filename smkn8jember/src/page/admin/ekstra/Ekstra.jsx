@@ -12,6 +12,9 @@ import {
   useExtarculiculars,
   useDeleteExtarculicular,
   useRestoreExtarculicular,
+  useForceDeleteExtarculicular,
+  useBulkRestoreExtarculicular,
+  useBulkForceDeleteExtarculicular,
 } from "../../../hooks/api/useExtarculicular";
 import { Button } from "../../../components/ui";
 import Swal from "sweetalert2";
@@ -24,6 +27,7 @@ const Ekstra = () => {
   const [jumlahPage, setJumlahPage] = useState(5);
   const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const debouncedSearchTerm = useDebounce(search, 500);
   const navigate = useNavigate();
@@ -44,6 +48,9 @@ const Ekstra = () => {
   
   const deleteExtraculicular = useDeleteExtarculicular();
   const restoreExtraculicular = useRestoreExtarculicular();
+  const forceDeleteExtraculicular = useForceDeleteExtarculicular();
+  const bulkRestoreExtraculicular = useBulkRestoreExtarculicular();
+  const bulkForceDeleteExtraculicular = useBulkForceDeleteExtarculicular();
   const handleDelete = (id) => {
       Swal.fire({
         title: "Yakin ingin menghapus?",
@@ -103,6 +110,181 @@ const Ekstra = () => {
     });
   };
 
+  const handleForceDelete = (id) => {
+    Swal.fire({
+      title: "Hapus permanen?",
+      text: "Data akan dihapus permanen dan tidak bisa dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus permanen!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        forceDeleteExtraculicular.mutateAsync(id, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire({
+              title: "Terhapus!",
+              text: "Data berhasil dihapus permanen.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat menghapus data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+
+    Swal.fire({
+      title: "Hapus data terpilih?",
+      text: `${selectedIds.length} ekstrakurikuler akan dihapus`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Promise.all(selectedIds.map(id => deleteExtraculicular.mutateAsync(id)))
+          .then(() => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+          })
+          .catch((error) => {
+            Swal.fire({
+              title: "Error!",
+              text: "Terjadi kesalahan saat menghapus data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          });
+      }
+    });
+  };
+
+  const handleBulkRestore = () => {
+    if (selectedIds.length === 0) {
+      Swal.fire({
+        title: "Perhatian!",
+        text: "Pilih minimal satu data untuk diaktifkan.",
+        icon: "info",
+        confirmButtonColor: "#3085d6",
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: `${selectedIds.length} data akan diaktifkan kembali!`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, aktifkan!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkRestoreExtraculicular.mutateAsync(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire({
+              title: "Diaktifkan!",
+              text: `${selectedIds.length} data berhasil diaktifkan.`,
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat mengaktifkan data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
+  };
+
+  const handleBulkForceDelete = () => {
+    if (selectedIds.length === 0) {
+      Swal.fire({
+        title: "Perhatian!",
+        text: "Pilih minimal satu data untuk dihapus permanen.",
+        icon: "info",
+        confirmButtonColor: "#3085d6",
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: `${selectedIds.length} data akan dihapus permanen dan tidak dapat dikembalikan!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus permanen!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkForceDeleteExtraculicular.mutateAsync(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire({
+              title: "Terhapus!",
+              text: `${selectedIds.length} data berhasil dihapus secara permanen.`,
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat menghapus data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.length === extra.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(extra.map(e => e.id));
+    }
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
   const handleReset = () => {
     setSearch("");
     setSoftDeleteFilter("active");
@@ -149,15 +331,61 @@ const Ekstra = () => {
         softDeleteFilter={softDeleteFilter}
         setSoftDeleteFilter={(val) => {
           setSoftDeleteFilter(val);
+          setSelectedIds([]);
           setCursor(null);
           setCurrentPage(1);
         }}
       />
 
+      {selectedIds.length > 0 && (
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 p-4 rounded-lg flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-semibold text-blue-700">{selectedIds.length} item dipilih</span>
+          </div>
+          <div className="flex gap-2">
+            {softDeleteFilter === 'active' && (
+              <button
+                onClick={handleBulkDelete}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition"
+              >
+                <MdDeleteOutline className="text-lg" />
+                Hapus
+              </button>
+            )}
+            {softDeleteFilter === 'deleted' && (
+              <>
+                <button
+                  onClick={handleBulkRestore}
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition duration-200 font-medium"
+                >
+                  <BiRefresh className="text-lg" />
+                  Pulihkan
+                </button>
+                <button
+                  onClick={handleBulkForceDelete}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition duration-200 font-medium"
+                >
+                  <MdDeleteOutline className="text-lg" />
+                  Hapus Permanen
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
+              <th className="py-2 px-4 text-left text-white">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.length === extra.length && extra.length > 0}
+                  onChange={handleSelectAll}
+                  className="cursor-pointer"
+                />
+              </th>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white">Nama</th>
               <th className="py-2 px-4 text-left text-white">Pembimbing</th>
@@ -169,13 +397,13 @@ const Ekstra = () => {
           <tbody>
             {isFetching ? (
               <tr>
-                <td colSpan="6" className="text-center py-5">
+                <td colSpan="7" className="text-center py-5">
                   Memuat data...
                 </td>
               </tr>
             ) : extra.length === 0 ? (
               <tr>
-                <td colSpan="6" className="text-center py-5">
+                <td colSpan="7" className="text-center py-5">
                   Tidak ada data ekstrakurikuler.
                 </td>
               </tr>
@@ -185,6 +413,14 @@ const Ekstra = () => {
                   key={a.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
+                  <td className="py-2 px-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(a.id)}
+                      onChange={() => handleSelectRow(a.id)}
+                      className="cursor-pointer"
+                    />
+                  </td>
                   <td className="py-2 px-4">{_i + 1}</td>
                   <td className="py-2 px-4">{a.name}</td>
                   <td className="py-2 px-4">{a.mentor_name}</td>
@@ -200,23 +436,37 @@ const Ekstra = () => {
                   </td>
                   <td className="py-2 px-4">
                     <div className="flex gap-2 justify-center">
-                      {a.deleted_at === null && (
-                        <Button
-                          onClick={() => handleEdit(a.id)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
-                        >
-                          <FaRegEdit className="text-lg" />
-                        </Button>
+                      {a.deleted_at === null ? (
+                        <>
+                          <Button
+                            onClick={() => handleEdit(a.id)}
+                            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-200"
+                          >
+                            <FaRegEdit className="text-lg" />
+                          </Button>
+                          <button
+                            onClick={() => handleDelete(a.id)}
+                            className="bg-red-500 hover:bg-red-600 text-white p-2 rounded transition duration-200"
+                          >
+                            <MdDeleteOutline className="text-lg" />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleRestore(a)}
+                            className="bg-green-500 hover:bg-green-600 text-white p-2 rounded transition duration-200"
+                          >
+                            <BiRefresh className="text-lg" />
+                          </button>
+                          <button
+                            onClick={() => handleForceDelete(a.id)}
+                            className="bg-red-600 hover:bg-red-700 text-white p-2 rounded transition duration-200"
+                          >
+                            <MdDeleteOutline className="text-lg" />
+                          </button>
+                        </>
                       )}
-                      <button
-                        onClick={() => a.deleted_at === null ? handleDelete(a.id) : handleRestore(a)}
-                        className={`${a.deleted_at === null
-                          ? 'bg-red-500 hover:bg-red-600'
-                          : 'bg-green-500 hover:bg-green-600'
-                          } text-white p-2 rounded transition duration-200`}
-                      >
-                        {a.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
-                      </button>
                     </div>
                   </td>
                 </tr>

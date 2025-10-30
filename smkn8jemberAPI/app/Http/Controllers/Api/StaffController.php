@@ -131,10 +131,6 @@ class StaffController extends Controller
             return $this->notFound('Staff not found');
         }
 
-        if ($staff->image) {
-            Storage::disk('public')->delete($staff->image);
-        }
-
         $staff->delete();
         return $this->success(null, 'Staff deleted successfully');
     }
@@ -150,5 +146,58 @@ class StaffController extends Controller
         }
         $staff->restore();
         return $this->statusMessage("Staff restored successfully");
+    }
+
+    public function forceDelete($id)
+    {
+        $staff = Staff::withTrashed()->find($id);
+        if (!$staff) {
+            return $this->notFound('Staff not found');
+        }
+
+        if ($staff->image) {
+            Storage::disk('public')->delete($staff->image);
+        }
+        $staff->forceDelete();
+        return $this->deleted('Staff permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Staff::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted staff found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' staff member(s) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $staffMembers = Staff::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($staffMembers->isEmpty()) {
+            return $this->notFound('No staff found with the provided IDs');
+        }
+
+        foreach ($staffMembers as $staff) {
+            if ($staff->image) {
+                Storage::disk('public')->delete($staff->image);
+            }
+            $staff->forceDelete();
+        }
+
+        return $this->deleted(count($staffMembers) . ' staff member(s) permanently deleted');
     }
 }

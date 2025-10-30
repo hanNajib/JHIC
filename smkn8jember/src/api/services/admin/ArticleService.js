@@ -63,6 +63,33 @@ export const restoreData = async (id) => {
     }
 }
 
+export const forceDeleteData = async (id) => {
+    try {
+        const response = await ArticleApi.forceDelete(id);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const bulkRestoreData = async (data) => {
+    try {
+        const response = await ArticleApi.bulkRestore(data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const bulkForceDeleteData = async (data) => {
+    try {
+        const response = await ArticleApi.bulkForceDelete(data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const updateStatus = async (id, status) => {
     try {
         const response = await ArticleApi.updateStatus(id, status);

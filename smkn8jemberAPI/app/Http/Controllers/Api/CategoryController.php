@@ -105,4 +105,47 @@ class CategoryController extends Controller
         return $this->statusMessage("Category restored successfully");
     }
 
+    public function forceDelete($id)
+    {
+        $category = Category::withTrashed()->find($id);
+        if (!$category) {
+            return $this->notFound('Category not found');
+        }
+        $category->forceDelete();
+        return $this->deleted('Category permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Category::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted categories found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' category(ies) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $categories = Category::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($categories->isEmpty()) {
+            return $this->notFound('No categories found with the provided IDs');
+        }
+
+        Category::withTrashed()->whereIn('id', $ids)->forceDelete();
+        return $this->deleted(count($categories) . ' category(ies) permanently deleted');
+    }
+
 }

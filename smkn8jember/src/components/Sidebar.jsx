@@ -181,7 +181,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     {
       to: "/admin/ekstrakulikuler",
       icon: MdOutlineSportsVolleyball,
-      label: "Data Ekstra",
+      label: "Ekstrakurikuler",
     },
   ];
 

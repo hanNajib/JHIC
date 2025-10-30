@@ -53,3 +53,30 @@ export const restoreData = async (id) => {
         throw error;
     }
 }
+
+export const forceDeleteData = async (id) => {
+    try {
+        const response = await GalleryApi.forceDelete(id);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const bulkRestoreData = async (data) => {
+    try {
+        const response = await GalleryApi.bulkRestore(data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const bulkForceDeleteData = async (data) => {
+    try {
+        const response = await GalleryApi.bulkForceDelete(data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
