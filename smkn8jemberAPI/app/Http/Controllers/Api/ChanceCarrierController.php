@@ -111,7 +111,7 @@ class ChanceCarrierController extends Controller
         }
 
         if ($chanceCarrier->image) {
-            Storage::disk('public')->delete($chanceCarrier->image);
+            Storage::disk('public')->delete($chanceCarrier->originalImagePath());
         }
         $chanceCarrier->forceDelete();
         return $this->deleted('Chance carrier permanently deleted');
@@ -148,7 +148,7 @@ class ChanceCarrierController extends Controller
 
         foreach ($carriers as $carrier) {
             if ($carrier->image) {
-                Storage::disk('public')->delete($carrier->image);
+                Storage::disk('public')->delete($carrier->originalImagePath());
             }
             $carrier->forceDelete();
         }

@@ -10,6 +10,7 @@ import { useDeleteSubject, useRestoreSubject, useSubjects, useForceDeleteSubject
 import Swal from "sweetalert2";
 import { Button } from "../../../components/ui";
 import { useMajors } from "../../../hooks/api/useMajor";
+import parse from "html-react-parser";  
 
 const Mapel = () => {
   const [search, setSearch] = useState("");
@@ -417,7 +418,7 @@ const Mapel = () => {
                   </td>
                   <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                   <td className="py-2">{subject.name}</td>
-                  <td className="py-2 px-4">{subject.description}</td>
+                  <td className="py-2 px-4">{parse(subject.description)}</td>
                   <td className="py-2 px-4">{subject.major?.name || '-'}</td>
                   <td className="py-2 px-4">
                     <div className="flex gap-2 justify-center">

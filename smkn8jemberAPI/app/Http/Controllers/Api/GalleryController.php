@@ -106,7 +106,7 @@ class GalleryController extends Controller
         }
 
         if ($gallery->image) {
-            Storage::disk('public')->delete($gallery->image);
+            Storage::disk('public')->delete($gallery->originalImagePath());
         }
         $gallery->forceDelete();
         return $this->deleted('Gallery permanently deleted');
@@ -143,7 +143,7 @@ class GalleryController extends Controller
 
         foreach ($galleries as $gallery) {
             if ($gallery->image) {
-                Storage::disk('public')->delete($gallery->image);
+                Storage::disk('public')->delete($gallery->originalImagePath());
             }
             $gallery->forceDelete();
         }

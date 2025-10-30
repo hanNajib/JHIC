@@ -156,7 +156,7 @@ class StaffController extends Controller
         }
 
         if ($staff->image) {
-            Storage::disk('public')->delete($staff->image);
+            Storage::disk('public')->delete($staff->originalImagePath());
         }
         $staff->forceDelete();
         return $this->deleted('Staff permanently deleted');
@@ -193,7 +193,7 @@ class StaffController extends Controller
 
         foreach ($staffMembers as $staff) {
             if ($staff->image) {
-                Storage::disk('public')->delete($staff->image);
+                Storage::disk('public')->delete($staff->originalImagePath());
             }
             $staff->forceDelete();
         }

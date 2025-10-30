@@ -156,6 +156,37 @@ const Artikel = () => {
     });
   };
 
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+
+    Swal.fire({
+      title: "Hapus data terpilih?",
+      text: `${selectedIds.length} artikel akan dihapus`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Promise.all(selectedIds.map(id => deleteArticle.mutateAsync(id)))
+          .then(() => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+          })
+          .catch((error) => {
+            Swal.fire({
+              title: "Error!",
+              text: "Terjadi kesalahan saat menghapus data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          });
+      }
+    });
+  };
+
   const handleBulkRestore = () => {
     if (selectedIds.length === 0) {
       Swal.fire("Peringatan", "Pilih minimal satu data untuk diaktifkan", "warning");
@@ -324,20 +355,30 @@ const Artikel = () => {
             </span>
           </div>
           <div className="flex gap-2">
-            {softDeleteFilter === "deleted" && (
+            {softDeleteFilter === "active" && (
               <button
-                onClick={handleBulkRestore}
-                className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-medium transition shadow-md flex items-center gap-2"
+                onClick={handleBulkDelete}
+                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg font-medium transition shadow-md flex items-center gap-2"
               >
-                <BiRefresh className="text-lg" /> Aktifkan Terpilih
+                <MdDeleteOutline className="text-lg" /> Hapus
               </button>
             )}
-            <button
-              onClick={handleBulkForceDelete}
-              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 py-2 rounded-lg font-medium transition shadow-md flex items-center gap-2"
-            >
-              <MdDeleteOutline className="text-lg" /> Hapus Permanent
-            </button>
+            {softDeleteFilter === "deleted" && (
+              <>
+                <button
+                  onClick={handleBulkRestore}
+                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-medium transition shadow-md flex items-center gap-2"
+                >
+                  <BiRefresh className="text-lg" /> Aktifkan Terpilih
+                </button>
+                <button
+                  onClick={handleBulkForceDelete}
+                  className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 py-2 rounded-lg font-medium transition shadow-md flex items-center gap-2"
+                >
+                  <MdDeleteOutline className="text-lg" /> Hapus Permanent
+                </button>
+              </>
+            )}
             <button
               onClick={() => setSelectedIds([])}
               className="bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 text-white px-4 py-2 rounded-lg font-medium transition shadow-md"

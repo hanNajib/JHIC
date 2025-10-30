@@ -109,7 +109,7 @@ class AnnouncementsController extends Controller
         }
 
         if ($announcement->image) {
-            Storage::disk('public')->delete($announcement->image);
+            Storage::disk('public')->delete($announcement->originalImagePath());
         }
         $announcement->forceDelete();
         return $this->deleted('Announcement permanently deleted');
@@ -146,7 +146,7 @@ class AnnouncementsController extends Controller
 
         foreach ($announcements as $announcement) {
             if ($announcement->image) {
-                Storage::disk('public')->delete($announcement->image);
+                Storage::disk('public')->delete($announcement->originalImagePath());
             }
             $announcement->forceDelete();
         }

@@ -142,7 +142,7 @@ class ArticleController extends Controller
         }
 
         if ($article->image) {
-            Storage::disk('public')->delete($article->image);
+            Storage::disk('public')->delete($article->originalImagePath());
         }
         $article->forceDelete();
         return $this->deleted('Article permanently deleted');
@@ -179,7 +179,7 @@ class ArticleController extends Controller
 
         foreach ($articles as $article) {
             if ($article->image) {
-                Storage::disk('public')->delete($article->image);
+                Storage::disk('public')->delete($article->originalImagePath());
             }
             $article->forceDelete();
         }
