@@ -117,9 +117,9 @@ class ArticleController extends Controller
             return $this->notFound('Article not found');
         }
 
-        if ($article->author_id !== Auth::id() ) {
-            return $this->error('You are not authorized to delete this article', 403);
-        }
+        // if ($article->author_id !== Auth::id() ) {
+        //     return $this->error('You are not authorized to delete this article', 403);
+        // }
         $article->delete();
         return $this->deleted('Article deleted successfully');
     }
@@ -156,7 +156,7 @@ class ArticleController extends Controller
         ])['ids'];
 
         $restored = Article::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
-        
+
         if ($restored === 0) {
             return $this->notFound('No deleted articles found with the provided IDs');
         }
@@ -172,7 +172,7 @@ class ArticleController extends Controller
         ])['ids'];
 
         $articles = Article::withTrashed()->whereIn('id', $ids)->get();
-        
+
         if ($articles->isEmpty()) {
             return $this->notFound('No articles found with the provided IDs');
         }

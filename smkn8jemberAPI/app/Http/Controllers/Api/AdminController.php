@@ -128,7 +128,7 @@ class AdminController extends Controller
         ])['ids'];
 
         $restored = User::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
-        
+
         if ($restored === 0) {
             return $this->notFound('No deleted admins found with the provided IDs');
         }
@@ -144,7 +144,7 @@ class AdminController extends Controller
         ])['ids'];
 
         $admins = User::withTrashed()->whereIn('id', $ids)->get();
-        
+
         if ($admins->isEmpty()) {
             return $this->notFound('No admins found with the provided IDs');
         }
@@ -152,3 +152,4 @@ class AdminController extends Controller
         User::withTrashed()->whereIn('id', $ids)->forceDelete();
         return $this->deleted(count($admins) . ' admin(s) permanently deleted');
     }
+}
