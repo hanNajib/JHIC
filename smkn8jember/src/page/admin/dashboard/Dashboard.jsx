@@ -197,7 +197,6 @@ const Dashboard = () => {
           </tbody>
         </table>
       </div>
-
       {/*modal image*/}
       <ImageModal
         image={selectedImage}
