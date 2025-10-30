@@ -8,7 +8,7 @@ import FilterAdmin from "../../../components/ui/FilterAdmin";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useDeleteMajor, useMajors, useRestoreMajor } from "../../../hooks/api/useMajor";
+import { useDeleteMajor, useMajors, useRestoreMajor, useForceDeleteMajor, useBulkRestoreMajor, useBulkForceDeleteMajor } from "../../../hooks/api/useMajor";
 import { ImageModal, Button } from "../../../components/ui";
 import { RenderIcon } from "../../../components/ui/RenderIcon";
 
@@ -18,6 +18,7 @@ const Jurusan = () => {
   const [jumlahPage, setJumlahPage] = useState(5);
   const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const debouncedSearchTerm = useDebounce(search, 500);
   const navigate = useNavigate();
@@ -39,6 +40,9 @@ const Jurusan = () => {
 
   const deleteMajor = useDeleteMajor();
   const restoreMajor = useRestoreMajor();
+  const forceDeleteMajor = useForceDeleteMajor();
+  const bulkRestoreMajor = useBulkRestoreMajor();
+  const bulkForceDeleteMajor = useBulkForceDeleteMajor();
   const [selectedImage, setSelectedImage] = useState(null)
 
   const handleEdit = (majorId) => {
@@ -66,6 +70,9 @@ const Jurusan = () => {
       title: "Yakin ingin mengaktifkan?",
       text: `Jurusan: ${major.name}`,
       icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, aktifkan!",
+      cancelButtonText: "Batal"
     }).then((result) => {
       if (result.isConfirmed) {
         restoreMajor.mutate(major.id, {
@@ -76,6 +83,103 @@ const Jurusan = () => {
         })
       }
     });
+  };
+
+  const handleForceDelete = (major) => {
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: `Jurusan "${major.name}" akan dihapus permanen!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus permanen!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        forceDeleteMajor.mutate(major.id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire("Terhapus!", "Jurusan berhasil dihapus permanen.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkRestore = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Pulihkan data terpilih?",
+      text: `${selectedIds.length} jurusan akan dipulihkan`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Ya, pulihkan!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkRestoreMajor.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Berhasil!", "Data berhasil dipulihkan.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkForceDelete = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Hapus permanen data terpilih?",
+      text: `${selectedIds.length} jurusan akan dihapus permanen!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkForceDeleteMajor.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus permanen.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Hapus data terpilih?",
+      text: `${selectedIds.length} jurusan akan dihapus`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Promise.all(selectedIds.map(id => deleteMajor.mutateAsync(id)))
+          .then(() => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+          });
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelectedIds(selectedIds.length === majors.length ? [] : majors.map(m => m.id));
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   };
 
   const handleReset = () => {
@@ -154,12 +258,36 @@ const Jurusan = () => {
         }}
       />
 
-
+      {selectedIds.length > 0 && (
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 p-4 rounded-lg flex items-center justify-between">
+          <span className="text-sm font-semibold text-blue-700">{selectedIds.length} item dipilih</span>
+          <div className="flex gap-2">
+            {softDeleteFilter === 'active' && (
+              <button onClick={handleBulkDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                <MdDeleteOutline className="text-lg" />Hapus
+              </button>
+            )}
+            {softDeleteFilter === 'deleted' && (
+              <>
+                <button onClick={handleBulkRestore} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <BiRefresh className="text-lg" />Pulihkan
+                </button>
+                <button onClick={handleBulkForceDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <MdDeleteOutline className="text-lg" />Hapus Permanen
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
+              <th className="py-2 px-4 text-center text-white w-12">
+                <input type="checkbox" checked={selectedIds.length === majors.length && majors.length > 0} onChange={handleSelectAll} className="w-4 h-4 cursor-pointer" />
+              </th>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white min-w-56">Nama</th>
               <th className="py-2 px-4 text-left text-white">Deskripsi</th>
@@ -171,13 +299,13 @@ const Jurusan = () => {
           <tbody>
             {isFetching ? (
               <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-500">
+                <td colSpan={7} className="text-center py-4 text-gray-500">
                   Memuat data...
                 </td>
               </tr>
             ) : majors.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-500">
+                <td colSpan={7} className="text-center py-4 text-gray-500">
                   Tidak ada data ditemukan.
                 </td>
               </tr>
@@ -187,6 +315,9 @@ const Jurusan = () => {
                   key={major.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
+                  <td className="py-2 px-4 text-center">
+                    <input type="checkbox" checked={selectedIds.includes(major.id)} onChange={() => handleSelectRow(major.id)} className="w-4 h-4 cursor-pointer" />
+                  </td>
                   <td className="py-2 px-4">{index + 1}</td>
                   <td className="py-2">({major.short_name}) {major.name}</td>
                   <td className="py-2 px-4">
@@ -228,6 +359,15 @@ const Jurusan = () => {
                       >
                         {major.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
                       </button>
+                      {major.deleted_at !== null && (
+                        <button
+                          onClick={() => handleForceDelete(major)}
+                          className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-2xl shadow-lg transition"
+                          title="Hapus Permanen"
+                        >
+                          <MdDeleteOutline className="text-lg" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

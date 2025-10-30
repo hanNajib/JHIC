@@ -54,6 +54,33 @@ export const restoreData = async (id) => {
     }
 }
 
+export const forceDeleteData = async (id) => {
+    try {
+        const response = await MajorsApi.forceDelete(id);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const bulkRestoreData = async (ids) => {
+    try {
+        const response = await MajorsApi.bulkRestore(ids);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const bulkForceDeleteData = async (ids) => {
+    try {
+        const response = await MajorsApi.bulkForceDelete(ids);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getByShortName = async (short_name) => {
     try {
         const response = await MajorsApi.getByShortName(short_name);

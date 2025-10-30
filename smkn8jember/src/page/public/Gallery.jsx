@@ -19,7 +19,7 @@ const Gallery = () => {
   const debouncedSearchTerm = useDebounce(searchText, 500);
 
   const { data: galleryResponse, isLoading, isError } = useGalleries({
-    category: category === "all" ? undefined : category,
+    category_name: category === "all" ? undefined : category,
     sortDir: sort === "terbaru" ? "asc" : "desc",
     s: debouncedSearchTerm,
   });
@@ -114,7 +114,7 @@ const Gallery = () => {
                 {/* Terbaru/lama */}
             <div className="flex items-center gap-2">
               <label htmlFor="sort" className="text-sm font-medium text-gray-600">
-                Sort by:
+                Sort by: 
               </label>
               <select
                 id="sort"

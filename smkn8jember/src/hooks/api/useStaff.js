@@ -132,3 +132,30 @@ export const useRestoreStaff = (options = {}) => {
         }
     })
 }
+
+export const useForceDeleteStaff = (options = {}) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id) => staffService.forceDeleteData(id),
+        onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STAFF.LIST], exact: false }); if (options.onSuccess) options.onSuccess(); },
+        onError: (error) => { if (options.onError) options.onError(error); }
+    })
+};
+
+export const useBulkRestoreStaff = (options = {}) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (ids) => staffService.bulkRestoreData(ids),
+        onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STAFF.LIST], exact: false }); if (options.onSuccess) options.onSuccess(); },
+        onError: (error) => { if (options.onError) options.onError(error); }
+    })
+};
+
+export const useBulkForceDeleteStaff = (options = {}) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (ids) => staffService.bulkForceDeleteData(ids),
+        onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STAFF.LIST], exact: false }); if (options.onSuccess) options.onSuccess(); },
+        onError: (error) => { if (options.onError) options.onError(error); }
+    })
+};

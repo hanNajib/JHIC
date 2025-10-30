@@ -87,9 +87,6 @@ class ExtracurricularController extends Controller
             return $this->notFound('Extracurricular not found');
         }
 
-        if ($extracurricular->image) {
-            Storage::disk('public')->delete($extracurricular->image);
-        }
         $extracurricular->delete();
 
         return $this->deleted('Extracurricular deleted successfully');
@@ -102,5 +99,58 @@ class ExtracurricularController extends Controller
         }
         $extracurricular->restore();
         return $this->statusMessage("Extracurricular restored successfully");
+    }
+
+    public function forceDelete($id)
+    {
+        $extracurricular = Extracurricular::withTrashed()->find($id);
+        if (!$extracurricular) {
+            return $this->notFound('Extracurricular not found');
+        }
+
+        if ($extracurricular->image) {
+            Storage::disk('public')->delete($extracurricular->image);
+        }
+        $extracurricular->forceDelete();
+        return $this->deleted('Extracurricular permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Extracurricular::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted extracurriculars found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' extracurricular(s) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $extracurriculars = Extracurricular::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($extracurriculars->isEmpty()) {
+            return $this->notFound('No extracurriculars found with the provided IDs');
+        }
+
+        foreach ($extracurriculars as $extracurricular) {
+            if ($extracurricular->image) {
+                Storage::disk('public')->delete($extracurricular->image);
+            }
+            $extracurricular->forceDelete();
+        }
+
+        return $this->deleted(count($extracurriculars) . ' extracurricular(s) permanently deleted');
     }
 }

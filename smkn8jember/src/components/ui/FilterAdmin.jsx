@@ -116,7 +116,7 @@ const FilterAdmin = ({
           <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" />
           <input
             type="text"
-            placeholder="Cari berdasarkan judul..."
+            placeholder="Cari Data..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full h-11 pl-11 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 shadow-sm hover:shadow-md"

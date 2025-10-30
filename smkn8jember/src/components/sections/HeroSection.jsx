@@ -128,30 +128,30 @@ const questions = [
 
         <div className="relative flex items-center justify-end rounded-full overflow-hidden group">
           <div className="bg-white flex items-center justify-end rounded-full">
+            <div className="pr-5 pl-8 font-poppins text-[#ff6000] font-semibold hidden group-hover:lg:flex group-active:lg:flex transition-all duration-200">
+              Tanya Seputar SMKN 8 Jember!
+            </div>
             <Button
               className="z-10 w-16 h-16 flex items-center justify-center bg-[#ff6000] text-white rounded-full cursor-pointer"
               onClick={() => setIsChatOpen(true)}
             >
               <IoChatboxEllipsesOutline className='text-2xl' />
             </Button>
-            <div className="pr-8 pl-5 font-poppins text-[#ff6000] font-semibold hidden group-hover:lg:flex group-active:lg:flex transition-all duration-200">
-              Tanya Seputar SMKN 8 Jember!
-            </div>
           </div>
         </div>
 
         {/* Tombol Jelajahi */}
         <div className="relative flex items-center justify-end rounded-full overflow-hidden group">
           <div className="bg-white flex items-center justify-end rounded-full">
+            <div className="pr-5 pl-8 font-poppins text-[#ff6000] font-semibold hidden group-hover:lg:flex group-active:lg:flex transition-all duration-200">
+              Jelajahi SMKN 8 Jember!
+            </div>
             <Button
             onClick={()=> window.open('https://app.lapentor.com/sphere/smkn8jember')}
               className="z-10 w-16 h-16 flex items-center justify-center bg-[#ff6000] text-white rounded-full cursor-pointer"
             >
               <IoCompassOutline className='text-2xl' />
             </Button>
-            <div className="pr-8 pl-5 font-poppins text-[#ff6000] font-semibold hidden group-hover:lg:flex group-active:lg:flex transition-all duration-200">
-              Jelajahi SMKN 8 Jember!
-            </div>
           </div>
         </div>
 

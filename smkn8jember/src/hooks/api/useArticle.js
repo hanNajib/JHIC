@@ -159,6 +159,75 @@ export const useRestoreArticle = (options = {}) => {
     })
 };
 
+export const useForceDeleteArticle = (options = {}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id) => articleService.forceDeleteData(id),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ARTICLE.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkRestoreArticle = (options = {}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data) => articleService.bulkRestoreData(data),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ARTICLE.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkForceDeleteArticle = (options = {}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data) => articleService.bulkForceDeleteData(data),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ARTICLE.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
 export const useUpdateArticleStatus = (options = {}) => {
     const queryClient = useQueryClient();
     return useMutation({

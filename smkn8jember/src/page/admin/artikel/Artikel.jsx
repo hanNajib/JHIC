@@ -9,7 +9,7 @@ import FilterAdmin from "../../../components/ui/FilterAdmin";
 import { Button } from "../../../components/ui";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useArticles, useDeleteArticle, useRestoreArticle } from "../../../hooks/api/useArticle";
+import { useArticles, useDeleteArticle, useRestoreArticle, useForceDeleteArticle, useBulkRestoreArticle, useBulkForceDeleteArticle } from "../../../hooks/api/useArticle";
 import Swal from "sweetalert2";
 import { getCategoryStyle } from "../../../utils/helpers";
 import { useCategories } from "../../../hooks/api/useCategory";
@@ -24,6 +24,7 @@ const Artikel = () => {
   const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
   const [categoryName, setCategoryName] = useState(null);
   const [filterStatus, setFilterStatus] = useState("Semua");
+  const [selectedIds, setSelectedIds] = useState([]);
   const { user } = useAuth();
 
   const navigate = useNavigate();
@@ -56,6 +57,9 @@ const Artikel = () => {
 
   const deleteArticle = useDeleteArticle();
   const restoreArticle = useRestoreArticle();
+  const forceDeleteArticle = useForceDeleteArticle();
+  const bulkRestoreArticle = useBulkRestoreArticle();
+  const bulkForceDeleteArticle = useBulkForceDeleteArticle();
 
   const handleEdit = (id) => {
     navigate(`/admin/artikel/edit/${id}`);
@@ -116,6 +120,140 @@ const Artikel = () => {
     });
   };
 
+  const handleForceDelete = (id) => {
+    Swal.fire({
+      title: "Yakin ingin menghapus permanent?",
+      text: "Data akan dihapus secara permanen dan tidak dapat dikembalikan!",
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus permanent!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        forceDeleteArticle.mutate(id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire({
+              title: "Terhapus!",
+              text: "Data berhasil dihapus secara permanent.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat menghapus data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
+  };
+
+  const handleBulkRestore = () => {
+    if (selectedIds.length === 0) {
+      Swal.fire("Peringatan", "Pilih minimal satu data untuk diaktifkan", "warning");
+      return;
+    }
+
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: `${selectedIds.length} data akan diaktifkan kembali!`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, aktifkan!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkRestoreArticle.mutate({ ids: selectedIds }, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire({
+              title: "Berhasil!",
+              text: `${selectedIds.length} data berhasil diaktifkan kembali.`,
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat mengaktifkan data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
+  };
+
+  const handleBulkForceDelete = () => {
+    if (selectedIds.length === 0) {
+      Swal.fire("Peringatan", "Pilih minimal satu data untuk dihapus", "warning");
+      return;
+    }
+
+    Swal.fire({
+      title: "Yakin ingin menghapus permanent?",
+      text: `${selectedIds.length} data akan dihapus secara permanen dan tidak dapat dikembalikan!`,
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus permanent!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkForceDeleteArticle.mutate({ ids: selectedIds }, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire({
+              title: "Terhapus!",
+              text: `${selectedIds.length} data berhasil dihapus secara permanent.`,
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat menghapus data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
+  };
+
+  const handleSelectAll = (checked) => {
+    if (checked) {
+      setSelectedIds(articles.map(a => a.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
   const handleNextPage = () => {
     if (meta.next_cursor) {
       setCursor(meta.next_cursor);
@@ -140,6 +278,7 @@ const Artikel = () => {
     setSoftDeleteFilter("active");
     setCursor(null);
     setCurrentPage(1);
+    setSelectedIds([]);
   };
 
   return (
@@ -175,12 +314,52 @@ const Artikel = () => {
           filterKategori: [...(categoryOptions || [])],
           filterStatus: [ { value: 'published', label: 'Published' }, { value: 'draft', label: 'Draft' }, { value: 'pending', label: 'Pending' }, { value: 'rejected', label: 'Rejected' }]
         }}
-          />
+      />
 
-          <div className="overflow-x-auto shadow-lg rounded-lg relative">
-          <table className="min-w-full bg-white">
-            <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
+      {selectedIds.length > 0 && (
+        <div className="flex gap-3 items-center bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 rounded-lg p-4 shadow-md">
+          <div className="flex-1">
+            <span className="text-sm font-semibold text-blue-900">
+              ✓ {selectedIds.length} data dipilih
+            </span>
+          </div>
+          <div className="flex gap-2">
+            {softDeleteFilter === "deleted" && (
+              <button
+                onClick={handleBulkRestore}
+                className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-medium transition shadow-md flex items-center gap-2"
+              >
+                <BiRefresh className="text-lg" /> Aktifkan Terpilih
+              </button>
+            )}
+            <button
+              onClick={handleBulkForceDelete}
+              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 py-2 rounded-lg font-medium transition shadow-md flex items-center gap-2"
+            >
+              <MdDeleteOutline className="text-lg" /> Hapus Permanent
+            </button>
+            <button
+              onClick={() => setSelectedIds([])}
+              className="bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 text-white px-4 py-2 rounded-lg font-medium transition shadow-md"
+            >
+              Batal
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="overflow-x-auto shadow-lg rounded-lg relative">
+        <table className="min-w-full bg-white">
+          <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
+              <th className="py-2 px-4 text-left text-white">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.length === articles.length && articles.length > 0}
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                  className="cursor-pointer"
+                />
+              </th>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white min-w-56">Judul</th>
               <th className="py-2 px-4 text-left text-white">Kategori</th>
@@ -189,17 +368,17 @@ const Artikel = () => {
               <th className="py-2 px-4 text-left text-white">Status</th>
               <th className="py-2 px-4 text-left text-white">Aksi</th>
             </tr>
-            </thead>
+          </thead>
             <tbody>
             {isFetching ? (
               <tr>
-              <td colSpan={6} className="text-center py-4 text-gray-500">
+              <td colSpan={8} className="text-center py-4 text-gray-500">
                 Memuat data...
               </td>
               </tr>
             ) : articles.length === 0 ? (
               <tr>
-              <td colSpan={6} className="text-center py-4 text-gray-500">
+              <td colSpan={8} className="text-center py-4 text-gray-500">
                 Tidak ada data ditemukan.
               </td>
               </tr>
@@ -209,6 +388,14 @@ const Artikel = () => {
                 key={article.id}
                 className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
               >
+                <td className="py-2 px-4">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(article.id)}
+                    onChange={() => handleSelectRow(article.id)}
+                    className="cursor-pointer"
+                  />
+                </td>
                 <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                 <td className="py-2">{article.title}</td>
                 <td className="py-2 px-4">
@@ -274,6 +461,15 @@ const Artikel = () => {
                   >
                   {article.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
                   </button>
+                  {article.deleted_at !== null && (
+                    <button
+                      onClick={() => handleForceDelete(article.id)}
+                      className="bg-red-700 hover:bg-red-800 text-white p-2 rounded-2xl shadow-lg transition"
+                      title="Hapus Permanent"
+                    >
+                      <MdDeleteOutline className="text-lg" />
+                    </button>
+                  )}
                 </div>
                 </td>
               </tr>

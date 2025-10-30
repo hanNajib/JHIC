@@ -9,6 +9,9 @@ import {
   useFacilities,
   useDeleteFacility,
   useRestoreFacility,
+  useForceDeleteFacility,
+  useBulkRestoreFacility,
+  useBulkForceDeleteFacility
 } from "../../../hooks/api/useFacility";
 import { Button } from "../../../components/ui";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +28,7 @@ const Fasilitas = () => {
   const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const debouncedSearchTerm = useDebounce(search, 500);
   const navigate = useNavigate();
@@ -44,6 +48,9 @@ const Fasilitas = () => {
   const meta = facilityResponse?.meta || {};
   const deleteFacility = useDeleteFacility();
   const restoreFacility = useRestoreFacility();
+  const forceDeleteFacility = useForceDeleteFacility();
+  const bulkRestoreFacility = useBulkRestoreFacility();
+  const bulkForceDeleteFacility = useBulkForceDeleteFacility();
   const handleDelete = (id) => {
     Swal.fire({
       title: "Yakin ingin menghapus?",
@@ -106,6 +113,132 @@ const Fasilitas = () => {
     });
   };
 
+  const handleForceDelete = (facility) => {
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data akan dihapus permanen dan tidak dapat dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus permanen!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        forceDeleteFacility.mutate(facility.id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire({
+              title: "Berhasil!",
+              text: "Data berhasil dihapus permanen.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          onError: () => {
+            Swal.fire({
+              title: "Gagal!",
+              text: "Terjadi kesalahan saat menghapus data.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          },
+        });
+      }
+    });
+  };
+
+  const handleBulkRestore = () => {
+    if (selectedIds.length === 0) {
+      Swal.fire({ title: "Perhatian!", text: "Pilih minimal satu data untuk diaktifkan kembali.", icon: "info", confirmButtonColor: "#3085d6" });
+      return;
+    }
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: `${selectedIds.length} data akan diaktifkan kembali!`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, aktifkan!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkRestoreFacility.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire({ title: "Berhasil!", text: `${selectedIds.length} data berhasil diaktifkan kembali.`, icon: "success", timer: 1500, showConfirmButton: false });
+          },
+          onError: () => Swal.fire({ title: "Gagal!", text: "Terjadi kesalahan saat mengaktifkan data.", icon: "error", confirmButtonColor: "#d33" })
+        });
+      }
+    });
+  };
+
+  const handleBulkForceDelete = () => {
+    if (selectedIds.length === 0) {
+      Swal.fire({ title: "Perhatian!", text: "Pilih minimal satu data untuk dihapus permanen.", icon: "info", confirmButtonColor: "#3085d6" });
+      return;
+    }
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: `${selectedIds.length} data akan dihapus permanen dan tidak dapat dikembalikan!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus permanen!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkForceDeleteFacility.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire({ title: "Berhasil!", text: `${selectedIds.length} data berhasil dihapus permanen.`, icon: "success", timer: 1500, showConfirmButton: false });
+          },
+          onError: () => Swal.fire({ title: "Gagal!", text: "Terjadi kesalahan saat menghapus data.", icon: "error", confirmButtonColor: "#d33" })
+        });
+      }
+    });
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Hapus data terpilih?",
+      text: `${selectedIds.length} fasilitas akan dihapus`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Promise.all(selectedIds.map(id => deleteFacility.mutateAsync(id)))
+          .then(() => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+          });
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.length === facilities.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(facilities.map(f => f.id));
+    }
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+  };
+
   const handleReset = () => {
     setSearch("");
     setSoftDeleteFilter("active");
@@ -157,10 +290,36 @@ const Fasilitas = () => {
         }}
       />
 
+      {selectedIds.length > 0 && (
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 p-4 rounded-lg flex items-center justify-between">
+          <span className="text-sm font-semibold text-blue-700">{selectedIds.length} item dipilih</span>
+          <div className="flex gap-2">
+            {softDeleteFilter === 'active' && (
+              <button onClick={handleBulkDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                <MdDeleteOutline className="text-lg" />Hapus
+              </button>
+            )}
+            {softDeleteFilter === 'deleted' && (
+              <>
+                <button onClick={handleBulkRestore} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <BiRefresh className="text-lg" />Pulihkan
+                </button>
+                <button onClick={handleBulkForceDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <MdDeleteOutline className="text-lg" />Hapus Permanen
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
+              <th className="py-2 px-4 text-center text-white w-12">
+                <input type="checkbox" checked={selectedIds.length === facilities.length && facilities.length > 0} onChange={handleSelectAll} className="w-4 h-4 cursor-pointer" />
+              </th>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white min-w-56">Nama</th>
               <th className="py-2 px-4 text-left text-white">Total</th>
@@ -172,19 +331,22 @@ const Fasilitas = () => {
           <tbody>
             {isFetching ? (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
+                <td colSpan={7} className="text-center py-4 text-gray-500">
                   Memuat data...
                 </td>
               </tr>
             ) : facilities.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
+                <td colSpan={7} className="text-center py-4 text-gray-500">
                   Tidak ada data ditemukan.
                 </td>
               </tr>
             ) : (
               facilities.map((facility, index) => (
                 <tr key={facility.id} className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
+                  <td className="py-2 px-4 text-center">
+                    <input type="checkbox" checked={selectedIds.includes(facility.id)} onChange={() => handleSelectRow(facility.id)} className="w-4 h-4 cursor-pointer" />
+                  </td>
                   <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + index + 1}</td>
                   <td className="py-2 px-4 font-medium">{facility.name}</td>
                   <td className="py-2 px-4">{facility.room_total}</td>
@@ -201,13 +363,22 @@ const Fasilitas = () => {
                   <td className="py-2 px-4">
                     <div className="flex gap-2 justify-center">
                       {softDeleteFilter === "deleted" ? (
-                        <button
-                          onClick={() => handleRestore(facility)}
-                          className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
-                          title="Pulihkan Artikel"
-                        >
-                          <BiRefresh className="text-lg" />
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleRestore(facility)}
+                            className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+                            title="Pulihkan Artikel"
+                          >
+                            <BiRefresh className="text-lg" />
+                          </button>
+                          <button
+                            onClick={() => handleForceDelete(facility)}
+                            className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+                            title="Hapus Permanen"
+                          >
+                            <MdDeleteOutline className="text-lg" />
+                          </button>
+                        </>
                       ) : (
                         <>
                           <Button
