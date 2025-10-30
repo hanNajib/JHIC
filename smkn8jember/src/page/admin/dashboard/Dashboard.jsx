@@ -11,6 +11,7 @@ import { useGalleries } from "../../../hooks/api/useGallery";
 import { useMajors } from "../../../hooks/api/useMajor";
 import { useAuth } from "../../../hooks/useAuth";
 import { getCategoryStyle } from "../../../utils/helpers";
+import { ImageModal } from "../../../components/ui";
 const Dashboard = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [search, setSearch] = useState("");
@@ -119,7 +120,7 @@ const Dashboard = () => {
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
               <th className="py-2 px-4 text-left text-white">No</th>
-              <th className="py-2 px-4 text-left text-white min-w-56">Judul</th>
+              <th className="py-2 px-4 text-left text-white">Judul</th>
               <th className="py-2 px-4 text-left text-white">Kategori</th>
               <th className="py-2 px-4 text-left text-white">Tanggal</th>
               <th className="py-2 px-4 text-left text-white">Foto</th>
@@ -196,6 +197,11 @@ const Dashboard = () => {
           </tbody>
         </table>
       </div>
+      {/*modal image*/}
+      <ImageModal
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };
