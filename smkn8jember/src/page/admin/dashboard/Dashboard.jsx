@@ -11,6 +11,7 @@ import { useGalleries } from "../../../hooks/api/useGallery";
 import { useMajors } from "../../../hooks/api/useMajor";
 import { useAuth } from "../../../hooks/useAuth";
 import { getCategoryStyle } from "../../../utils/helpers";
+import { ImageModal } from "../../../components/ui";
 const Dashboard = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [search, setSearch] = useState("");
@@ -196,6 +197,11 @@ const Dashboard = () => {
           </tbody>
         </table>
       </div>
+      {/*modal image*/}
+      <ImageModal
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };
