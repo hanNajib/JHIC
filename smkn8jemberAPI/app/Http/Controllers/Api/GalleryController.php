@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\GalleryResource;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class GalleryController extends Controller
 {
@@ -95,5 +96,58 @@ class GalleryController extends Controller
         }
         $gallery->restore();
         return $this->statusMessage("Gallery restored successfully");
+    }
+
+    public function forceDelete($id)
+    {
+        $gallery = Gallery::withTrashed()->find($id);
+        if (!$gallery) {
+            return $this->notFound('Gallery not found');
+        }
+
+        if ($gallery->image) {
+            Storage::disk('public')->delete($gallery->image);
+        }
+        $gallery->forceDelete();
+        return $this->deleted('Gallery permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Gallery::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted galleries found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' gallery(ies) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $galleries = Gallery::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($galleries->isEmpty()) {
+            return $this->notFound('No galleries found with the provided IDs');
+        }
+
+        foreach ($galleries as $gallery) {
+            if ($gallery->image) {
+                Storage::disk('public')->delete($gallery->image);
+            }
+            $gallery->forceDelete();
+        }
+
+        return $this->deleted(count($galleries) . ' gallery(ies) permanently deleted');
     }
 }

@@ -6,7 +6,7 @@ import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useCareers, useDeleteCareer, useRestoreCareer } from "../../../hooks/api/useCareer";
+import { useCareers, useDeleteCareer, useRestoreCareer, useForceDeleteCareer, useBulkRestoreCareer, useBulkForceDeleteCareer } from "../../../hooks/api/useCareer";
 import Swal from "sweetalert2";
 import { Button } from "../../../components/ui";
 import { RenderIcon } from "../../../components/ui/RenderIcon";
@@ -17,6 +17,7 @@ const Carrier = () => {
   const [jumlahPage, setJumlahPage] = useState(5);
   const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const debouncedSearchTerm = useDebounce(search, 500);
   const navigate = useNavigate();
@@ -37,6 +38,9 @@ const Carrier = () => {
 
   const deleteCareer = useDeleteCareer();
   const restoreCareer = useRestoreCareer();
+  const forceDeleteCareer = useForceDeleteCareer();
+  const bulkRestoreCareer = useBulkRestoreCareer();
+  const bulkForceDeleteCareer = useBulkForceDeleteCareer();
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -93,11 +97,108 @@ const Carrier = () => {
         restoreCareer.mutate(career.id, {
           onSuccess: () => {
             refetch();
-            Swal.fire("Diaktifkan!", "Fasilitas telah diaktifkan.", "success");
+            Swal.fire("Diaktifkan!", "Peluang Karier telah diaktifkan.", "success");
           }
         });
       }
     });
+  };
+
+  const handleForceDelete = (career) => {
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data akan dihapus permanen dan tidak bisa dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus permanen!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        forceDeleteCareer.mutate(career.id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire("Terhapus!", "Peluang Karier berhasil dihapus permanen.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkRestore = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Pulihkan data terpilih?",
+      text: `${selectedIds.length} data akan dipulihkan`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Ya, pulihkan!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkRestoreCareer.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Berhasil!", "Data berhasil dipulihkan.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkForceDelete = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Hapus permanen data terpilih?",
+      text: `${selectedIds.length} data akan dihapus permanen!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkForceDeleteCareer.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus permanen.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Hapus data terpilih?",
+      text: `${selectedIds.length} data akan dihapus`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Promise.all(selectedIds.map(id => deleteCareer.mutateAsync(id)))
+          .then(() => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+          });
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelectedIds(selectedIds.length === careers.length ? [] : careers.map(c => c.id));
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   };
 
   const handleReset = () => {
@@ -151,10 +252,36 @@ const Carrier = () => {
         }}
       />
 
+      {selectedIds.length > 0 && (
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 p-4 rounded-lg flex items-center justify-between">
+          <span className="text-sm font-semibold text-blue-700">{selectedIds.length} item dipilih</span>
+          <div className="flex gap-2">
+            {softDeleteFilter === 'active' && (
+              <button onClick={handleBulkDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                <MdDeleteOutline className="text-lg" />Hapus
+              </button>
+            )}
+            {softDeleteFilter === 'deleted' && (
+              <>
+                <button onClick={handleBulkRestore} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <BiRefresh className="text-lg" />Pulihkan
+                </button>
+                <button onClick={handleBulkForceDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <MdDeleteOutline className="text-lg" />Hapus Permanen
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
+              <th className="py-2 px-4 text-center text-white w-12">
+                <input type="checkbox" checked={selectedIds.length === careers.length && careers.length > 0} onChange={handleSelectAll} className="w-4 h-4 cursor-pointer" />
+              </th>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white min-w-56">Nama</th>
               <th className="py-2 px-4 text-left text-white">Gaji</th>
@@ -166,13 +293,13 @@ const Carrier = () => {
           <tbody>
             {isFetching ? (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
+                <td colSpan={7} className="text-center py-4 text-gray-500">
                   Memuat data...
                 </td>
               </tr>
             ) : careers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
+                <td colSpan={7} className="text-center py-4 text-gray-500">
                   Tidak ada data ditemukan.
                 </td>
               </tr>
@@ -182,6 +309,9 @@ const Carrier = () => {
                   key={career.id}
                   className="hover:bg-gray-50 text-[14px] border-b border-gray-300"
                 >
+                  <td className="py-2 px-4 text-center">
+                    <input type="checkbox" checked={selectedIds.includes(career.id)} onChange={() => handleSelectRow(career.id)} className="w-4 h-4 cursor-pointer" />
+                  </td>
                   <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + i + 1}</td>
                   <td className="py-2">{career.name}</td>
                   <td className="py-2 px-4">{career.salary}</td>
@@ -210,6 +340,15 @@ const Carrier = () => {
                       >
                         {career.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
                       </button>
+                      {career.deleted_at !== null && (
+                        <button
+                          onClick={() => handleForceDelete(career)}
+                          className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-2xl shadow-lg transition"
+                          title="Hapus Permanen"
+                        >
+                          <MdDeleteOutline className="text-lg" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

@@ -109,4 +109,46 @@ class AdminController extends Controller
         $admin->restore();
         return $this->statusMessage("Admin restored successfully");
     }
-}
+
+    public function forceDelete($id)
+    {
+        $admin = User::withTrashed()->find($id);
+        if (!$admin) {
+            return $this->notFound('Admin not found');
+        }
+        $admin->forceDelete();
+        return $this->deleted('Admin permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = User::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted admins found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' admin(s) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $admins = User::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($admins->isEmpty()) {
+            return $this->notFound('No admins found with the provided IDs');
+        }
+
+        User::withTrashed()->whereIn('id', $ids)->forceDelete();
+        return $this->deleted(count($admins) . ' admin(s) permanently deleted');
+    }

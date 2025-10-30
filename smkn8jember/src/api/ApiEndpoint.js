@@ -18,6 +18,9 @@ export const AdminApi = {
   update: (id, data) => apiClient.post(`/admins/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/admins/${id}`),
   restore: (id) => apiClient.post(`/admins/${id}/restore`),
+  forceDelete: (id) => apiClient.delete(`/admins/${id}/force`),
+  bulkRestore: (ids) => apiClient.post('/admins/restore-bulk', { ids }),
+  bulkForceDelete: (ids) => apiClient.post('/admins/force-delete-bulk', { ids })
 };
 
 export const WebSettingsApi = {
@@ -40,7 +43,10 @@ export const AnnouncementApi = {
     create : (data) => apiClient.post('/announcements', data),
     update : (id, data) => apiClient.post(`/announcements/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/announcements/${id}`),
-    restore: (id) => apiClient.post(`announcements/${id}/restore`)
+    restore: (id) => apiClient.post(`announcements/${id}/restore`),
+    forceDelete: (id) => apiClient.delete(`/announcements/${id}/force`),
+    bulkRestore: (ids) => apiClient.post('/announcements/restore-bulk', { ids }),
+    bulkForceDelete: (ids) => apiClient.post('/announcements/force-delete-bulk', { ids })
 }
 
 
@@ -50,7 +56,10 @@ export const FacilityApi = {
     create : (data) => apiClient.post('/facility', data),
     update : (id, data) => apiClient.post(`/facility/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/facility/${id}`),
-    restore: (id) => apiClient.post(`facility/${id}/restore`)
+    restore: (id) => apiClient.post(`facility/${id}/restore`),
+    forceDelete: (id) => apiClient.delete(`/facility/${id}/force`),
+    bulkRestore: (ids) => apiClient.post('/facility/restore-bulk', { ids }),
+    bulkForceDelete: (ids) => apiClient.post('/facility/force-delete-bulk', { ids })
 }
 
 export const MajorsApi = {
@@ -61,6 +70,9 @@ export const MajorsApi = {
   update: (id, data) => apiClient.post(`/majors/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/majors/${id}`),
   restore: (id) => apiClient.post(`majors/${id}/restore`),
+  forceDelete: (id) => apiClient.delete(`/majors/${id}/force`),
+  bulkRestore: (ids) => apiClient.post('/majors/restore-bulk', { ids }),
+  bulkForceDelete: (ids) => apiClient.post('/majors/force-delete-bulk', { ids })
 };
 export const CategoryApi = {
   get: (params) => apiClient.get("/categories", { params }),
@@ -69,6 +81,9 @@ export const CategoryApi = {
   update: (id, data) => apiClient.post(`/categories/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/categories/${id}`),
   restore: (id) => apiClient.post(`categories/${id}/restore`),
+  forceDelete: (id) => apiClient.delete(`/categories/${id}/force`),
+  bulkRestore: (ids) => apiClient.post('/categories/restore-bulk', { ids }),
+  bulkForceDelete: (ids) => apiClient.post('/categories/force-delete-bulk', { ids })
 };
 
 export const PartnersApi = {
@@ -78,6 +93,9 @@ export const PartnersApi = {
   update: (id, data) => apiClient.post(`/partners/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/partners/${id}`),
   restore: (id) => apiClient.post(`partners/${id}/restore`),
+  forceDelete: (id) => apiClient.delete(`/partners/${id}/force`),
+  bulkRestore: (ids) => apiClient.post('/partners/restore-bulk', { ids }),
+  bulkForceDelete: (ids) => apiClient.post('/partners/force-delete-bulk', { ids })
 };
 
 export const ExtracurricularApi = {
@@ -88,6 +106,9 @@ export const ExtracurricularApi = {
     apiClient.post(`/extracurriculars/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/extracurriculars/${id}`),
   restore: (id) => apiClient.post(`/extracurriculars/${id}/restore`),
+  forceDelete: (id) => apiClient.delete(`/extracurriculars/${id}/force`),
+  bulkRestore: (ids) => apiClient.post('/extracurriculars/restore-bulk', { ids }),
+  bulkForceDelete: (ids) => apiClient.post('/extracurriculars/force-delete-bulk', { ids })
 };
 
 export const ChanceCarrierApi = {
@@ -98,6 +119,9 @@ export const ChanceCarrierApi = {
     apiClient.post(`/chance-carriers/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/chance-carriers/${id}`),
   restore: (id) => apiClient.post(`/chance-carriers/${id}/restore`),
+  forceDelete: (id) => apiClient.delete(`/chance-carriers/${id}/force`),
+  bulkRestore: (ids) => apiClient.post('/chance-carriers/restore-bulk', { ids }),
+  bulkForceDelete: (ids) => apiClient.post('/chance-carriers/force-delete-bulk', { ids })
 };
 
 export const GalleryApi = {
@@ -106,7 +130,10 @@ export const GalleryApi = {
     create : (data) => apiClient.post('/gallery', data),
     update : (id, data) => apiClient.post(`/gallery/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/gallery/${id}`),
-    restore: (id) => apiClient.post(`gallery/${id}/restore`)
+    restore: (id) => apiClient.post(`gallery/${id}/restore`),
+    forceDelete: (id) => apiClient.delete(`/gallery/${id}/force`),
+    bulkRestore: (data) => apiClient.post(`/gallery/restore-bulk`, data),
+    bulkForceDelete: (data) => apiClient.post(`/gallery/force-delete-bulk`, data),
 }
 
 export const SubjectApi = {
@@ -116,6 +143,9 @@ export const SubjectApi = {
   update: (id, data) => apiClient.post(`/subject/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/subject/${id}`),
   restore: (id) => apiClient.post(`/subject/${id}/restore`),
+  forceDelete: (id) => apiClient.delete(`/subject/${id}/force`),
+  bulkRestore: (ids) => apiClient.post('/subject/restore-bulk', { ids }),
+  bulkForceDelete: (ids) => apiClient.post('/subject/force-delete-bulk', { ids })
 };
 
 export const StaffApi = {
@@ -126,6 +156,9 @@ export const StaffApi = {
   update: (id, data) => apiClient.post(`/staff/${id}?_method=PUT`, data),
   delete: (id) => apiClient.delete(`/staff/${id}`),
   restore: (id) => apiClient.post(`/staff/${id}/restore`),
+  forceDelete: (id) => apiClient.delete(`/staff/${id}/force`),
+  bulkRestore: (ids) => apiClient.post('/staff/restore-bulk', { ids }),
+  bulkForceDelete: (ids) => apiClient.post('/staff/force-delete-bulk', { ids })
 };
 
 export const ArticleApi = {
@@ -136,6 +169,9 @@ export const ArticleApi = {
     update : (id, data) => apiClient.post(`/articles/${id}?_method=PUT`, data),
     delete : (id) => apiClient.delete(`/articles/${id}`),
     restore: (id) => apiClient.post(`/articles/${id}/restore`),
+    forceDelete: (id) => apiClient.delete(`/articles/${id}/force`),
+    bulkRestore: (data) => apiClient.post(`/articles/restore-bulk`, data),
+    bulkForceDelete: (data) => apiClient.post(`/articles/force-delete-bulk`, data),
     updateStatus: (id, status) => apiClient.post(`/articles/${id}/status?_method=PATCH`, status)
 }
 

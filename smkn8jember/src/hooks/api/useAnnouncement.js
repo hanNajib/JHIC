@@ -135,3 +135,72 @@ export const useRestoreAnnouncement = (options = {}) => {
         }
     })
 };
+
+export const useForceDeleteAnnouncement = (options = {}) => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (id) => announcementService.forceDeleteData(id),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkRestoreAnnouncement = (options = {}) => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (ids) => announcementService.bulkRestoreData(ids),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkForceDeleteAnnouncement = (options = {}) => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (ids) => announcementService.bulkForceDeleteData(ids),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.ANNOUNCEMENT.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};

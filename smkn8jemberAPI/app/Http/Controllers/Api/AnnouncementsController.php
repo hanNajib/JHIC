@@ -87,9 +87,6 @@ class AnnouncementsController extends Controller
             return $this->notFound('Announcement not found');
         }
 
-        if ($announcement->image) {
-            Storage::disk('public')->delete($announcement->image);
-        }
         $announcement->delete();
 
         return $this->deleted('Announcement deleted successfully');
@@ -102,5 +99,58 @@ class AnnouncementsController extends Controller
         }
         $announcement->restore();
         return $this->statusMessage("Announcement restored successfully");
+    }
+
+    public function forceDelete($id)
+    {
+        $announcement = Announcement::withTrashed()->find($id);
+        if (!$announcement) {
+            return $this->notFound('Announcement not found');
+        }
+
+        if ($announcement->image) {
+            Storage::disk('public')->delete($announcement->image);
+        }
+        $announcement->forceDelete();
+        return $this->deleted('Announcement permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Announcement::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted announcements found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' announcement(s) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $announcements = Announcement::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($announcements->isEmpty()) {
+            return $this->notFound('No announcements found with the provided IDs');
+        }
+
+        foreach ($announcements as $announcement) {
+            if ($announcement->image) {
+                Storage::disk('public')->delete($announcement->image);
+            }
+            $announcement->forceDelete();
+        }
+
+        return $this->deleted(count($announcements) . ' announcement(s) permanently deleted');
     }
 }

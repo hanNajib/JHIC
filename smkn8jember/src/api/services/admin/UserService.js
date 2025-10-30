@@ -61,3 +61,30 @@ export const restoreUser = async (id) => {
         throw error;
     }
 }
+
+export const forceDeleteUser = async (id) => {
+    try {
+        const response = await AdminApi.forceDelete(id);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const bulkRestoreUser = async (ids) => {
+    try {
+        const response = await AdminApi.bulkRestore(ids);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const bulkForceDeleteUser = async (ids) => {
+    try {
+        const response = await AdminApi.bulkForceDelete(ids);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

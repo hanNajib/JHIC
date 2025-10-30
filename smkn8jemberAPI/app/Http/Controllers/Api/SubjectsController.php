@@ -78,4 +78,48 @@ class SubjectsController extends Controller
         $subjects->restore();
         return $this->statusMessage("Subject restored successfully");
     }
+
+    public function forceDelete($id)
+    {
+        $subject = Subject::withTrashed()->find($id);
+        if (!$subject) {
+            return $this->notFound('Subject not found');
+        }
+
+        $subject->forceDelete();
+        return $this->deleted('Subject permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Subject::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted subjects found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' subject(s) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $subjects = Subject::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($subjects->isEmpty()) {
+            return $this->notFound('No subjects found with the provided IDs');
+        }
+
+        Subject::withTrashed()->whereIn('id', $ids)->forceDelete();
+        return $this->deleted(count($subjects) . ' subject(s) permanently deleted');
+    }
 }

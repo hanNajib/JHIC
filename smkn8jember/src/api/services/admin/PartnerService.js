@@ -52,4 +52,31 @@ export const restoreData = async (id) => {
     } catch (error) {
         throw error;
     }
-}
+};
+
+export const forceDeleteData = async (id) => {
+    try {
+        const response = await PartnersApi.forceDelete(id);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const bulkRestoreData = async (ids) => {
+    try {
+        const response = await PartnersApi.bulkRestore(ids);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const bulkForceDeleteData = async (ids) => {
+    try {
+        const response = await PartnersApi.bulkForceDelete(ids);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

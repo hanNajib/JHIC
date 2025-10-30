@@ -117,3 +117,72 @@ export const useRestoreExtarculicular = (options = {}) => {
         }
     })
 };
+
+export const useForceDeleteExtarculicular = (options = {}) => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (id) => extracurricularService.forceDeleteData(id),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.EXTRACURICULARS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkRestoreExtarculicular = (options = {}) => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (ids) => extracurricularService.bulkRestoreData(ids),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.EXTRACURICULARS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkForceDeleteExtarculicular = (options = {}) => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (ids) => extracurricularService.bulkForceDeleteData(ids),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.EXTRACURICULARS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};

@@ -120,9 +120,6 @@ class ArticleController extends Controller
         if ($article->author_id !== Auth::id() ) {
             return $this->error('You are not authorized to delete this article', 403);
         }
-        if ($article->image) {
-            Storage::disk('public')->delete($article->image);
-        }
         $article->delete();
         return $this->deleted('Article deleted successfully');
     }
@@ -135,6 +132,59 @@ class ArticleController extends Controller
         }
         $article->restore();
         return $this->statusMessage("Admin restored successfully");
+    }
+
+    public function forceDelete($id)
+    {
+        $article = Article::withTrashed()->find($id);
+        if (!$article) {
+            return $this->notFound('Article not found');
+        }
+
+        if ($article->image) {
+            Storage::disk('public')->delete($article->image);
+        }
+        $article->forceDelete();
+        return $this->deleted('Article permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Article::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted articles found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' article(s) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $articles = Article::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($articles->isEmpty()) {
+            return $this->notFound('No articles found with the provided IDs');
+        }
+
+        foreach ($articles as $article) {
+            if ($article->image) {
+                Storage::disk('public')->delete($article->image);
+            }
+            $article->forceDelete();
+        }
+
+        return $this->deleted(count($articles) . ' article(s) permanently deleted');
     }
 
     public function updateStatus(Request $request, $id)

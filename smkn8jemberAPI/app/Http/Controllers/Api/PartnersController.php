@@ -84,10 +84,6 @@ class PartnersController extends Controller
             return $this->notFound('Partner not found');
         }
 
-        if ($partner->image) {
-            Storage::disk('public')->delete($partner->image);
-        }
-
         $partner->delete();
 
         return $this->deleted('Partner deleted successfully');
@@ -100,5 +96,58 @@ class PartnersController extends Controller
         }
         $partner->restore();
         return $this->statusMessage("Partner restored successfully");
+    }
+
+    public function forceDelete($id)
+    {
+        $partner = Partner::withTrashed()->find($id);
+        if (!$partner) {
+            return $this->notFound('Partner not found');
+        }
+
+        if ($partner->image) {
+            Storage::disk('public')->delete($partner->image);
+        }
+        $partner->forceDelete();
+        return $this->deleted('Partner permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Partner::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted partners found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' partner(s) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $partners = Partner::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($partners->isEmpty()) {
+            return $this->notFound('No partners found with the provided IDs');
+        }
+
+        foreach ($partners as $partner) {
+            if ($partner->image) {
+                Storage::disk('public')->delete($partner->image);
+            }
+            $partner->forceDelete();
+        }
+
+        return $this->deleted(count($partners) . ' partner(s) permanently deleted');
     }
 }

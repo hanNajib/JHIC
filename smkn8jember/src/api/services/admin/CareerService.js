@@ -53,3 +53,30 @@ export const restoreData = async (id) => {
         throw error;
     }
 }
+
+export const forceDeleteData = async (id) => {
+    try {
+        const response = await ChanceCarrierApi.forceDelete(id);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const bulkRestoreData = async (ids) => {
+    try {
+        const response = await ChanceCarrierApi.bulkRestore(ids);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const bulkForceDeleteData = async (ids) => {
+    try {
+        const response = await ChanceCarrierApi.bulkForceDelete(ids);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

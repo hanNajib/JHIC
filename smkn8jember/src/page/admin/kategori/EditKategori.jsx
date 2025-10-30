@@ -176,6 +176,8 @@ const EditKategori = () => {
           )}
         </div>
 
+        {/* Warna (input teks biasa) */}
+        {/* Warna (color picker + input teks sinkron) */}
         <div className="flex flex-col">
           <label htmlFor="color" className="font-bold text-gray-800">
             Warna

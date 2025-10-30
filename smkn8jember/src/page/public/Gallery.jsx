@@ -17,12 +17,8 @@ const Gallery = () => {
   const [searchText, setSearchText] = useState("");
   const debouncedSearchTerm = useDebounce(searchText, 500);
 
-  const {
-    data: galleryResponse,
-    isLoading,
-    isError,
-  } = useGalleries({
-    category: category === "all" ? undefined : category,
+  const { data: galleryResponse, isLoading, isError } = useGalleries({
+    category_name: category === "all" ? undefined : category,
     sortDir: sort === "terbaru" ? "asc" : "desc",
     s: debouncedSearchTerm,
   });
@@ -115,24 +111,20 @@ const Gallery = () => {
                 ))}
               </div>
 
-              {/* Terbaru/lama */}
-              <div className="flex items-center gap-2">
-                <label
-                  htmlFor="sort"
-                  className="text-sm font-medium text-gray-600"
-                >
-                  Sort by:
-                </label>
-                <select
-                  id="sort"
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                  className="border border-orange-500 rounded-md py-2 px-10 focus:outline-none focus:ring-1 focus:ring-orange-400"
-                >
-                  <option value="terbaru">Newest</option>
-                  <option value="terlama">Oldest</option>
-                </select>
-              </div>
+                {/* Terbaru/lama */}
+            <div className="flex items-center gap-2">
+              <label htmlFor="sort" className="text-sm font-medium text-gray-600">
+                Sort by: 
+              </label>
+              <select
+                id="sort"
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="border border-orange-500 rounded-md py-2 px-10 focus:outline-none focus:ring-1 focus:ring-orange-400"
+              >
+                <option value="terbaru">Newest</option>
+                <option value="terlama">Oldest</option>
+              </select>
             </div>
           </div>
         </section>
