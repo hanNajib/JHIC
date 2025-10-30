@@ -61,59 +61,88 @@ const Dashboard = () => {
         </h4>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
-          <div className="flex flex-col gap-1">
-            <h4 className="font-bold text-base">Artikel Terbit</h4>
-            <h3 className="font-bold text-2xl md:text-3xl">
-              {isFetching ? <LoadingDots /> : jumlahArtikel}
-            </h3>
-          </div>
-          <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
-            <GrArticle />
+      {/* Jika yang login adalah admin */}
+      {user?.role === "admin" ? (
+        <div className="w-full">
+          <div className="relative flex flex-col sm:flex-row items-center justify-between p-8 w-full rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 text-white shadow-lg overflow-hidden transition-transform hover:scale-[1.02] duration-300">
+            {/* Background dekorasi efek blur */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-tr-[100%]"></div>
+
+            {/* Konten kiri */}
+            <div className="flex flex-col gap-2 z-10">
+              <h4 className="font-semibold text-lg uppercase tracking-wide opacity-90">
+                Artikel Terbit
+              </h4>
+              <h3 className="font-bold text-5xl drop-shadow-md">
+                {isFetching ? <LoadingDots /> : jumlahArtikel}
+              </h3>
+              <p className="text-sm opacity-90 mt-1">
+                Total artikel yang telah kamu publikasikan di website.
+              </p>
+            </div>
+
+            {/* Ikon besar kanan */}
+            <div className="z-10 mt-6 sm:mt-0">
+              <div className="flex items-center justify-center bg-white/20 backdrop-blur-md p-6 rounded-full text-6xl shadow-inner hover:rotate-6 transition-transform duration-300">
+                <GrArticle />
+              </div>
+            </div>
           </div>
         </div>
-
-        {user?.role !== "admin" && (
-          <>
-            <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
-              <div className="flex flex-col gap-1">
-                <h4 className="font-bold text-base">Pengumuman</h4>
-                <h3 className="font-bold text-2xl md:text-3xl">
-                  {loadingAnnouncement ? <LoadingDots /> : jumlahPengumuman}
-                </h3>
-              </div>
-              <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
-                <RiMegaphoneFill />
-              </div>
+      ) : (
+        // Kalau bukan admin, tampilkan card versi biasa (grid 4)
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* Card-card yang sudah ada sebelumnya */}
+          <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+            <div className="flex flex-col gap-1">
+              <h4 className="font-bold text-base">Artikel Terbit</h4>
+              <h3 className="font-bold text-2xl md:text-3xl">
+                {isFetching ? <LoadingDots /> : jumlahArtikel}
+              </h3>
             </div>
-
-            <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
-              <div className="flex flex-col gap-1">
-                <h4 className="font-bold text-base">Gallery Terbit</h4>
-                <h3 className="font-bold text-2xl md:text-3xl">
-                  {loadingGallery ? <LoadingDots /> : jumlahGallery}
-                </h3>
-              </div>
-              <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
-                <GrGallery />
-              </div>
+            <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+              <GrArticle />
             </div>
+          </div>
 
-            <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
-              <div className="flex flex-col gap-1">
-                <h4 className="font-bold text-base">Jurusan</h4>
-                <h3 className="font-bold text-2xl md:text-3xl">
-                  {loadingMajor ? <LoadingDots /> : jumlahJurusan}
-                </h3>
-              </div>
-              <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
-                <MdExtension />
-              </div>
+          <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+            <div className="flex flex-col gap-1">
+              <h4 className="font-bold text-base">Pengumuman</h4>
+              <h3 className="font-bold text-2xl md:text-3xl">
+                {loadingAnnouncement ? <LoadingDots /> : jumlahPengumuman}
+              </h3>
             </div>
-          </>
-        )}
-      </div>
+            <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+              <RiMegaphoneFill />
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+            <div className="flex flex-col gap-1">
+              <h4 className="font-bold text-base">Gallery Terbit</h4>
+              <h3 className="font-bold text-2xl md:text-3xl">
+                {loadingGallery ? <LoadingDots /> : jumlahGallery}
+              </h3>
+            </div>
+            <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+              <GrGallery />
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center p-6 md:p-8 w-full rounded-lg bg-white text-gray-900 shadow-md">
+            <div className="flex flex-col gap-1">
+              <h4 className="font-bold text-base">Jurusan</h4>
+              <h3 className="font-bold text-2xl md:text-3xl">
+                {loadingMajor ? <LoadingDots /> : jumlahJurusan}
+              </h3>
+            </div>
+            <div className="flex items-center justify-center p-3 bg-orange-500/25 text-orange-500 rounded-full text-3xl">
+              <MdExtension />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white">
