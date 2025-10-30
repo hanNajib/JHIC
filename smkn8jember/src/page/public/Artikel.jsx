@@ -131,8 +131,8 @@ const ArtikelPage = () => {
                 onChange={(e) => setSort(e.target.value)}
                 className="border border-orange-500 rounded-md py-2 px-10 focus:outline-none focus:ring-1 focus:ring-orange-400"
               >
-                <option value="terbaru">Newest</option>
-                <option value="terlama">Oldest</option>
+                <option value="terbaru">Terbaru</option>
+                <option value="terlama">Terlama</option>
               </select>
             </div>
           </div>

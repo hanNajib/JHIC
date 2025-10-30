@@ -251,7 +251,7 @@ console.log(articles);
           />
 
           <div className="w-full overflow-x-auto shadow-lg rounded-lg relative">
-          <table className=" bg-white">
+          <table className="w-full bg-white">
             <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
               <th className="py-2 px-4 text-left text-white">No</th>
