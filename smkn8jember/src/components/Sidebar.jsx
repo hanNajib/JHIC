@@ -234,8 +234,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
           {/* Menu List */}
           <ul
-            className={`ScrollBar h-screen flex flex-col gap-4 pt-5 pb-5 overflow-y-auto pr-2 ${
-              isOpen ? "" : "overflow-y-auto "
+            className={`ScrollBar h-screen flex flex-col gap-4 pt-5 pb-20 overflow-y-auto pr-2 ${
+              isOpen ? "" : "overflow-y-auto pb-20"
             }`}
           >
             <NavItem
