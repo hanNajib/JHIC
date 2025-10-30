@@ -111,9 +111,6 @@ class MajorsController extends Controller
             return $this->notFound('Major not found');
         }
 
-        if ($major->image) {
-            Storage::disk('public')->delete($major->image);
-        }
         $major->delete();
         return $this->deleted('Major deleted successfully');
     }
@@ -125,5 +122,58 @@ class MajorsController extends Controller
         }
         $major->restore();
         return $this->statusMessage("Major restored successfully");
+    }
+
+    public function forceDelete($id)
+    {
+        $major = Major::withTrashed()->find($id);
+        if (!$major) {
+            return $this->notFound('Major not found');
+        }
+
+        if ($major->image) {
+            Storage::disk('public')->delete($major->image);
+        }
+        $major->forceDelete();
+        return $this->deleted('Major permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Major::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted majors found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' major(s) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $majors = Major::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($majors->isEmpty()) {
+            return $this->notFound('No majors found with the provided IDs');
+        }
+
+        foreach ($majors as $major) {
+            if ($major->image) {
+                Storage::disk('public')->delete($major->image);
+            }
+            $major->forceDelete();
+        }
+
+        return $this->deleted(count($majors) . ' major(s) permanently deleted');
     }
 }

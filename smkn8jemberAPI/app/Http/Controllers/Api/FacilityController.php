@@ -90,10 +90,6 @@ class FacilityController extends Controller
             return $this->notFound('Facility not found');
         }
 
-        if($facility->image){
-            Storage::disk('public')->delete($facility->image);
-        }
-
         $facility->delete();
         return $this->deleted('Facility deleted successfully');
     }
@@ -105,5 +101,58 @@ class FacilityController extends Controller
         }
         $facility->restore();
         return $this->statusMessage("Facility restored successfully");
+    }
+
+    public function forceDelete($id)
+    {
+        $facility = Facility::withTrashed()->find($id);
+        if (!$facility) {
+            return $this->notFound('Facility not found');
+        }
+
+        if ($facility->image) {
+            Storage::disk('public')->delete($facility->image);
+        }
+        $facility->forceDelete();
+        return $this->deleted('Facility permanently deleted');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $restored = Facility::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
+        
+        if ($restored === 0) {
+            return $this->notFound('No deleted facilities found with the provided IDs');
+        }
+
+        return $this->statusMessage($restored . ' facility(ies) restored successfully');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ])['ids'];
+
+        $facilities = Facility::withTrashed()->whereIn('id', $ids)->get();
+        
+        if ($facilities->isEmpty()) {
+            return $this->notFound('No facilities found with the provided IDs');
+        }
+
+        foreach ($facilities as $facility) {
+            if ($facility->image) {
+                Storage::disk('public')->delete($facility->image);
+            }
+            $facility->forceDelete();
+        }
+
+        return $this->deleted(count($facilities) . ' facility(ies) permanently deleted');
     }
 }

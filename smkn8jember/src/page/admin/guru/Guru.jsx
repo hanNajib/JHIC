@@ -8,7 +8,7 @@ import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useStaff, useDeleteStaff, useRestoreStaff } from "../../../hooks/api/useStaff";
+import { useStaff, useDeleteStaff, useRestoreStaff, useForceDeleteStaff, useBulkRestoreStaff, useBulkForceDeleteStaff } from "../../../hooks/api/useStaff";
 import { Button } from "../../../components/ui";
 import Swal from "sweetalert2";
 
@@ -19,6 +19,7 @@ const Guru = () => {
   const [softDeleteFilter, setSoftDeleteFilter] = useState("active");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const debouncedSearchTerm = useDebounce(search, 500);
   const navigate = useNavigate();
@@ -43,6 +44,9 @@ const Guru = () => {
 
   const deleteStaff = useDeleteStaff();
   const restoreStaff = useRestoreStaff();
+  const forceDeleteStaff = useForceDeleteStaff();
+  const bulkRestoreStaff = useBulkRestoreStaff();
+  const bulkForceDeleteStaff = useBulkForceDeleteStaff();
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -106,6 +110,103 @@ const Guru = () => {
     });
   };
 
+  const handleForceDelete = (teacher) => {
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data akan dihapus permanen!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        forceDeleteStaff.mutate(teacher.id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire("Terhapus!", "Data guru berhasil dihapus.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkRestore = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Pulihkan data terpilih?",
+      text: `${selectedIds.length} guru akan dipulihkan`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Ya, pulihkan!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkRestoreStaff.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Berhasil!", "Data berhasil dipulihkan.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkForceDelete = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Hapus permanen data terpilih?",
+      text: `${selectedIds.length} guru akan dihapus permanen!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkForceDeleteStaff.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus permanen.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Hapus data terpilih?",
+      text: `${selectedIds.length} guru akan dihapus`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Promise.all(selectedIds.map(id => deleteStaff.mutateAsync(id)))
+          .then(() => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+          });
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelectedIds(selectedIds.length === teachers.length ? [] : teachers.map(t => t.id));
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+  };
+
   const handleReset = () => {
     setSearch("");
     setSoftDeleteFilter("active");
@@ -157,10 +258,36 @@ const Guru = () => {
         }}
       />
 
+      {selectedIds.length > 0 && (
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 p-4 rounded-lg flex items-center justify-between">
+          <span className="text-sm font-semibold text-blue-700">{selectedIds.length} item dipilih</span>
+          <div className="flex gap-2">
+            {softDeleteFilter === 'active' && (
+              <button onClick={handleBulkDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                <MdDeleteOutline className="text-lg" />Hapus
+              </button>
+            )}
+            {softDeleteFilter === 'deleted' && (
+              <>
+                <button onClick={handleBulkRestore} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <BiRefresh className="text-lg" />Pulihkan
+                </button>
+                <button onClick={handleBulkForceDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <MdDeleteOutline className="text-lg" />Hapus Permanen
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
+              <th className="py-2 px-4 text-center text-white w-12">
+                <input type="checkbox" checked={selectedIds.length === teachers.length && teachers.length > 0} onChange={handleSelectAll} className="w-4 h-4 cursor-pointer" />
+              </th>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white min-w-56">Nama</th>
               <th className="py-2 px-4 text-left text-white">Jabatan</th>
@@ -172,19 +299,22 @@ const Guru = () => {
           <tbody>
             {isFetching ? (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
+                <td colSpan={7} className="text-center py-4 text-gray-500">
                   Memuat data...
                 </td>
               </tr>
             ) : teachers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
+                <td colSpan={7} className="text-center py-4 text-gray-500">
                   Tidak ada data ditemukan.
                 </td>
               </tr>
             ) : (
               teachers.map((teacher, index) => (
                 <tr key={teacher.id} className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
+                  <td className="py-2 px-4 text-center">
+                    <input type="checkbox" checked={selectedIds.includes(teacher.id)} onChange={() => handleSelectRow(teacher.id)} className="w-4 h-4 cursor-pointer" />
+                  </td>
                   <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + index + 1}</td>
                   <td className="py-2 px-4 font-medium">{teacher.name}</td>
                   <td className="py-2 px-4">{teacher.position || '-'}</td>
@@ -217,6 +347,15 @@ const Guru = () => {
                       >
                         {teacher.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
                       </button>
+                      {teacher.deleted_at !== null && (
+                        <button
+                          onClick={() => handleForceDelete(teacher)}
+                          className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-2xl shadow-lg transition"
+                          title="Hapus Permanen"
+                        >
+                          <MdDeleteOutline className="text-lg" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

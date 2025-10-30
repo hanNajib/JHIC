@@ -118,3 +118,72 @@ export const useRestoreGallery = (options = {}) => {
         }
     })
 };
+
+export const useForceDeleteGallery = (options = {}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id) => galleryService.forceDeleteData(id),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GALLERY.LIST],
+                exact: false
+            });
+
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkRestoreGallery = (options = {}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data) => galleryService.bulkRestoreData(data),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GALLERY.LIST],
+                exact: false
+            });
+
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkForceDeleteGallery = (options = {}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data) => galleryService.bulkForceDeleteData(data),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GALLERY.LIST],
+                exact: false
+            });
+
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};

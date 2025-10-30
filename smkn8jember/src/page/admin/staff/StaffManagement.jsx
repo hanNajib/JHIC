@@ -8,12 +8,12 @@ import PaginationAdmin from "../../../components/ui/PaginationAdmin";
 import FilterAdmin from "../../../components/ui/FilterAdmin";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useStaff, useDeleteStaff, useRestoreStaff } from "../../../hooks/api/useStaff";
+import { useStaff, useDeleteStaff, useRestoreStaff, useForceDeleteStaff, useBulkRestoreStaff, useBulkForceDeleteStaff } from "../../../hooks/api/useStaff";
 import { Button } from "../../../components/ui";
 import Swal from "sweetalert2";
 
 const StaffManagement = ({ 
-  role = null, // null = semua, "teacher", "employee", "principal"
+  role = null, 
   title = "Data Staff",
   description = "Kelola data staff",
   addButtonText = "Tambah Staff",
@@ -26,6 +26,7 @@ const StaffManagement = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
   const [roleFilter, setRoleFilter] = useState(role);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   // Helper function untuk mengkonversi category ke label
   const getCategoryLabel = (category) => {
@@ -87,6 +88,9 @@ const StaffManagement = ({
 
   const deleteStaff = useDeleteStaff();
   const restoreStaff = useRestoreStaff();
+  const forceDeleteStaff = useForceDeleteStaff();
+  const bulkRestoreStaff = useBulkRestoreStaff();
+  const bulkForceDeleteStaff = useBulkForceDeleteStaff();
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -148,6 +152,103 @@ const StaffManagement = ({
         });
       }
     });
+  };
+
+  const handleForceDelete = (staffMember) => {
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: `"${staffMember.name}" akan dihapus permanen!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus permanen!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        forceDeleteStaff.mutate(staffMember.id, {
+          onSuccess: () => {
+            refetch();
+            Swal.fire("Terhapus!", "Data staff berhasil dihapus permanen.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkRestore = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Pulihkan data terpilih?",
+      text: `${selectedIds.length} staff akan dipulihkan`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Ya, pulihkan!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkRestoreStaff.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Berhasil!", "Data berhasil dipulihkan.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkForceDelete = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Hapus permanen data terpilih?",
+      text: `${selectedIds.length} staff akan dihapus permanen!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        bulkForceDeleteStaff.mutate(selectedIds, {
+          onSuccess: () => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus permanen.", "success");
+          }
+        });
+      }
+    });
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+    Swal.fire({
+      title: "Hapus data terpilih?",
+      text: `${selectedIds.length} staff akan dihapus`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Promise.all(selectedIds.map(id => deleteStaff.mutateAsync(id)))
+          .then(() => {
+            setSelectedIds([]);
+            refetch();
+            Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+          });
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelectedIds(selectedIds.length === staff.length ? [] : staff.map(s => s.id));
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   };
 
   const handleReset = () => {
@@ -222,10 +323,36 @@ const StaffManagement = ({
         } : undefined}
       />
 
+      {selectedIds.length > 0 && (
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 p-4 rounded-lg flex items-center justify-between">
+          <span className="text-sm font-semibold text-blue-700">{selectedIds.length} item dipilih</span>
+          <div className="flex gap-2">
+            {softDeleteFilter === 'active' && (
+              <button onClick={handleBulkDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                <MdDeleteOutline className="text-lg" />Hapus
+              </button>
+            )}
+            {softDeleteFilter === 'deleted' && (
+              <>
+                <button onClick={handleBulkRestore} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <BiRefresh className="text-lg" />Pulihkan
+                </button>
+                <button onClick={handleBulkForceDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition">
+                  <MdDeleteOutline className="text-lg" />Hapus Permanen
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto shadow-lg rounded-lg relative">
         <table className="min-w-full bg-white">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
+              <th className="py-2 px-4 text-center text-white w-12">
+                <input type="checkbox" checked={selectedIds.length === staff.length && staff.length > 0} onChange={handleSelectAll} className="w-4 h-4 cursor-pointer" />
+              </th>
               <th className="py-2 px-4 text-left text-white">No</th>
               <th className="py-2 px-4 text-left text-white min-w-56">Nama</th>
               {role === null && (
@@ -241,19 +368,22 @@ const StaffManagement = ({
           <tbody>
             {isFetching ? (
               <tr>
-                <td colSpan={role === null ? 8 : 7} className="text-center py-4 text-gray-500">
+                <td colSpan={role === null ? 9 : 8} className="text-center py-4 text-gray-500">
                   Memuat data...
                 </td>
               </tr>
             ) : staff.length === 0 ? (
               <tr>
-                <td colSpan={role === null ? 8 : 7} className="text-center py-4 text-gray-500">
+                <td colSpan={role === null ? 9 : 8} className="text-center py-4 text-gray-500">
                   Tidak ada data ditemukan.
                 </td>
               </tr>
             ) : (
               staff.map((staffMember, index) => (
                 <tr key={staffMember.id} className="hover:bg-gray-50 text-[14px] border-b border-gray-300">
+                  <td className="py-2 px-4 text-center">
+                    <input type="checkbox" checked={selectedIds.includes(staffMember.id)} onChange={() => handleSelectRow(staffMember.id)} className="w-4 h-4 cursor-pointer" />
+                  </td>
                   <td className="py-2 px-4">{(currentPage - 1) * jumlahPage + index + 1}</td>
                   <td className="py-2 px-4 font-medium">{staffMember.name}</td>
                   {role === null && (
@@ -298,6 +428,15 @@ const StaffManagement = ({
                       >
                         {staffMember.deleted_at === null ? <MdDeleteOutline className="text-lg" /> : <BiRefresh className="text-lg" />}
                       </button>
+                      {staffMember.deleted_at !== null && (
+                        <button
+                          onClick={() => handleForceDelete(staffMember)}
+                          className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-2xl shadow-lg transition"
+                          title="Hapus Permanen"
+                        >
+                          <MdDeleteOutline className="text-lg" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

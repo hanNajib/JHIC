@@ -80,7 +80,7 @@ export const useDeletePartner = (options = {}) => {
         mutationFn: (id) => partnerService.deleteData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.MAJORS.LIST],
+                queryKey: [QUERY_KEYS.PARTNERS.LIST],
                 exact: false 
             });
             
@@ -103,7 +103,7 @@ export const useRestorePartner = (options = {}) => {
         mutationFn: (id) => partnerService.restoreData(id),
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({ 
-                queryKey: [QUERY_KEYS.MAJORS.LIST],
+                queryKey: [QUERY_KEYS.PARTNERS.LIST],
                 exact: false 
             });
             
@@ -118,4 +118,73 @@ export const useRestorePartner = (options = {}) => {
         }
     })
 }
+
+export const useForceDeletePartner = (options = {}) => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (id) => partnerService.forceDeleteData(id),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.PARTNERS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkRestorePartner = (options = {}) => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (ids) => partnerService.bulkRestoreData(ids),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.PARTNERS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
+
+export const useBulkForceDeletePartner = (options = {}) => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: (ids) => partnerService.bulkForceDeleteData(ids),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ 
+                queryKey: [QUERY_KEYS.PARTNERS.LIST],
+                exact: false 
+            });
+            
+            if (options.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) {
+                options.onError(error, variables, context);
+            }
+        }
+    })
+};
 

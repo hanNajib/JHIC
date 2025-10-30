@@ -117,3 +117,45 @@ export const useRestoreFacility = (options = {}) => {
         }
     })
 };
+
+export const useForceDeleteFacility = (options = {}) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id) => facilityService.forceDeleteData(id),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.FACILITY.LIST], exact: false });
+            if (options.onSuccess) options.onSuccess(data, variables, context);
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) options.onError(error, variables, context);
+        }
+    })
+};
+
+export const useBulkRestoreFacility = (options = {}) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (ids) => facilityService.bulkRestoreData(ids),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.FACILITY.LIST], exact: false });
+            if (options.onSuccess) options.onSuccess(data, variables, context);
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) options.onError(error, variables, context);
+        }
+    })
+};
+
+export const useBulkForceDeleteFacility = (options = {}) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (ids) => facilityService.bulkForceDeleteData(ids),
+        onSuccess: async (data, variables, context) => {
+            await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.FACILITY.LIST], exact: false });
+            if (options.onSuccess) options.onSuccess(data, variables, context);
+        },
+        onError: (error, variables, context) => {
+            if (options.onError) options.onError(error, variables, context);
+        }
+    })
+};
