@@ -24,25 +24,27 @@ const MajorDetail = () => {
 
   useEffect(() => {
     const slider = sliderRef.current;
-    if (!slider) return;
+    if (!slider || !partner?.length) return;
 
     let animationFrame;
     let scrollPosition = 0;
-    const speed = 1.2;
+    const speed = 0.8;
 
     const animate = () => {
       scrollPosition += speed;
       if (scrollPosition >= slider.scrollWidth / 2) {
         scrollPosition = 0;
+        slider.scrollLeft = 0;
+      } else {
+        slider.scrollLeft = scrollPosition;
       }
-      slider.scrollLeft = scrollPosition;
       animationFrame = requestAnimationFrame(animate);
     };
 
     animationFrame = requestAnimationFrame(animate);
-
     return () => cancelAnimationFrame(animationFrame);
-  }, []);
+  }, [partner]);
+
 
   if (isLoading) {
     return <MajorDetailSkeleton />;
@@ -85,7 +87,7 @@ const MajorDetail = () => {
 
       {Array.isArray(subjects) && subjects.length > 0 && (
         <section className="bg-[#eeeeee] py-16 flex flex-col items-center justify-center px-2 m-8 rounded-2xl">
-          <h1 className="text-2xl font-bold mb-8 relative">
+          <h1 className="text-lg lg:text-2xl px-6 font-bold mb-8 relative">
             Mata Pelajaran Utama
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-auto px-6 w-full">
@@ -132,7 +134,7 @@ const MajorDetail = () => {
       )}
 
       {/* Prestasi / Articles */}
-      {major?.articles?.length > 0 && (
+      {/* {major?.articles?.length > 0 && (
         <section className="py-16 flex flex-col items-center justify-center px-2 m-8">
           <h1 className="font-bold text-2xl">Prestasi</h1>
           <div className="flex gap-6 w-full pt-10 pb-4 overflow-x-auto no-scrollbar">
@@ -143,42 +145,39 @@ const MajorDetail = () => {
             ))}
           </div>
         </section>
-      )}
+      )} */}
 
       {Array.isArray(partner) && partner.length > 0 && (
         <>
-          <h1 className="font-bold text-2xl justify-center items-center text-center mt-3">
+          <h1 className="font-bold text-lg px-16 lg:text-2xl justify-center items-center text-center mt-20">
             Bekerja sama dan dipercaya oleh
           </h1>
-          <section className="py-16 px-6 m-8 rounded-lg overflow-hidden">
-            <div
-              ref={sliderRef}
-              className="flex items-center gap-16 overflow-hidden scrollbar-hide"
-              style={{ scrollBehavior: "auto" }}
-            >
-              {partner.map((val, index) => (
-                <div key={index}>
-                  <div
-                    key={`${val.id}-${index}`}
-                    className="flex flex-col items-center justify-between gap-3 w-36 h-36"
-                  >
-                    <img
-                      src={val.image}
-                      alt={val.name}
-                      className="object-contain max-h-24 p-3 grayscale hover:grayscale-0 hover:scale-[1.1] transition-all duration-300"
-                    />
+          <section className="pt-8 pb-0 px-0 m-8 rounded-lg overflow-hidden">
+            <div className="relative w-full overflow-hidden">
+              {/* Gradient kiri */}
+              <div className="absolute left-0 top-0 w-10 md:w-16 lg:w-20 h-full bg-gradient-to-r from-slate-50 to-transparent z-20 pointer-events-none"></div>
 
-                    <h2 className="font-poppins font-semibold text-center text-sm">
-                      {val.name}
-                    </h2>
-                  </div>
-                </div>
-              ))}
+              {/* Gambar slider */}
+              <div className="flex items-center gap-8 md:gap-12 lg:gap-16 animate-scroll relative z-10">
+                {[...partner, ...partner].map((val, index) => (
+                  <img
+                    key={index}
+                    src={val.image}
+                    alt={val.name}
+                    className="object-contain max-h-24 md:max-h-32 lg:max-h-40 p-3 grayscale hover:grayscale-0 hover:scale-[1.1] active:grayscale-0 active:scale-[1.1] transition-all duration-300"
+                  />
+                ))}
+              </div>
+
+              {/* Gradient kanan */}
+              <div className="absolute right-0 top-0 w-10 md:w-16 lg:w-20 h-full bg-gradient-to-l from-slate-50 to-transparent z-20 pointer-events-none"></div>
             </div>
           </section>
+
         </>
       )}
-      <section className="bg-white flex flex-col items-center justify-center py-8 px-10">
+
+      <section className="flex flex-col items-center justify-center py-8 px-10">
         <div className="flex w-full flex-col md:flex-row md:overflow-x-auto pt-10 gap-6 items-stretch pb-4">
           {isLoading ? (
             Array(6)
@@ -194,7 +193,7 @@ const MajorDetail = () => {
               <ArticleCard
                 key={article.id}
                 article={article}
-                className={"md:w-1/3 w-full  md:flex md:flex-col md:flex-none"}
+                className={"md:w-1/2 lg:w-1/3 w-full  md:flex md:flex-col md:flex-none"}
               />
             ))
           )}
