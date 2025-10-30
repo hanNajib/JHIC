@@ -288,7 +288,7 @@ const UserJurusan = () => {
                 <input type="checkbox" checked={selectedIds.length === admins.length && admins.length > 0} onChange={handleSelectAll} className="w-4 h-4 cursor-pointer" />
               </th>
               <th className="py-2 px-4 text-left text-white">No</th>
-              <th className="py-2 px-4 text-left text-white min-w-56">Username</th>
+              <th className="py-2 px-4 text-left text-white">Username</th>
               <th className="py-2 px-4 text-left text-white">Email</th>
               <th className="py-2 px-4 text-left text-white">Role</th>
               <th className="py-2 px-4 text-left text-white">No. HP</th>

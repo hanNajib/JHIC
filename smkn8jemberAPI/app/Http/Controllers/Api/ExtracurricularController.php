@@ -109,7 +109,7 @@ class ExtracurricularController extends Controller
         }
 
         if ($extracurricular->image) {
-            Storage::disk('public')->delete($extracurricular->image);
+            Storage::disk('public')->delete($extracurricular->originalImagePath());
         }
         $extracurricular->forceDelete();
         return $this->deleted('Extracurricular permanently deleted');
@@ -146,7 +146,7 @@ class ExtracurricularController extends Controller
 
         foreach ($extracurriculars as $extracurricular) {
             if ($extracurricular->image) {
-                Storage::disk('public')->delete($extracurricular->image);
+                Storage::disk('public')->delete($extracurricular->originalImagePath());
             }
             $extracurricular->forceDelete();
         }

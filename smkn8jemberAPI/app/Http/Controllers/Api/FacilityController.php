@@ -111,7 +111,7 @@ class FacilityController extends Controller
         }
 
         if ($facility->image) {
-            Storage::disk('public')->delete($facility->image);
+            Storage::disk('public')->delete($facility->originalImagePath());
         }
         $facility->forceDelete();
         return $this->deleted('Facility permanently deleted');
@@ -148,7 +148,7 @@ class FacilityController extends Controller
 
         foreach ($facilities as $facility) {
             if ($facility->image) {
-                Storage::disk('public')->delete($facility->image);
+                Storage::disk('public')->delete($facility->originalImagePath());
             }
             $facility->forceDelete();
         }

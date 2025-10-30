@@ -132,7 +132,7 @@ class MajorsController extends Controller
         }
 
         if ($major->image) {
-            Storage::disk('public')->delete($major->image);
+            Storage::disk('public')->delete($major->originalImagePath());
         }
         $major->forceDelete();
         return $this->deleted('Major permanently deleted');
@@ -169,7 +169,7 @@ class MajorsController extends Controller
 
         foreach ($majors as $major) {
             if ($major->image) {
-                Storage::disk('public')->delete($major->image);
+                Storage::disk('public')->delete($major->originalImagePath());
             }
             $major->forceDelete();
         }

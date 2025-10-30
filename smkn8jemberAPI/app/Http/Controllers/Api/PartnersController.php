@@ -106,7 +106,7 @@ class PartnersController extends Controller
         }
 
         if ($partner->image) {
-            Storage::disk('public')->delete($partner->image);
+            Storage::disk('public')->delete($partner->originalImagePath());
         }
         $partner->forceDelete();
         return $this->deleted('Partner permanently deleted');
@@ -143,7 +143,7 @@ class PartnersController extends Controller
 
         foreach ($partners as $partner) {
             if ($partner->image) {
-                Storage::disk('public')->delete($partner->image);
+                Storage::disk('public')->delete($partner->originalImagePath());
             }
             $partner->forceDelete();
         }
