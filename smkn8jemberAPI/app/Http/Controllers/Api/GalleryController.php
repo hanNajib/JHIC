@@ -120,7 +120,7 @@ class GalleryController extends Controller
         ])['ids'];
 
         $restored = Gallery::withTrashed()->whereIn('id', $ids)->whereNotNull('deleted_at')->restore();
-        
+
         if ($restored === 0) {
             return $this->notFound('No deleted galleries found with the provided IDs');
         }
@@ -136,7 +136,7 @@ class GalleryController extends Controller
         ])['ids'];
 
         $galleries = Gallery::withTrashed()->whereIn('id', $ids)->get();
-        
+
         if ($galleries->isEmpty()) {
             return $this->notFound('No galleries found with the provided IDs');
         }
